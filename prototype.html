@@ -309,6 +309,36 @@
   .pitem .is{font-size:.73rem;color:var(--dim);margin-top:3px}
   .pitem .idate{font-size:.74rem;color:#bbb;white-space:nowrap}
   .pitem .iact{color:#5f97cf;font-size:1.05rem}
+  /* 多孩子家長首頁 */
+  .ptabs{display:flex;gap:24px;padding:12px 18px 0;background:#fff;border-bottom:1px solid var(--line);flex:none}
+  .ptab{position:relative;font-size:1.05rem;font-weight:800;color:#b6b6b6;padding-bottom:10px;cursor:pointer}
+  .ptab.on{color:var(--ink)}
+  .ptab.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:var(--header);border-radius:2px}
+  .tbadge{position:absolute;top:-8px;right:-16px;background:#e0736b;color:#fff;font-size:.6rem;border-radius:10px;padding:1px 6px;font-weight:700}
+  .ptab.on .tbadge{background:var(--header)}
+  .attncard{background:#fdecec;border-radius:16px;padding:15px;display:flex;align-items:center;gap:12px}
+  .attncard .aico{width:46px;height:46px;border-radius:12px;background:#f3d3ce;color:#c0705f;display:flex;align-items:center;justify-content:center;font-weight:800;flex:none}
+  .attncard .amid{flex:1}
+  .attncard .at{font-size:.98rem;font-weight:800}
+  .attncard .as{font-size:.76rem;color:var(--dim);margin-top:3px}
+  .attnbtn{background:#e0736b;color:#fff;border:none;border-radius:20px;padding:10px 18px;font-weight:800;font-family:inherit;cursor:pointer;white-space:nowrap}
+  .povlist{display:flex;flex-direction:column;gap:14px}
+  .ovcard{background:#fff;border-radius:18px;padding:16px;cursor:pointer;box-shadow:0 2px 10px rgba(34,49,79,.05)}
+  .ovtop{display:flex;align-items:center;gap:14px}
+  .ovav{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1.05rem;flex:none}
+  .ovmid{flex:1}
+  .ovname{font-size:1.1rem;font-weight:800}
+  .ovprog{display:flex;align-items:center;gap:6px;font-size:.86rem;color:#5f97cf;font-weight:700;margin-top:4px}
+  .ovprog img{width:16px;height:16px}
+  .ovprog .gray{color:var(--dim);font-weight:500}
+  .ovarrow{color:#c8c8c8;font-size:1.3rem}
+  .ovbar{height:8px;border-radius:5px;background:#eef0f4;margin:12px 0;overflow:hidden}
+  .ovbar>i{display:block;height:100%;background:#5f7fb0;border-radius:5px}
+  .ovtags{display:flex;gap:10px}
+  .ovtag{display:flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;border-radius:12px;padding:7px 12px}
+  .ovtag img{width:16px;height:16px}
+  .ovtag.red{background:#fdecec;color:#e0736b}
+  .ovtag.blue{background:#eaf2fb;color:#5f97cf}
 </style>
 </head>
 <body>
@@ -341,7 +371,7 @@
         <option value="messages">訊息</option>
         <option value="map">地圖 · 遊戲</option>
       </optgroup>
-      <optgroup label="家長介面"><option value="p-home">家長·孩子總覽</option><option value="p-video">影片觀看紀錄</option><option value="p-submit">作業提交紀錄</option><option value="p-checkin">每日打卡紀錄</option></optgroup>
+      <optgroup label="家長介面"><option value="p-parent">家長首頁（多孩子）</option><option value="p-home">孩子總覽</option><option value="p-video">影片觀看紀錄</option><option value="p-submit">作業提交紀錄</option><option value="p-checkin">每日打卡紀錄</option></optgroup>
     </select>
     <button class="jump" onclick="restart()">↺ 重來 onboarding</button>
     <div class="hint">可直接點畫面操作；或用右上下拉選單跳到任一頁。切換平板／手機看版型如何自適應。</div>
@@ -529,7 +559,7 @@
         <!-- 家長儀表板 -->
         <section class="screen" id="scr-dashboard">
           <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
-          <div class="dashhd"><h3>學習進度</h3><span>楊宗翰 · 一週 3 天（二、四、六）</span></div>
+          <div class="dashhd"><div style="display:flex;align-items:center;gap:10px"><span onclick="go('p-home')" style="cursor:pointer;font-size:1.3rem">‹</span><h3>學習進度</h3></div><span>一週 3 天（二、四、六）</span></div>
           <div class="scroll"><div class="maxw"><div class="dashbody">
             <div class="kpis">
               <div class="kpi"><div class="v">20</div><label>預定進度</label></div>
@@ -625,30 +655,23 @@
         </section>
 
         <!-- 家長 · 孩子總覽 -->
+        <section class="screen" id="scr-p-parent">
+          <div class="sb"><span>下午 1:42 · 週二</span><span>🔋 59%</span></div>
+          <div class="topbar">早安，宗翰爸</div>
+          <div class="ptabs" id="pTabs"></div>
+          <div class="scroll"><div class="maxw"><div class="pwrap">
+            <div class="psec" style="margin-top:2px">🎯 今天這個最重要</div>
+            <div class="attncard" id="attnCard"></div>
+            <div class="psec">🎓 孩子學習概覽</div>
+            <div class="povlist" id="pOverview"></div>
+          </div></div></div>
+          <div class="nav" id="navPParent"></div>
+        </section>
+
         <section class="screen" id="scr-p-home">
           <div class="sb"><span>下午 1:15 · 週二</span><span>🔋 60%</span></div>
-          <div class="topbar">楊宗翰（自學）</div>
-          <div class="scroll"><div class="maxw"><div class="pwrap">
-            <div class="pcard" onclick="go('p-checkin')"><div class="prow">
-              <div class="pico"><img src="data:image/png;base64,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"></div>
-              <div class="pmid"><div class="pt">每日打卡紀錄</div><div class="ps">本月已打卡 21 / 30 天</div></div>
-              <div class="pct" style="color:#e0736b">70%</div><span class="parrow">›</span></div>
-              <div class="pbar"><i style="width:70%;background:#e0736b"></i></div></div>
-            <div class="pcard" onclick="go('p-video')"><div class="prow">
-              <div class="pico"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAABzCAYAAABTo8YRAAAFa0lEQVR42u2dW28bNxCFz/Cii2X5isZAkiZpEOQ1//8/FOgFKRoUKOwWrRs3TiPHiqNd7XL6wJVi+CG2bMmiqHMAC4KfqP10ZobkkJKP56UiAdUKFFVASGI0+cikMAgl3HwBqwJFTbjZAi6DogoEkSXgWoGqpnWzBVxWAcSbKeBxUObdXAFrE5rJN0PAAiCogqk3U8ABwJhVc8aAFaiYfDMGTLh5A64JOF/ACqDmM88XcAgKpYHzdjCVs4NJOP8ii8oUsDQOponpYIqAKQKmCJiAKQKmCJgiYGpRcuv6wUXi4kuKUmBumzJuHcHGozKKUaXJdZc4I2g7QdvKdKwEfFO4iO1Cf32scDKsMSwDysQAeyPYbAkOeg6Ptxy8lTtBXivACuDowxiHgzEqBYwANrE4XatiMFKcjUqUteLlfotF1k3dOxjVODwbIyCClUTHaSS++eNsjP8+13ca5/o4WIBBEU8xyiVHp9YEaESmBaA2X8r9DXvrbTi3Tg7+VNTxQTXFy07H4MVeK5ktTAFwOCjx/iJAGsLDMkxhE/A1umrWthUc9GwynSZGgH/O5atjJuAZi65a02klUsy/IYIrWTMCmMybZUXGTMAz6nhY4fcPJcqgsdpdSCYm4KUVQeNa8dv7Ej+fFDi9qJN3syO2201lTi9qnJcBD/sOz7Y9Ok6SbAumg+9Q8ZaV4mgwxg9vRzj5VE3/T8C5hOxmQWJQBPx0UuDNaYFhGZKCTMBzeohBgT/PKvx4MsLf5xVU08jNBDzHAkwEOC8Uv7wr8PrfUXTzkoswFlkLyM1BgeNhjUExwtNtj0f9uO23jCKMDl6Qm40AnyvFm/clXr8r8WEUluJkAl502Abwdljh++MRjs4qhHs+IE3AC1azeYXupA2HOTgfTRoLnm57fLvtseHvPw8T8CJc20Dc6xg8321hf8NOiy9W0avuWgU6TvC47/Bk26PdLGEuaxmTgOeca7/ZsHi+67HbsbElaMnr0wQ8B7DauPa7HY+HfYeWTWfjgYDvGI6tAR70HJ7vemy1TBKuJeA5FVL9tsGTLYeHfQcrghTvWCXgW4RkQPF4y+PZjkevZYCEL5ch4Bnh9rzBq4MODjYdjCD5m/sIeEYd9BysiWBX4VpGAp5Bky3BxYJVAp4bMInHNVNqfBehg28te6WX5lMZOyRTOrpyXuiVMRPwjQNfv22m7RUi8dzPr6dFWl/C5vAZAKgA/WZuTcA3ILzbMfBGMK41NswJ4CTNrmbVeBh8r+vulJbNWjm4ZfFyz8MbQZ3w3LXWmE5e7Hlst+ngmSA/2vLwzuDtsMJgVGNUaTInExRA2wl22xYHmw4PevbOX0K5rx+IFsQepXFY7gOV5iUEoFK99xaa6ytpgROBMZjLCtnaTZO0eREBWjLpmkpvjLxGKbklhTTFpjsCpgiYImCKgCkCpgiYWg5gRbPfyWdOB1METKUI2BmG6KwBizAJ5w2YOSH/HGzo4LwBe2sYpXN3sKON854mMQ9n/qytFULO2sESIVMZR0tvWFFnDdiIoO1YUWdd71gBHEN13gWtNwIyzhiwkXgFEfNxxlNSkfibuULIeQKO+VjQpZPzBTyprLuOOTlbwJNw3XEGlvE6T8ARMtD1gq438S4qcsoL8OV5ctsJvBEuiNxSyR8ftSKwDqgDUGn89U+lpW8cCVfmfLA1AgugZeKln2UdEMKX8D25r3kddfmzC+LVS0YAb8zqHQAXASyArjMIqgjNNQd1AFR1+oGzd+eVwtQILv3J6oTo66ZVk3lzywBBZS0Bf60QzeYKB8WXawDXLVTrqlbRVObTJIqAKQImYIqAKQKmCJgiYIqAKQKmCHhd9D8PAdRgu+TFSwAAAABJRU5ErkJggg=="></div>
-              <div class="pmid"><div class="pt">影片觀看紀錄</div><div class="ps">已完成 16 / 254 部</div></div>
-              <div class="pct" style="color:#5f97cf">6%</div><span class="parrow">›</span></div>
-              <div class="pbar"><i style="width:6%;background:#7fb2e0"></i></div></div>
-            <div class="pcard" onclick="go('p-submit')"><div class="prow">
-              <div class="pico"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB1CAYAAACF+iUMAAAEvUlEQVR42u2dS28iRxSFz61qMISJ48SjmUUm2UWKlP//S4wXs8luFAXMYJlH04+6N4tubJJgGzOmG8rnkywvLBu6Ps6tV3dZ7ma5gUSLYxNQMKFgQsGEggkFEwomFEzBhIIJBRMKJhRMKJhQMAUTCiYUTCiYNEkSy4UIAN24u0zfUDqdABajYFWDAghaCTV7uMy3cCehrL+LwAsgAngAzsnpClYDCjWoGsIbvx/0/vLNEDbFi6HrHbyckOCghtKAMhh4n+8z4g3ISoWcQoLNDIUCRajKsdDfixJ+1IILNeTlQ2IpN5JRtBqQB0OpLMZRCRYApRqyYKDbCAWXZliVHEQdYq7c/iiZcuMVrGbISoPRbnyC1YCsZJ8breAicEUqWsGlcioUteCcy47xCi4CB1XRCrZ6R4h+IxQs9ZyXXW+kghVAoWz4eAVbtbdLIhVMuRRMTlWw4W3c7fhmBaty7ht9gknMCabh+AdZJFLB60dLGGImmFAwoWBCwRRMKJhQMGmRhE3wCnP89WOPRzjPp+BvLH+rYLhJFTDDZd+jn8hR7ZhR8L5yBZjniutxhmlaKb3oOfzx4Qzfd93RrLuzD96zJC8Kw/U4w9dUIfUBKNOVYjjKMM/1oWxT8Okld1lUIidLxcaBNnAC3KaKq1GGRfHvn1HwichdFIrhKMfXNMBvaT3nqiRf/Z1jlrcvmYJfVJYf5D4lzgtwuwoYjivJbZZrCt65LBuuRxkmy7BTKp0A0zRgOMqwyK21JFPwLmU5V1yPMtykurUsP5Xk6UpxNVq1Vq4p+JmyvCwMw3GOSRrg9xBUlet6dJ01X64p+Am5aWG4GmeYpOGb0ufWSR5nWDTcJ1Pwo8lVDEcrTJb7Jffxct3sPJmCt5CVVs1zU30VudvKdVpYIyf3UfCW9I4W4X+LGK85aJumir/mJRPcFuvnpw6xnLz+m02dTULBW3g/8Hjfd0gOEOFEBD/2HT4OkkZOV5W7Wd7IR0kApKWhUDuJU2Oz0jDLFWX9fkWAz5O86jt3vAAz4CwR/P6+e79XnDjBu65DL2mmFbhd+Ai9juC7jsc6Zs4Bf04LLPGyD6h3wM/nHZg+FGmt5VNwi5ihPia/7o91/z45tPhUJfvgyKFgCiYUTCiYUDChYELBhIL3bixp5ncouCUu+/5+TXmXLwVw2W93sZBLlTuiBnw67yALhttVQKmPbwYZqs39i57Hrz90Wj38jbtJL7wGteq862elSbU1+NQ/b2aCjwxDtW3Y2XG/cF2qWaJPUPSpQMH/GfHKuhY39EkxHPaIRwreYJ4r5rlBGxoVOREMuoJBx1HwQQdPAtwsAz7f5JjnitCg4Hddh99+6uLjwB+k9FNwXSq/3BW4y6pnj5IGHz2YZYovswIfBp4LHYfEt7jk5A/4gWKCaz6dJ1jkittMoXb4cZbV6broO/xynkAONDrnQsfG+8uCYVVqY9MgAdBLHM68HOw1meCNRJ0lgl7iG39d4zSpocaO8MByDrIih4IpmFAwoWBCwYSCydEKNmzstxImmFAwOTbB3rFERy2Y5SJywVLfJ0wiDhX9Ri6446k4asHeyUFOkCNHNO7hYCvytuZ0KXrBLNPRV8vEM8VN8A85fiswqKmEGAAAAABJRU5ErkJggg=="></div>
-              <div class="pmid"><div class="pt">作業提交紀錄</div><div class="ps">唸＋寫 已完成 32 / 508 份</div></div>
-              <div class="pct" style="color:#5f97cf">6%</div><span class="parrow">›</span></div>
-              <div class="pbar"><i style="width:6%;background:#7fb2e0"></i></div></div>
-            <div class="pcard" onclick="go('dashboard')"><div class="prow">
-              <div class="pico"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAABXCAYAAADPnoExAAABWGlDQ1BJQ0MgUHJvZmlsZQAAeJx9kLFLw1AQxr9WpaB1EB0cHDKJQ5SSCro4tBVEcQhVweqUvqapkMZHkiIFN/+Bgv+BCs5uFoc6OjgIopPo5uSk4KLleS+JpCJ6j+N+fO+74zggOW5wbvcDqDu+W1zKK5ulLSX1jAS9IAzm8Zyur0r+rj/j/T703k7LWb///43Biukxqp+UGcZdH0ioxPqezyXvE4+5tBRxS7IV8onkcsjngWe9WCC+JlZYzagQvxCr5R7d6uG63WDRDnL7tOlsrMk5lBNYxA48cNgw0IQCHdk//LOBv4BdcjfhUp+FGnzqyZEiJ5jEy3DAMAOVWEOGUpN3ju53F91PjbWDJ2ChI4S4iLWVDnA2Rydrx9rUPDAyBFy1ueEagdRHmaxWgddTYLgEjN5Qz7ZXzWrh9uk8MPAoxNskkDoEui0hPo6E6B5T8wNw6XwBA6diE8HYWhMAAAIJSURBVHja7dzBSgJBHIDx/8R0qq5CBwW3BfURPHgQ9uhLRBAYFEF1MVAy8lAE0WWhiB6rAjOog6C3zCAasJOBskJSsbO73+84qOzOh7OzKKteBx8jCdHV+a207zsSJ27ekc29dSuORYd9ALPiNi8PRWttdUhjjNR3Tn58TokMPPPAtBa9qAW/s8AUEBgEhrWXOqZgauP0aYInKqL7AQJPqW0dBY63/Ib1u3qWaK7BIDAIDAKDwCAwuA82xohM/yCqJJL3tAQOcNH0pdftTYylVlOy39xmiQaBQWAQGARGAnbRxhipVYN/zju9Pg4cT8pumW8wgUFgEBgEBrvov+Of3cjbYDgxtryyJNWDDQLHwXDwLv1uf2JMiWKJBoFBYBAYBAaBQeBkitR9sNZaWn5jrvfs1qtzvX7W50f1X5iRO+p5J/q/X88SDQKDwIjbNdgYY/3kReEYQw/s5p3AJ8MFPUEuKty8wxI9lnHSsVsWbTqn0AOv5bKxC2zTOYUe2C04UvKKsYlb8oriFliivymlxKuUYxG55BXFq5RFKXv+MaLCfl702Gg0kvZdRx4fnuS58xKZZ0i7eUcyTlrWcllxC45Vca0KjJgu0SAwCAwCExgEBoFBYBAYBAaBQWACg8AgMAgMAoPAIDCBQWAQGAQGgUFgEJjAIDAIDAKDwCAwCAwCExgEBoERpi+E82ZDii1jUAAAAABJRU5ErkJggg=="></div>
-              <div class="pmid"><div class="pt">學習進度 · 基準線</div><div class="ps">預定 20 · 實際 16 · 落後 4 單元</div></div>
-              <div class="pct" style="color:#e8617c;font-size:1.1rem">落後</div><span class="parrow">›</span></div></div>
-          </div></div></div>
+          <div class="topbar" id="pHomeTitle"></div>
+          <div class="scroll"><div class="maxw"><div class="pwrap" id="pHomeCards"></div></div></div>
           <div class="nav" id="navPHome"></div>
         </section>
 
@@ -736,6 +759,8 @@
     if(id==='map') renderMap();
     if(id==='calendar') renderCalendar();
     if(id==='p-checkin') renderPCheckin();
+    if(id==='p-parent') renderPParent();
+    if(id==='p-home') renderPHome();
     // scroll top
     var sc=document.querySelector('#scr-'+id+' .scroll'); if(sc) sc.scrollTop=0;
   }
@@ -888,20 +913,71 @@
     var b=document.querySelectorAll('#roleSeg button');
     b.forEach(function(x){x.classList.remove('on')});
     b[r==='child'?0:1].classList.add('on');
-    go(r==='child'?'home':'p-home');
+    go(r==='child'?'home':'p-parent');
   }
   function buildPNav(id,active){
-    var items=[['p-home','\uD83D\uDCCB','孩子'],['dashboard','\uD83D\uDCCA','進度'],['messages','\u2709\uFE0F','訊息'],['profile','\uD83D\uDC64','個人']];
+    var items=[['p-parent','\uD83C\uDFE0','首頁'],['p-home','\uD83E\uDDD2','孩子'],['profile','\uD83D\uDC64','我的']];
     var el=document.getElementById(id); if(!el)return; el.innerHTML='';
     items.forEach(function(it){var d=document.createElement('div');d.className='item'+(it[0]===active?' on':'');d.innerHTML='<span class="ic">'+it[1]+'</span>'+it[2];d.onclick=function(){go(it[0])};el.appendChild(d);});
   }
-  ['navPHome:p-home','navPVideo:p-home','navPSubmit:p-home','navPCheck:p-home','navDash:dashboard'].forEach(function(p){var a=p.split(':');buildPNav(a[0],a[1]);});
+  ['navPParent:p-parent','navPHome:p-home','navPVideo:p-home','navPSubmit:p-home','navPCheck:p-home','navDash:p-home'].forEach(function(p){var a=p.split(':');buildPNav(a[0],a[1]);});
   function renderPCheckin(){
     var grid=document.getElementById('pCalGrid'); if(!grid)return; grid.innerHTML='';
     ['日','一','二','三','四','五','六'].forEach(function(d){var e=document.createElement('div');e.className='caldow';e.textContent=d;grid.appendChild(e);});
     for(var i=0;i<5;i++){var e=document.createElement('div');e.className='calday empty';grid.appendChild(e);}
     var login={1:1,2:1,5:1,7:1,9:1,12:1,14:1,16:1,19:1,20:1,23:1};
     for(var day=1;day<=31;day++){var e=document.createElement('div');e.className='calday'+(login[day]?' chk':'')+(day===23?' today':'');e.textContent=day;grid.appendChild(e);}
+  }
+var PIC={CHECK:'data:image/png;base64,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',VIDEO:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAABzCAYAAABTo8YRAAAFa0lEQVR42u2dW28bNxCFz/Cii2X5isZAkiZpEOQ1//8/FOgFKRoUKOwWrRs3TiPHiqNd7XL6wJVi+CG2bMmiqHMAC4KfqP10ZobkkJKP56UiAdUKFFVASGI0+cikMAgl3HwBqwJFTbjZAi6DogoEkSXgWoGqpnWzBVxWAcSbKeBxUObdXAFrE5rJN0PAAiCogqk3U8ABwJhVc8aAFaiYfDMGTLh5A64JOF/ACqDmM88XcAgKpYHzdjCVs4NJOP8ii8oUsDQOponpYIqAKQKmCJiAKQKmCJgiYGpRcuv6wUXi4kuKUmBumzJuHcHGozKKUaXJdZc4I2g7QdvKdKwEfFO4iO1Cf32scDKsMSwDysQAeyPYbAkOeg6Ptxy8lTtBXivACuDowxiHgzEqBYwANrE4XatiMFKcjUqUteLlfotF1k3dOxjVODwbIyCClUTHaSS++eNsjP8+13ca5/o4WIBBEU8xyiVHp9YEaESmBaA2X8r9DXvrbTi3Tg7+VNTxQTXFy07H4MVeK5ktTAFwOCjx/iJAGsLDMkxhE/A1umrWthUc9GwynSZGgH/O5atjJuAZi65a02klUsy/IYIrWTMCmMybZUXGTMAz6nhY4fcPJcqgsdpdSCYm4KUVQeNa8dv7Ej+fFDi9qJN3syO2201lTi9qnJcBD/sOz7Y9Ok6SbAumg+9Q8ZaV4mgwxg9vRzj5VE3/T8C5hOxmQWJQBPx0UuDNaYFhGZKCTMBzeohBgT/PKvx4MsLf5xVU08jNBDzHAkwEOC8Uv7wr8PrfUXTzkoswFlkLyM1BgeNhjUExwtNtj0f9uO23jCKMDl6Qm40AnyvFm/clXr8r8WEUluJkAl502Abwdljh++MRjs4qhHs+IE3AC1azeYXupA2HOTgfTRoLnm57fLvtseHvPw8T8CJc20Dc6xg8321hf8NOiy9W0avuWgU6TvC47/Bk26PdLGEuaxmTgOeca7/ZsHi+67HbsbElaMnr0wQ8B7DauPa7HY+HfYeWTWfjgYDvGI6tAR70HJ7vemy1TBKuJeA5FVL9tsGTLYeHfQcrghTvWCXgW4RkQPF4y+PZjkevZYCEL5ch4Bnh9rzBq4MODjYdjCD5m/sIeEYd9BysiWBX4VpGAp5Bky3BxYJVAp4bMInHNVNqfBehg28te6WX5lMZOyRTOrpyXuiVMRPwjQNfv22m7RUi8dzPr6dFWl/C5vAZAKgA/WZuTcA3ILzbMfBGMK41NswJ4CTNrmbVeBh8r+vulJbNWjm4ZfFyz8MbQZ3w3LXWmE5e7Hlst+ngmSA/2vLwzuDtsMJgVGNUaTInExRA2wl22xYHmw4PevbOX0K5rx+IFsQepXFY7gOV5iUEoFK99xaa6ytpgROBMZjLCtnaTZO0eREBWjLpmkpvjLxGKbklhTTFpjsCpgiYImCKgCkCpgiYWg5gRbPfyWdOB1METKUI2BmG6KwBizAJ5w2YOSH/HGzo4LwBe2sYpXN3sKON854mMQ9n/qytFULO2sESIVMZR0tvWFFnDdiIoO1YUWdd71gBHEN13gWtNwIyzhiwkXgFEfNxxlNSkfibuULIeQKO+VjQpZPzBTyprLuOOTlbwJNw3XEGlvE6T8ARMtD1gq438S4qcsoL8OV5ctsJvBEuiNxSyR8ftSKwDqgDUGn89U+lpW8cCVfmfLA1AgugZeKln2UdEMKX8D25r3kddfmzC+LVS0YAb8zqHQAXASyArjMIqgjNNQd1AFR1+oGzd+eVwtQILv3J6oTo66ZVk3lzywBBZS0Bf60QzeYKB8WXawDXLVTrqlbRVObTJIqAKQImYIqAKQKmCJgiYIqAKQKmCHhd9D8PAdRgu+TFSwAAAABJRU5ErkJggg==',SUBMIT:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB1CAYAAACF+iUMAAAEvUlEQVR42u2dS28iRxSFz61qMISJ48SjmUUm2UWKlP//S4wXs8luFAXMYJlH04+6N4tubJJgGzOmG8rnkywvLBu6Ps6tV3dZ7ma5gUSLYxNQMKFgQsGEggkFEwomFEzBhIIJBRMKJhRMKJhQMAUTCiYUTCiYNEkSy4UIAN24u0zfUDqdABajYFWDAghaCTV7uMy3cCehrL+LwAsgAngAzsnpClYDCjWoGsIbvx/0/vLNEDbFi6HrHbyckOCghtKAMhh4n+8z4g3ISoWcQoLNDIUCRajKsdDfixJ+1IILNeTlQ2IpN5JRtBqQB0OpLMZRCRYApRqyYKDbCAWXZliVHEQdYq7c/iiZcuMVrGbISoPRbnyC1YCsZJ8breAicEUqWsGlcioUteCcy47xCi4CB1XRCrZ6R4h+IxQs9ZyXXW+kghVAoWz4eAVbtbdLIhVMuRRMTlWw4W3c7fhmBaty7ht9gknMCabh+AdZJFLB60dLGGImmFAwoWBCwRRMKJhQMGmRhE3wCnP89WOPRzjPp+BvLH+rYLhJFTDDZd+jn8hR7ZhR8L5yBZjniutxhmlaKb3oOfzx4Qzfd93RrLuzD96zJC8Kw/U4w9dUIfUBKNOVYjjKMM/1oWxT8Okld1lUIidLxcaBNnAC3KaKq1GGRfHvn1HwichdFIrhKMfXNMBvaT3nqiRf/Z1jlrcvmYJfVJYf5D4lzgtwuwoYjivJbZZrCt65LBuuRxkmy7BTKp0A0zRgOMqwyK21JFPwLmU5V1yPMtykurUsP5Xk6UpxNVq1Vq4p+JmyvCwMw3GOSRrg9xBUlet6dJ01X64p+Am5aWG4GmeYpOGb0ufWSR5nWDTcJ1Pwo8lVDEcrTJb7Jffxct3sPJmCt5CVVs1zU30VudvKdVpYIyf3UfCW9I4W4X+LGK85aJumir/mJRPcFuvnpw6xnLz+m02dTULBW3g/8Hjfd0gOEOFEBD/2HT4OkkZOV5W7Wd7IR0kApKWhUDuJU2Oz0jDLFWX9fkWAz5O86jt3vAAz4CwR/P6+e79XnDjBu65DL2mmFbhd+Ai9juC7jsc6Zs4Bf04LLPGyD6h3wM/nHZg+FGmt5VNwi5ihPia/7o91/z45tPhUJfvgyKFgCiYUTCiYUDChYELBhIL3bixp5ncouCUu+/5+TXmXLwVw2W93sZBLlTuiBnw67yALhttVQKmPbwYZqs39i57Hrz90Wj38jbtJL7wGteq862elSbU1+NQ/b2aCjwxDtW3Y2XG/cF2qWaJPUPSpQMH/GfHKuhY39EkxHPaIRwreYJ4r5rlBGxoVOREMuoJBx1HwQQdPAtwsAz7f5JjnitCg4Hddh99+6uLjwB+k9FNwXSq/3BW4y6pnj5IGHz2YZYovswIfBp4LHYfEt7jk5A/4gWKCaz6dJ1jkittMoXb4cZbV6broO/xynkAONDrnQsfG+8uCYVVqY9MgAdBLHM68HOw1meCNRJ0lgl7iG39d4zSpocaO8MByDrIih4IpmFAwoWBCwYSCydEKNmzstxImmFAwOTbB3rFERy2Y5SJywVLfJ0wiDhX9Ri6446k4asHeyUFOkCNHNO7hYCvytuZ0KXrBLNPRV8vEM8VN8A85fiswqKmEGAAAAABJRU5ErkJggg==',CHART:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAABXCAYAAADPnoExAAABWGlDQ1BJQ0MgUHJvZmlsZQAAeJx9kLFLw1AQxr9WpaB1EB0cHDKJQ5SSCro4tBVEcQhVweqUvqapkMZHkiIFN/+Bgv+BCs5uFoc6OjgIopPo5uSk4KLleS+JpCJ6j+N+fO+74zggOW5wbvcDqDu+W1zKK5ulLSX1jAS9IAzm8Zyur0r+rj/j/T703k7LWb///43Biukxqp+UGcZdH0ioxPqezyXvE4+5tBRxS7IV8onkcsjngWe9WCC+JlZYzagQvxCr5R7d6uG63WDRDnL7tOlsrMk5lBNYxA48cNgw0IQCHdk//LOBv4BdcjfhUp+FGnzqyZEiJ5jEy3DAMAOVWEOGUpN3ju53F91PjbWDJ2ChI4S4iLWVDnA2Rydrx9rUPDAyBFy1ueEagdRHmaxWgddTYLgEjN5Qz7ZXzWrh9uk8MPAoxNskkDoEui0hPo6E6B5T8wNw6XwBA6diE8HYWhMAAAIJSURBVHja7dzBSgJBHIDx/8R0qq5CBwW3BfURPHgQ9uhLRBAYFEF1MVAy8lAE0WWhiB6rAjOog6C3zCAasJOBskJSsbO73+84qOzOh7OzKKteBx8jCdHV+a207zsSJ27ekc29dSuORYd9ALPiNi8PRWttdUhjjNR3Tn58TokMPPPAtBa9qAW/s8AUEBgEhrWXOqZgauP0aYInKqL7AQJPqW0dBY63/Ib1u3qWaK7BIDAIDAKDwCAwuA82xohM/yCqJJL3tAQOcNH0pdftTYylVlOy39xmiQaBQWAQGARGAnbRxhipVYN/zju9Pg4cT8pumW8wgUFgEBgEBrvov+Of3cjbYDgxtryyJNWDDQLHwXDwLv1uf2JMiWKJBoFBYBAYBAaBQeBkitR9sNZaWn5jrvfs1qtzvX7W50f1X5iRO+p5J/q/X88SDQKDwIjbNdgYY/3kReEYQw/s5p3AJ8MFPUEuKty8wxI9lnHSsVsWbTqn0AOv5bKxC2zTOYUe2C04UvKKsYlb8oriFliivymlxKuUYxG55BXFq5RFKXv+MaLCfl702Gg0kvZdRx4fnuS58xKZZ0i7eUcyTlrWcllxC45Vca0KjJgu0SAwCAwCExgEBoFBYBAYBAaBQWACg8AgMAgMAoPAIDCBQWAQGAQGgUFgEJjAIDAIDAKDwCAwCAwCExgEBoERpi+E82ZDii1jUAAAAABJRU5ErkJggg==',PROG:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAYCAYAAADtaU2/AAABWGlDQ1BJQ0MgUHJvZmlsZQAAeJx9kLFLw1AQxr9WpaB1EB0cHDKJQ5SSCro4tBVEcQhVweqUvqapkMZHkiIFN/+Bgv+BCs5uFoc6OjgIopPo5uSk4KLleS+JpCJ6j+N+fO+74zggOW5wbvcDqDu+W1zKK5ulLSX1jAS9IAzm8Zyur0r+rj/j/T703k7LWb///43Biukxqp+UGcZdH0ioxPqezyXvE4+5tBRxS7IV8onkcsjngWe9WCC+JlZYzagQvxCr5R7d6uG63WDRDnL7tOlsrMk5lBNYxA48cNgw0IQCHdk//LOBv4BdcjfhUp+FGnzqyZEiJ5jEy3DAMAOVWEOGUpN3ju53F91PjbWDJ2ChI4S4iLWVDnA2Rydrx9rUPDAyBFy1ueEagdRHmaxWgddTYLgEjN5Qz7ZXzWrh9uk8MPAoxNskkDoEui0hPo6E6B5T8wNw6XwBA6diE8HYWhMAAAFbSURBVHja7dQ9LENRGMbx/zmaSIREYuigIpKWRDQiFokRExJhk9hYu7MS9m7CJmymMrWrhKGLiqWt+KiIr0QU0cUxyJXbOrf33mqOxTOe5fe+eU5e8VwsYTKpw1MV304SwHBGh3oFoITpja1I/ij/sOecFe5V8fXdLJy9uFXL6wniO6ma8EyuoGQt6OrmPo9PRY6O877xTK6g1jb2/G1sR634wS305a3kHdahfnA76rnjaqgXvBL1BOvQ5qZGVmLTzE0Ou+I6tK21pfqtdkIXFyaIhkOiLxwCUFuJg3IcVGx2VJzfPGjRpflxHG+1G2q9fSjFbjJdhgP093SQv7rTopHOoNDCXlE33B47qu3YLwoghWBmbFBUdu6E/oBrQd1wHVoG/wZ1wp1Q4OtX1wOtxBukVNFIuxYFEOmTy7qhvgbMZK+NowByamTguxNTKEDA6kQKobq7gkZQgE+Rijo5fKxjIwAAAABJRU5ErkJggg==',TODO:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAjCAYAAADmOUiuAAABWGlDQ1BJQ0MgUHJvZmlsZQAAeJx9kLFLw1AQxr9WpaB1EB0cHDKJQ5SSCro4tBVEcQhVweqUvqapkMZHkiIFN/+Bgv+BCs5uFoc6OjgIopPo5uSk4KLleS+JpCJ6j+N+fO+74zggOW5wbvcDqDu+W1zKK5ulLSX1jAS9IAzm8Zyur0r+rj/j/T703k7LWb///43Biukxqp+UGcZdH0ioxPqezyXvE4+5tBRxS7IV8onkcsjngWe9WCC+JlZYzagQvxCr5R7d6uG63WDRDnL7tOlsrMk5lBNYxA48cNgw0IQCHdk//LOBv4BdcjfhUp+FGnzqyZEiJ5jEy3DAMAOVWEOGUpN3ju53F91PjbWDJ2ChI4S4iLWVDnA2Rydrx9rUPDAyBFy1ueEagdRHmaxWgddTYLgEjN5Qz7ZXzWrh9uk8MPAoxNskkDoEui0hPo6E6B5T8wNw6XwBA6diE8HYWhMAAAIHSURBVHja7ZjPaxNBFMc/M7sp29psEy8qJutJjyE1UgwEqWjFHjzrRejBiwdvXvwDRBDvFangvVVEDKVqqUoPYhFE8cdBxCbR0lo3S5JiEjcZD2vsxSJa1gzFd5yBx4fve+/7hhFL168q7/40vlcGwIzFiY2MEstmhYz00O0QL48fUr+6iB7MsePkKSHNSFcB5UYX1SfzVBYWVLcVNAF6knuIHz0GQPnBPZrFRQDcmTz1wuKGkNKysByHaCothGGEBxg/MsLA/gPBiVIs35gAwP+ySmX+4W+T1DJDatfpsVAgZQfqZ6g/r2rt2VOqL56r0BT05mbpTKw3N/tXieqFAvZgJhzARuEDSxPjm0rUrtf/7RRrEUoFCmrJ1mqxOp1X2ipYfvxIlWfy+pa4b+++9SFJnL9AbyIJwNdSkdKVS10HtBIJER89oUwAISUdkxVSH1G3Dx8WWk+x0bdNc5vR3gd1B1S+r69Rt9ZqrNycVFoCtht1StfGVeP9Oz1LLMwI+L6+PSgMAzubW98ka2/f0FxZBuCb62oB2Z9Kic9TZtCD7p1b2qkYsQfYOXZGb5ux04PCBJBRG/ljF7dbLdrVijaQJsDus+foTTrBa6ZYoHj54v9NsmUAA5t5/Yrmp4+BzXiefoDu3dtbv8TSsvQGtBxHX8D+zBDRVFqE0oN2bnhTZQ37++07HL+bwm5jf4cAAAAASUVORK5CYII=',NOVID:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAkCAYAAADsHujfAAABWGlDQ1BJQ0MgUHJvZmlsZQAAeJx9kLFLw1AQxr9WpaB1EB0cHDKJQ5SSCro4tBVEcQhVweqUvqapkMZHkiIFN/+Bgv+BCs5uFoc6OjgIopPo5uSk4KLleS+JpCJ6j+N+fO+74zggOW5wbvcDqDu+W1zKK5ulLSX1jAS9IAzm8Zyur0r+rj/j/T703k7LWb///43Biukxqp+UGcZdH0ioxPqezyXvE4+5tBRxS7IV8onkcsjngWe9WCC+JlZYzagQvxCr5R7d6uG63WDRDnL7tOlsrMk5lBNYxA48cNgw0IQCHdk//LOBv4BdcjfhUp+FGnzqyZEiJ5jEy3DAMAOVWEOGUpN3ju53F91PjbWDJ2ChI4S4iLWVDnA2Rydrx9rUPDAyBFy1ueEagdRHmaxWgddTYLgEjN5Qz7ZXzWrh9uk8MPAoxNskkDoEui0hPo6E6B5T8wNw6XwBA6diE8HYWhMAAAPrSURBVHjazVhRaxpZFP5mjKkz2kBGYgqBtFliQXywBoM47otoqSumLO3apy4UtvurtguF9m23fYmIUMWXdUQiER9EtoZNm0UwLo7BqGMjOvsQcuMkG50Z0yXnbc5cz/0833fPnHOpP//uQo9JkoRutytLUg+9Xg8AwLIsGIaF2WymGIbRFG9Oy2JRFOWDg8+oVj+iVCpNWiq7XC7Y7fexunoXHMdR02JTajIiiqKcz+eQzWZ1Zc/v98Pr9U0ENBHIYDBALpeV0+kUhsMRZjGDgUYwGILP56eMRqN6IMfHbcTj23K5XL4U8IF7A/Z1O5aX74BlWZhMJgBAv9+HJPVQr9ext1dFsbh76Q84nU5Eo1vU7dsL04E0Gg353bvfUKvVFAACgSA8nk1YLBZVWeh0OigUdpDJpBWAVlZW8PRpDDabjboSyPFxG2/fvpHHQTgcDoTDEVitVl20NJtNJJMJVCoVBZjnz38kmaEvaiIe31aA4Hkesdgz3SAAwGq1IhZ7Bp7nia9WqyEe35YHg8FlILlcVqEJnucRDkcwP38Ls9r8/C2EwxEFmHK5jFwuKyuAiKIop9MpBR2h0EPQNI3rMpqmEQo9hMPhIL50OgVRFGWySz6fI4IyGOipmdjf/wvtdlt3ZgyG062HwxHy+dxpRkRRlMeLVSAQnKqJVquF169/xadP+7o0EwgEyXM2mz0FcnDwWXFMPZ5NVQEbjX/w6tUvEIQ/MBwONYHxeDZJVohGqtWPxOF2b6iuE2eWSCTw/v3vmqiyWCxwuzfOgUiSpPiAra/bdQmxVCpppmp8L7rb7crjL5eX7+g+FVqpGt+LlqSe4iXLsjMfU7VUje9FnzU1Z6a1oZmFKpPJRAR7fdVqRpu7SIUkSTCbzTMHdrlcePToOywsLFy5pt/vkyI6xzBKIL1eb2YgkUgEXq8PBoNh4rpxWcyZzWYKADk5h4d1LC0t6QJgsy3h8ePvce/emqr1h4f1c7EyDAOXy0Uce3tV3VS8ePGTahAX96IBwG6/TxzF4i46nY5mKp48+WGiHv6reysWd5VAVlfvEsdwOEKhsKOaipcvfwbPfztVDxetUNhRtI80AHAcR/n9fuLMZNJoNpsTAy0uLmqmYrx1zGTSinGD1JFTlZ/3CMlkAicnX64Mtrb2jSYqzuzk5AuSyYSi9/F6fedAOI6jgsEQ+UGlUkEq9QGj0ejaitZoNEIq9UHRRAeDIXAcRykqq8/np5xOJ3kWBGFqZrRmQhAExYzj8/mpS7Ov0WhENLpFHR0dkU5eEAS0Wq2vMk5Eo1tk6ru5A9aNGjlv1BB+o64lZriowVe5qPk/rq7+BcF7LkHWwklzAAAAAElFTkSuQmCC'};
+  var childData={
+    y:{name:'楊宗翰',full:'楊宗翰（自學）',unit:'第 17 / 254 單元',ci:'21 / 30 天',ciPct:70,vid:'16 / 254 部',vidPct:6,sub:'32 / 508 份',subPct:6,plan:20,act:16,lag:4,prog:'6%',progFrac:'16 / 254 單元',progBar:6,todo:32,nov:238,av:'宗',avc:'#ef8f5a'},
+    m:{name:'楊小妹',full:'楊小妹（自學）',unit:'第 8 / 254 單元',ci:'15 / 30 天',ciPct:50,vid:'8 / 254 部',vidPct:3,sub:'16 / 508 份',subPct:3,plan:12,act:8,lag:4,prog:'3%',progFrac:'8 / 254 單元',progBar:3,todo:16,nov:246,av:'妹',avc:'#7fb2e0'}
+  };
+  var activeChild='y';
+  function selectChild(k){activeChild=k; renderPHome(); go('p-home');}
+  function renderPParent(){
+    var order=['y','m'];
+    var tabs=document.getElementById('pTabs'); tabs.innerHTML='';
+    order.forEach(function(k){
+      var c=childData[k];
+      var t=document.createElement('div'); t.className='ptab'+(k===activeChild?' on':'');
+      t.innerHTML=c.name+'<span class="tbadge">'+c.todo+'</span>';
+      t.onclick=function(){activeChild=k; renderPParent();};
+      tabs.appendChild(t);
+    });
+    var ac=childData[activeChild];
+    document.getElementById('attnCard').innerHTML=
+      '<div class="aico">傳</div><div class="amid"><div class="at">'+ac.name+' · 唸的作業待完成</div><div class="as">'+ac.unit+' · 今天還沒完成單元</div></div><button class="attnbtn" onclick="selectChild(\''+activeChild+'\')">查看</button>';
+    var ov=document.getElementById('pOverview'); ov.innerHTML='';
+    order.forEach(function(k){
+      var c=childData[k];
+      var d=document.createElement('div'); d.className='ovcard'; d.onclick=(function(kk){return function(){selectChild(kk);};})(k);
+      d.innerHTML='<div class="ovtop"><div class="ovav" style="background:'+c.avc+'">'+c.av+'</div>'
+        +'<div class="ovmid"><div class="ovname">'+c.name+'</div>'
+        +'<div class="ovprog"><img src="'+PIC.PROG+'">進度 '+c.prog+' <span class="gray">'+c.progFrac+' 完成</span></div></div>'
+        +'<span class="ovarrow">›</span></div>'
+        +'<div class="ovbar"><i style="width:'+c.progBar+'%"></i></div>'
+        +'<div class="ovtags"><span class="ovtag red"><img src="'+PIC.TODO+'">待完成作業 '+c.todo+'</span>'
+        +'<span class="ovtag blue"><img src="'+PIC.NOVID+'">未觀看影片 '+c.nov+'</span></div>';
+      ov.appendChild(d);
+    });
+  }
+  function renderPHome(){
+    var c=childData[activeChild];
+    document.getElementById('pHomeTitle').innerHTML='<span class="back" onclick="go(\'p-parent\')">‹</span>'+c.full;
+    document.getElementById('pHomeCards').innerHTML=
+      pcard(PIC.CHECK,'每日打卡紀錄','本月已打卡 '+c.ci,c.ciPct+'%','#e0736b','#e0736b',c.ciPct,"go('p-checkin')")
+     +pcard(PIC.VIDEO,'影片觀看紀錄','已完成 '+c.vid,c.vidPct+'%','#5f97cf','#7fb2e0',c.vidPct,"go('p-video')")
+     +pcard(PIC.SUBMIT,'作業提交紀錄','唸＋寫 已完成 '+c.sub,c.subPct+'%','#5f97cf','#7fb2e0',c.subPct,"go('p-submit')")
+     +'<div class="pcard" onclick="go(\'dashboard\')"><div class="prow"><div class="pico"><img src="'+PIC.CHART+'"></div>'
+      +'<div class="pmid"><div class="pt">學習進度 · 基準線</div><div class="ps">預定 '+c.plan+' · 實際 '+c.act+' · 落後 '+c.lag+' 單元</div></div>'
+      +'<div class="pct" style="color:#e8617c;font-size:1.1rem">落後</div><span class="parrow">›</span></div></div>';
+  }
+  function pcard(icon,title,sub,pct,pctcol,barcol,barw,onclick){
+    return '<div class="pcard" onclick="'+onclick+'"><div class="prow"><div class="pico"><img src="'+icon+'"></div>'
+      +'<div class="pmid"><div class="pt">'+title+'</div><div class="ps">'+sub+'</div></div>'
+      +'<div class="pct" style="color:'+pctcol+'">'+pct+'</div><span class="parrow">›</span></div>'
+      +'<div class="pbar"><i style="width:'+barw+'%;background:'+barcol+'"></i></div></div>';
   }
   // init
   setDevice('tablet');
