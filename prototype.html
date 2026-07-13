@@ -320,8 +320,7 @@
               <div class="wknav"><span>上週</span><b>本週</b><span>下週</span></div>
               <div class="weekstrip" id="weekstrip"></div>
             </div>
-            <div class="bannerwrap"><span class="banner">拼讀小達人-第一階-第4期-C183-楊宗翰（自學）</span></div>
-            <div class="cardstage">
+            <div class="cardstage" style="margin-top:18px">
               <div class="rail" id="rail"></div>
               <div class="contentcard" id="contentCard"></div>
             </div>
@@ -612,7 +611,7 @@
       ws.appendChild(el);
     });
     // 右側分頁
-    var order=[['video','v','▶'],['read','r','🎤'],['write','w','✏️'],['up','u','⬆'],['cam','c','🎥']];
+    var order=[['video','v','▶'],['read','r','🎤'],['write','w','✏️']];
     var rail=document.getElementById('rail'); rail.innerHTML='';
     order.forEach(function(o){
       var main=(o[0]==='video'||o[0]==='read'||o[0]==='write');
