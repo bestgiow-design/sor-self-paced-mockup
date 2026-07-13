@@ -93,8 +93,10 @@
   .unitcard h3{font-size:1.5rem;margin:4px 0 2px}
   .unitcard .total{font-size:.74rem;opacity:.9}
   /* 內容卡＋右側分頁（仿實機） */
-  .stage{position:relative;margin:14px 16px 0}
-  .rail{position:absolute;right:-16px;top:16px;display:flex;flex-direction:column;gap:9px;z-index:2}
+  .bannerwrap{margin:14px 0 0 16px}
+  .banner{display:inline-block;background:#8fc3e8;color:#fff;font-weight:700;font-size:.82rem;border-radius:12px;padding:7px 15px}
+  .cardstage{position:relative;margin:14px 16px 0}
+  .rail{position:absolute;right:-8px;top:18px;display:flex;flex-direction:column;gap:9px;z-index:2}
   .rtab{width:46px;height:50px;border-radius:14px 6px 6px 14px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;background:#f0efe9;color:#b7b7b7;box-shadow:-2px 3px 8px rgba(0,0,0,.08);cursor:pointer}
   .rtab.active{color:#fff;right:0;width:52px}
   .rtab.v.active{background:var(--coral)} .rtab.r.active{background:var(--green)} .rtab.w.active{background:var(--blue)}
@@ -318,8 +320,8 @@
               <div class="wknav"><span>上週</span><b>本週</b><span>下週</span></div>
               <div class="weekstrip" id="weekstrip"></div>
             </div>
-            <div class="banner">拼讀小達人-第一階-第4期-C183-楊宗翰（自學）</div>
-            <div class="stage">
+            <div class="bannerwrap"><span class="banner">拼讀小達人-第一階-第4期-C183-楊宗翰（自學）</span></div>
+            <div class="cardstage">
               <div class="rail" id="rail"></div>
               <div class="contentcard" id="contentCard"></div>
             </div>
