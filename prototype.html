@@ -79,10 +79,34 @@
   .home-hd{background:var(--header);padding:16px 18px 18px;border-radius:0 0 22px 22px;color:#fff;text-align:center}
   .home-hd .streak{font-size:1.3rem;font-weight:800}
   .home-hd .accum{font-size:.82rem;opacity:.95;margin-top:2px;cursor:pointer}
+  .schbtn{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--header);font-weight:800;font-size:.86rem;border-radius:18px;padding:8px 20px;margin:12px 0 6px;cursor:pointer}
+  .wknav{display:flex;justify-content:center;gap:18px;font-size:.8rem;margin:6px 0 12px;opacity:.9}
+  .wknav b{opacity:1;font-size:.92rem}
+  .weekstrip{display:flex;justify-content:space-between;gap:2px}
+  .wday{flex:1;text-align:center}
+  .wday .dw{font-size:.72rem;opacity:.9;margin-bottom:6px}
+  .wday .rg{width:42px;height:42px;border-radius:50%;border:2.5px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700;margin:0 auto;position:relative;color:#fff}
+  .wday .rg.today{background:#f4c85a;border-color:#e7b23c;color:#5a4a1e}
+  .wday .rg.login::after{content:"✓";position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);background:#5fb389;color:#fff;border-radius:50%;width:16px;height:16px;font-size:.62rem;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--header)}
   .unitcard{margin:16px 16px 0;background:linear-gradient(150deg,var(--coral),#f2a58f);color:#fff;border-radius:20px;padding:18px}
   .unitcard .eyebrow{font-size:.68rem;letter-spacing:.22em;opacity:.9}
   .unitcard h3{font-size:1.5rem;margin:4px 0 2px}
   .unitcard .total{font-size:.74rem;opacity:.9}
+  /* 內容卡＋右側分頁（仿實機） */
+  .stage{position:relative;margin:14px 16px 0}
+  .rail{position:absolute;right:-16px;top:16px;display:flex;flex-direction:column;gap:9px;z-index:2}
+  .rtab{width:46px;height:50px;border-radius:14px 6px 6px 14px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;background:#f0efe9;color:#b7b7b7;box-shadow:-2px 3px 8px rgba(0,0,0,.08);cursor:pointer}
+  .rtab.active{color:#fff;right:0;width:52px}
+  .rtab.v.active{background:var(--coral)} .rtab.r.active{background:var(--green)} .rtab.w.active{background:var(--blue)}
+  .rtab.dis{opacity:.55;cursor:default}
+  .contentcard{background:#fff;border-radius:22px;box-shadow:0 8px 24px rgba(34,49,79,.1);padding:22px 20px 26px;text-align:center;min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:1}
+  .contentcard .cm{width:210px;max-width:74%;height:auto;margin-bottom:6px}
+  .prog{display:flex;align-items:center;justify-content:center;gap:16px;margin:14px 0 18px}
+  .prog .lbl{font-size:1.1rem;font-weight:800;color:var(--ink)}
+  .ring2{width:78px;height:78px;border-radius:50%;border:6px solid var(--coral);display:flex;align-items:center;justify-content:center;font-size:1.05rem;font-weight:800;color:var(--coral)}
+  .homecta{border:none;font-family:inherit;color:#fff;border-radius:26px;padding:14px 32px;font-size:1.05rem;font-weight:800;cursor:pointer}
+  .homecta .sm{font-size:.8rem;font-weight:600;opacity:.95;margin-left:2px}
+  .unithint{text-align:center;font-size:.74rem;color:var(--dim);margin:12px 16px 16px}
   .steps{margin:14px 16px 0;display:flex;flex-direction:column;gap:9px}
   .step{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 14px;cursor:pointer}
   .step .dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;font-size:.78rem;color:var(--dim);font-weight:700}
@@ -290,15 +314,16 @@
             <div class="home-hd">
               <div class="streak">連續學習 <span id="streakDays">1</span> 天</div>
               <div class="accum" onclick="go('coins')">累積 36 天 · 🪙 <span id="coinTop">7,500</span></div>
+              <div class="schbtn" onclick="go('setup')">📅 課表</div>
+              <div class="wknav"><span>上週</span><b>本週</b><span>下週</span></div>
+              <div class="weekstrip" id="weekstrip"></div>
             </div>
-            <div class="unitcard">
-              <div class="eyebrow">今天的任務</div>
-              <h3>第 <span class="unitN">17</span> 單元</h3>
-              <div class="total">全部 254 個單元 · 已完成 <span class="doneN">16</span></div>
+            <div class="banner">拼讀小達人-第一階-第4期-C183-楊宗翰（自學）</div>
+            <div class="stage">
+              <div class="rail" id="rail"></div>
+              <div class="contentcard" id="contentCard"></div>
             </div>
-            <div class="steps" id="homeSteps"></div>
-            <div class="homeact"><button class="btn green" id="homeBtn" onclick="homeContinue()">繼續 · 看的作業</button></div>
-            <div class="mappeek" onclick="go('map')">🚩 再完成 2 個單元，就抵達地圖第 4 站！</div>
+            <div class="unithint">第 <span class="unitN">17</span> 單元 · 全部 254 · 已完成 <span class="doneN">16</span></div>
           </div></div>
           <div class="nav" id="navHome"></div>
         </section>
@@ -561,35 +586,49 @@
     // scroll top
     var sc=document.querySelector('#scr-'+id+' .scroll'); if(sc) sc.scrollTop=0;
   }
-  function restart(){ state={unitN:17,doneCount:16,steps:{video:false,read:false,write:false},rhythmSet:false,firstUnitDone:false,coins:7500}; recorded=false; go('welcome'); }
+  function restart(){ state={unitN:17,doneCount:16,steps:{video:false,read:false,write:false},rhythmSet:false,firstUnitDone:false,coins:7500}; recorded=false; homeTab='video'; go('welcome'); }
 
   var stepMeta=[['video','看的作業','看影片'],['read','唸的作業','錄音上傳'],['write','寫的作業','拍照上傳']];
+  var homeTab='video';
+  var tabMeta={
+    video:{cls:'v',icon:'▶',color:'var(--coral)',label:'看的作業',prog:'影片完成進度',mascot:'#scr-welcome .mascot img'},
+    read:{cls:'r',icon:'🎤',color:'var(--green)',label:'唸的作業',prog:'作業完成進度',mascot:'#scr-read .op-mascot img'},
+    write:{cls:'w',icon:'✏️',color:'var(--blue)',label:'寫的作業',prog:'作業完成進度',mascot:'#scr-write .op-mascot img'}
+  };
+  function firstIncomplete(){var o=['video','read','write'];for(var i=0;i<o.length;i++){if(!state.steps[o[i]])return o[i];}return 'write';}
+  function setHomeTab(t){homeTab=t;renderHome();}
   function renderHome(){
     document.querySelectorAll('.unitN').forEach(function(e){e.textContent=state.unitN});
     document.querySelectorAll('.doneN').forEach(function(e){e.textContent=state.doneCount});
-    var box=document.getElementById('homeSteps'); box.innerHTML='';
-    var activeFound=false, nextStep=null;
-    stepMeta.forEach(function(m){
-      var key=m[0], done=state.steps[key];
-      var cls='step', status='待完成';
-      if(done){cls+=' done';status='已完成';}
-      else if(!activeFound){cls+=' now';status='進行中';activeFound=true;nextStep=key;}
-      else {cls+=' lock';status='未解鎖';}
-      var dot=done?'✓':(m[0]==='video'?'1':(m[0]==='read'?'2':'3'));
-      var d=document.createElement('div'); d.className=cls;
-      d.innerHTML='<div class="dot">'+dot+'</div><div class="t">'+m[1]+'</div><div class="s">'+status+'</div>';
-      if(!done && cls.indexOf('now')>-1){ d.onclick=function(){go(key)}; }
-      else if(done){ d.onclick=function(){go(key)}; }
-      box.appendChild(d);
-    });
-    var btn=document.getElementById('homeBtn');
-    if(nextStep){ var nm=stepMeta.filter(function(x){return x[0]===nextStep})[0][1];
-      btn.textContent='繼續 · '+nm; btn.onclick=function(){go(nextStep)}; btn.style.display='block'; }
-    else { btn.textContent='今天的單元完成了 🎉 看看完成頁'; btn.onclick=function(){go('unitdone')}; btn.style.display='block'; }
-    document.getElementById('streakDays').textContent=state.rhythmSet?'1':'1';
     document.getElementById('coinTop').textContent=state.coins.toLocaleString();
+    // 週曆：只顯示登入打勾（與課程脫鉤）
+    var days=[['一','18',false,false],['二','19',true,false],['三','20',true,false],['四','21',false,false],['五','22',false,false],['六','23',true,true],['日','24',false,false]];
+    var ws=document.getElementById('weekstrip'); ws.innerHTML='';
+    days.forEach(function(d){
+      var el=document.createElement('div'); el.className='wday';
+      el.innerHTML='<div class="dw">'+d[0]+'</div><div class="rg'+(d[3]?' today':'')+(d[2]?' login':'')+'">'+d[1]+'</div>';
+      ws.appendChild(el);
+    });
+    // 右側分頁
+    var order=[['video','v','▶'],['read','r','🎤'],['write','w','✏️'],['up','u','⬆'],['cam','c','🎥']];
+    var rail=document.getElementById('rail'); rail.innerHTML='';
+    order.forEach(function(o){
+      var main=(o[0]==='video'||o[0]==='read'||o[0]==='write');
+      var t=document.createElement('div');
+      t.className='rtab '+o[1]+((o[0]===homeTab)?' active':'')+(main?'':' dis');
+      t.textContent=o[2];
+      if(main) t.onclick=function(){setHomeTab(o[0])};
+      rail.appendChild(t);
+    });
+    // 內容卡
+    var m=tabMeta[homeTab], done=state.steps[homeTab], pct=done?'100%':'0%';
+    var im=document.querySelector(m.mascot); var src=im?im.src:'';
+    document.getElementById('contentCard').innerHTML=
+      '<img class="cm" src="'+src+'">'+
+      '<div class="prog"><span class="lbl">'+m.prog+'</span>'+
+      '<span class="ring2" style="border-color:'+m.color+';color:'+m.color+'">'+pct+'</span></div>'+
+      '<button class="homecta" style="background:'+m.color+'" onclick="go(\''+homeTab+'\')">'+m.label+' <span class="sm">共 1 項</span></button>';
   }
-  function homeContinue(){ /* handled by dynamic onclick */ }
 
   function popShow(id){ document.getElementById(id).classList.add('show'); }
   function popHide(id){ document.getElementById(id).classList.remove('show'); }
@@ -608,7 +647,7 @@
     // reset read buttons for next time
     if(key==='read'){document.getElementById('readListen').className='opbtn off';document.getElementById('readUp').className='opbtn off';document.getElementById('recHint').textContent='提示：先按「錄音」，再按「上傳」。';}
     if(state.steps.video && state.steps.read && state.steps.write){ go('unitdone'); afterUnit(); }
-    else { go('home'); }
+    else { homeTab=firstIncomplete(); go('home'); }
   }
 
   function afterUnit(){
@@ -621,6 +660,7 @@
   function nextUnit(){
     state.doneCount=state.unitN; state.unitN+=1;
     state.steps={video:false,read:false,write:false};
+    homeTab='video';
     go('home');
   }
 
