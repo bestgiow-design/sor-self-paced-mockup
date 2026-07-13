@@ -95,22 +95,25 @@
   /* 內容卡＋右側分頁（仿實機） */
   .bannerwrap{margin:14px 0 0 16px}
   .banner{display:inline-block;background:#8fc3e8;color:#fff;font-weight:700;font-size:.82rem;border-radius:12px;padding:7px 15px}
-  .cardstage{position:relative;margin:14px 16px 0}
-  .rail{position:absolute;right:-8px;top:18px;display:flex;flex-direction:column;gap:9px;z-index:2}
-  .rtab{width:48px;height:52px;border-radius:16px 6px 6px 16px;display:flex;align-items:center;justify-content:center;box-shadow:-2px 3px 8px rgba(0,0,0,.1);cursor:pointer}
-  .rtab img{width:27px;height:27px;object-fit:contain}
+  .wklabel{text-align:center;font-size:.95rem;font-weight:800;color:#fff;margin:4px 0 12px}
+  .cardstage{position:relative;margin:14px 14px 2px;flex:1;display:flex;flex-direction:column}
+  .rail{position:absolute;right:-2px;top:22px;display:flex;flex-direction:column;gap:11px;align-items:flex-end;z-index:3}
+  .rtab{width:46px;height:52px;border-radius:14px 8px 8px 14px;display:flex;align-items:center;justify-content:center;box-shadow:-3px 3px 8px rgba(0,0,0,.13);cursor:pointer}
+  .rtab img{width:26px;height:26px;object-fit:contain}
   .rtab.v{background:var(--coral)} .rtab.r{background:var(--green)} .rtab.w{background:var(--blue)}
-  .rtab.active{width:56px;margin-left:-6px;box-shadow:-4px 4px 11px rgba(0,0,0,.16)}
+  .rtab.active{width:60px;border-top-left-radius:0;border-bottom-left-radius:0;box-shadow:-4px 4px 12px rgba(0,0,0,.18)}
   .calic{width:20px;height:20px;object-fit:contain;vertical-align:-4px;margin-right:5px}
   .coinic{width:19px;height:19px;object-fit:contain;vertical-align:-4px}
-  .contentcard{background:#fff;border-radius:22px;box-shadow:0 8px 24px rgba(34,49,79,.1);padding:22px 20px 26px;text-align:center;min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:1}
+  .contentcard{background:#fff;border-radius:22px;box-shadow:0 8px 24px rgba(34,49,79,.1);padding:22px 20px 26px;text-align:center;flex:1;min-height:300px;margin-right:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:1}
   .contentcard .cm{width:210px;max-width:74%;height:auto;margin-bottom:6px}
   .prog{display:flex;align-items:center;justify-content:center;gap:16px;margin:14px 0 18px}
   .prog .lbl{font-size:1.1rem;font-weight:800;color:var(--ink)}
   .ring2{width:78px;height:78px;border-radius:50%;border:6px solid var(--coral);display:flex;align-items:center;justify-content:center;font-size:1.05rem;font-weight:800;color:var(--coral)}
   .homecta{border:none;font-family:inherit;color:#fff;border-radius:26px;padding:14px 32px;font-size:1.05rem;font-weight:800;cursor:pointer}
   .homecta .sm{font-size:.8rem;font-weight:600;opacity:.95;margin-left:2px}
-  .unithint{text-align:center;font-size:.74rem;color:var(--dim);margin:12px 16px 16px}
+  .unithint{text-align:center;font-size:.74rem;color:var(--dim);margin:7px 16px 6px}
+  .nextwrap{text-align:center;margin:0 16px}
+  .nextbtn{border:none;font-family:inherit;color:#fff;background:var(--green-d);border-radius:26px;padding:14px 30px;font-size:1.05rem;font-weight:800;cursor:pointer}
   .steps{margin:14px 16px 0;display:flex;flex-direction:column;gap:9px}
   .step{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 14px;cursor:pointer}
   .step .dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;font-size:.78rem;color:var(--dim);font-weight:700}
@@ -259,6 +262,18 @@
   .invitecard .sub{font-size:.84rem;color:var(--dim);margin:8px 0 16px;line-height:1.6}
   .invitecard .btn{margin-bottom:9px}
   .linkbtn{background:none;border:none;color:var(--dim);font-family:inherit;font-size:.82rem;cursor:pointer;text-decoration:underline}
+  /* 月曆 */
+  .calwrap{flex:1;background:var(--paper);padding:16px;display:flex;flex-direction:column;gap:14px}
+  .calhead{text-align:center;font-weight:800;font-size:1.1rem;color:var(--ink);background:#fff;border-radius:14px;padding:14px}
+  .calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;background:#fff;border-radius:14px;padding:14px}
+  .caldow{text-align:center;font-size:.74rem;color:var(--dim);padding-bottom:4px;font-weight:700}
+  .calday{aspect-ratio:1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:var(--ink);position:relative;background:#faf8f4}
+  .calday.empty{background:transparent}
+  .calday.chk{background:#eef8f1}
+  .calday.chk::after{content:"✓";position:absolute;bottom:2px;right:3px;font-size:.58rem;color:#fff;background:var(--green-d);border-radius:50%;width:15px;height:15px;display:flex;align-items:center;justify-content:center}
+  .calday.today{box-shadow:inset 0 0 0 2px var(--header);font-weight:800}
+  .callegend{font-size:.82rem;color:var(--dim);display:flex;align-items:center;gap:7px;justify-content:center}
+  .dotchk{width:17px;height:17px;border-radius:50%;background:var(--green-d);color:#fff;font-size:.62rem;display:inline-flex;align-items:center;justify-content:center}
 </style>
 </head>
 <body>
@@ -282,6 +297,7 @@
       <optgroup label="家長端">
         <option value="setup">設定練習時段</option>
         <option value="dashboard">家長儀表板</option>
+        <option value="calendar">月曆（打卡）</option>
       </optgroup>
       <optgroup label="周邊頁">
         <option value="profile">個人 · 我的</option>
@@ -318,14 +334,15 @@
             <div class="home-hd">
               <div class="streak">連續學習 <span id="streakDays">1</span> 天</div>
               <div class="accum" onclick="go('coins')">累積 36 天 · <img class="coinic" src="data:image/png;base64,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"> <span id="coinTop">7,500</span></div>
-              <div class="schbtn" onclick="go('setup')"><img class="calic" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAAAiCAYAAADGUiAIAAABxElEQVR42u2XS0vDQBDH/5s0bazah0q9qFUREQ+CD1AEwYPeBU9+Cj+Ln8KT4N1DBaFV8AEepEhQURGUoqHWtGnSjIeKuo2hwfpoYecUhs3sb5P/zOwwIoKX2TenVD7a4nzq8jqT2rvQqDkvjyjtbHCbB6dXEeifYF7vSGghE7C/ZYH3JyI4T7dw8vdEhl7V1XPOrWMtTUxRG96YrJLLV7k7Az0/EACwcAxSpJdJ8T6AVWXMiAhkm7Cyu2Rr6eb7miPzUMYWGQuEqjKwtUxTgr79SdhahgBAIkOHlU01tVatbApk6JCcQo5aIbmcQo4kMo2WqARkGqLOClgBK2AF7J/duj5ZaHYNrC3yfw2gmId5sOkPlkUS+InR5dut1eMKKjQrYL006zE244uxmfOVj7dhX598BB+YRHBqpXa8xxfjva8cETIQsH41y+QglNEF3heOuk8e74OidnysaYu5Y4Wj7lhy8Adh1Q4o40v1gw3N1F0jdychdyeFZgXsryYYlQqwL/b5UyZGIPcM8gX/8hBU1LkEq9VxJXcF50HjIYbnwD4lZmOwlTKs8z2+g3Um3J3u6dbVwVADS8W8K5acnALzwfEKnNmfHZSw3K0AAAAASUVORK5CYII=">課表</div>
-              <div class="wknav"><span>上週</span><b>本週</b><span>下週</span></div>
+              <div class="schbtn" onclick="go('calendar')"><img class="calic" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAAAiCAYAAADGUiAIAAABxElEQVR42u2XS0vDQBDH/5s0bazah0q9qFUREQ+CD1AEwYPeBU9+Cj+Ln8KT4N1DBaFV8AEepEhQURGUoqHWtGnSjIeKuo2hwfpoYecUhs3sb5P/zOwwIoKX2TenVD7a4nzq8jqT2rvQqDkvjyjtbHCbB6dXEeifYF7vSGghE7C/ZYH3JyI4T7dw8vdEhl7V1XPOrWMtTUxRG96YrJLLV7k7Az0/EACwcAxSpJdJ8T6AVWXMiAhkm7Cyu2Rr6eb7miPzUMYWGQuEqjKwtUxTgr79SdhahgBAIkOHlU01tVatbApk6JCcQo5aIbmcQo4kMo2WqARkGqLOClgBK2AF7J/duj5ZaHYNrC3yfw2gmId5sOkPlkUS+InR5dut1eMKKjQrYL006zE244uxmfOVj7dhX598BB+YRHBqpXa8xxfjva8cETIQsH41y+QglNEF3heOuk8e74OidnysaYu5Y4Wj7lhy8Adh1Q4o40v1gw3N1F0jdychdyeFZgXsryYYlQqwL/b5UyZGIPcM8gX/8hBU1LkEq9VxJXcF50HjIYbnwD4lZmOwlTKs8z2+g3Um3J3u6dbVwVADS8W8K5acnALzwfEKnNmfHZSw3K0AAAAASUVORK5CYII=">月曆</div>
+              <div class="wklabel">本週</div>
               <div class="weekstrip" id="weekstrip"></div>
             </div>
             <div class="cardstage" style="margin-top:18px">
               <div class="rail" id="rail"></div>
               <div class="contentcard" id="contentCard"></div>
             </div>
+            <div class="nextwrap" id="nextWrap"></div>
             <div class="unithint">第 <span class="unitN">17</span> 單元 · 全部 254 · 已完成 <span class="doneN">16</span></div>
           </div></div>
           <div class="nav" id="navHome"></div>
@@ -559,6 +576,18 @@
           <div class="nav" id="navMap"></div>
         </section>
 
+        <!-- 月曆 -->
+        <section class="screen" id="scr-calendar">
+          <div class="sb"><span>上午 9:38 · 週六</span><span>🔋 43%</span></div>
+          <div class="topbar"><span class="back" onclick="go('home')">‹</span>月曆</div>
+          <div class="scroll"><div class="maxw"><div class="calwrap">
+            <div class="calhead">2026 年 5 月</div>
+            <div class="calgrid" id="calGrid"></div>
+            <div class="callegend"><span class="dotchk">✓</span> 有打卡（當天有登入）</div>
+          </div></div></div>
+          <div class="nav" id="navCal"></div>
+        </section>
+
       </div>
     </div>
   </div>
@@ -586,6 +615,7 @@
     if(id==='home') renderHome();
     if(id==='setup') renderDays();
     if(id==='map') renderMap();
+    if(id==='calendar') renderCalendar();
     // scroll top
     var sc=document.querySelector('#scr-'+id+' .scroll'); if(sc) sc.scrollTop=0;
   }
@@ -632,6 +662,25 @@
       '<div class="prog"><span class="lbl">'+m.prog+'</span>'+
       '<span class="ring2" style="border-color:'+m.color+';color:'+m.color+'">'+pct+'</span></div>'+
       '<button class="homecta" style="background:'+m.color+'" onclick="go(\''+homeTab+'\')">'+m.label+' <span class="sm">共 1 項</span></button>';
+    // 今天全部完成 → 顯示下一單元按鈕
+    var allDone=state.steps.video&&state.steps.read&&state.steps.write;
+    document.getElementById('nextWrap').innerHTML = allDone
+      ? '<button class="nextbtn" onclick="nextUnit()">🎉 今天完成！前往下一單元 →</button>' : '';
+  }
+  function renderCalendar(){
+    var grid=document.getElementById('calGrid'); grid.innerHTML='';
+    ['日','一','二','三','四','五','六'].forEach(function(d){
+      var e=document.createElement('div'); e.className='caldow'; e.textContent=d; grid.appendChild(e);
+    });
+    var offset=5; // 2026/5/1 為週五
+    for(var i=0;i<offset;i++){var e=document.createElement('div');e.className='calday empty';grid.appendChild(e);}
+    var login={1:1,2:1,5:1,7:1,9:1,12:1,14:1,16:1,19:1,20:1,23:1};
+    for(var day=1;day<=31;day++){
+      var e=document.createElement('div');
+      e.className='calday'+(login[day]?' chk':'')+(day===23?' today':'');
+      e.textContent=day;
+      grid.appendChild(e);
+    }
   }
 
   function popShow(id){ document.getElementById(id).classList.add('show'); }
@@ -708,7 +757,7 @@
       el.appendChild(d);
     });
   }
-  ['navHome:home','navMsg:messages','navMap:map','navProfile:profile','navCoins:profile','navSetup:profile','navDash:profile'].forEach(function(pair){
+  ['navHome:home','navMsg:messages','navMap:map','navProfile:profile','navCoins:profile','navSetup:profile','navDash:profile','navCal:home'].forEach(function(pair){
     var a=pair.split(':'); buildNav(a[0],a[1]);
   });
 
