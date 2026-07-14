@@ -378,7 +378,7 @@
         <option value="messages">訊息</option>
         <option value="map">地圖 · 遊戲</option>
       </optgroup>
-      <optgroup label="家長介面"><option value="p-parent">家長首頁（多孩子）</option><option value="p-children">孩子列表</option><option value="p-home">孩子總覽</option><option value="p-video">影片觀看紀錄</option><option value="p-submit">作業提交紀錄</option><option value="p-checkin">每日打卡紀錄</option></optgroup>
+      <optgroup label="家長介面"><option value="p-parent">家長首頁（多孩子）</option><option value="p-home">孩子總覽</option><option value="p-video">影片觀看紀錄</option><option value="p-submit">作業提交紀錄</option><option value="p-checkin">每日打卡紀錄</option></optgroup>
     </select>
     <button class="jump" onclick="restart()">↺ 重來 onboarding</button>
     <div class="hint">可直接點畫面操作；或用右上下拉選單跳到任一頁。切換平板／手機看版型如何自適應。</div>
@@ -665,7 +665,6 @@
         <section class="screen" id="scr-p-parent">
           <div class="sb"><span>下午 1:42 · 週二</span><span>🔋 59%</span></div>
           <div class="topbar">早安，宗翰爸</div>
-          <div class="ptabs" id="pTabs"></div>
           <div class="scroll"><div class="maxw"><div class="pwrap">
             <div class="psec" style="margin-top:2px">🎯 今天這個最重要</div>
             <div class="attncard" id="attnCard"></div>
@@ -687,7 +686,8 @@
 
         <section class="screen" id="scr-p-home">
           <div class="sb"><span>下午 1:15 · 週二</span><span>🔋 60%</span></div>
-          <div class="topbar" id="pHomeTitle"></div>
+          <div class="topbar">孩子</div>
+          <div class="ptabs" id="pHomeTabs"></div>
           <div class="scroll"><div class="maxw"><div class="pwrap" id="pHomeCards"></div></div></div>
           <div class="nav" id="navPHome"></div>
         </section>
@@ -934,11 +934,11 @@
     go(r==='child'?'home':'p-parent');
   }
   function buildPNav(id,active){
-    var items=[['p-parent','\uD83C\uDFE0','首頁'],['p-children','\uD83E\uDDD2','孩子'],['profile','\uD83D\uDC64','我的']];
+    var items=[['p-parent','\uD83C\uDFE0','首頁'],['p-home','\uD83E\uDDD2','孩子'],['profile','\uD83D\uDC64','我的']];
     var el=document.getElementById(id); if(!el)return; el.innerHTML='';
     items.forEach(function(it){var d=document.createElement('div');d.className='item'+(it[0]===active?' on':'');d.innerHTML='<span class="ic">'+it[1]+'</span>'+it[2];d.onclick=function(){go(it[0])};el.appendChild(d);});
   }
-  ['navPParent:p-parent','navPChildren:p-children','navPHome:p-children','navPVideo:p-children','navPSubmit:p-children','navPCheck:p-children','navDash:p-children'].forEach(function(p){var a=p.split(':');buildPNav(a[0],a[1]);});
+  ['navPParent:p-parent','navPHome:p-home','navPVideo:p-home','navPSubmit:p-home','navPCheck:p-home','navDash:p-home'].forEach(function(p){var a=p.split(':');buildPNav(a[0],a[1]);});
   function renderPCheckin(){
     var grid=document.getElementById('pCalGrid'); if(!grid)return; grid.innerHTML='';
     ['日','一','二','三','四','五','六'].forEach(function(d){var e=document.createElement('div');e.className='caldow';e.textContent=d;grid.appendChild(e);});
@@ -955,14 +955,6 @@ var PIC={CHECK:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZD
   function selectChild(k){activeChild=k; renderPHome(); go('p-home');}
   function renderPParent(){
     var order=['y','m'];
-    var tabs=document.getElementById('pTabs'); tabs.innerHTML='';
-    order.forEach(function(k){
-      var c=childData[k];
-      var t=document.createElement('div'); t.className='ptab'+(k===activeChild?' on':'');
-      t.innerHTML=c.name+'<span class="tbadge">'+c.todo+'</span>';
-      t.onclick=function(){activeChild=k; renderPParent();};
-      tabs.appendChild(t);
-    });
     var ac=childData[activeChild];
     document.getElementById('attnCard').innerHTML=
       '<div class="aico">\uD83D\uDD14</div><div class="amid"><div class="at">今天要上線練習唷</div><div class="as">打開 APP 完成今天的單元，保持學習節奏</div></div><button class="attnbtn" onclick="selectChild(\''+activeChild+'\')">查看</button>';
@@ -983,7 +975,14 @@ var PIC={CHECK:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZD
   }
   function renderPHome(){
     var c=childData[activeChild];
-    document.getElementById('pHomeTitle').innerHTML='<span class="back" onclick="go(\'p-parent\')">‹</span>'+c.full;
+    var tabs=document.getElementById('pHomeTabs'); tabs.innerHTML='';
+    ['y','m'].forEach(function(k){
+      var cc=childData[k];
+      var t=document.createElement('div'); t.className='ptab'+(k===activeChild?' on':'');
+      t.textContent=cc.name;
+      t.onclick=function(){activeChild=k; renderPHome();};
+      tabs.appendChild(t);
+    });
     var vp=Math.round(c.vidDone/c.vidPlan*100), sp=Math.round(c.subDone/c.subPlan*100);
     document.getElementById('pHomeCards').innerHTML=
       pcard(PIC.CHECK,'每日打卡紀錄','本月已打卡 '+c.ci,c.ciPct+'%','#e0736b','#e0736b',c.ciPct,"go('p-checkin')")
