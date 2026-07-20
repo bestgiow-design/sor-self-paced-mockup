@@ -786,7 +786,7 @@
   </div>
 
 <script>
-  var state = { unitN:17, doneCount:16, steps:{video:false,read:false,write:false},
+  var state = { unitN:1, doneCount:0, steps:{video:false,read:false,write:false},
                 rhythmSet:false, firstUnitDone:false, coins:7500 };
   var recorded = false;
   var cur = 'welcome';
@@ -818,7 +818,7 @@
     // scroll top
     var sc=document.querySelector('#scr-'+id+' .scroll'); if(sc) sc.scrollTop=0;
   }
-  function restart(){ state={unitN:17,doneCount:16,steps:{video:false,read:false,write:false},rhythmSet:false,firstUnitDone:false,coins:7500}; recorded=false; homeTab='video'; readItems.forEach(function(x){x.done=false;}); curReadItem=0; writeItems.forEach(function(x){x.done=false;}); curWriteItem=0; go('welcome'); }
+  function restart(){ state={unitN:1,doneCount:0,steps:{video:false,read:false,write:false},rhythmSet:false,firstUnitDone:false,coins:7500}; recorded=false; homeTab='video'; readItems.forEach(function(x){x.done=false;}); curReadItem=0; writeItems.forEach(function(x){x.done=false;}); curWriteItem=0; go('welcome'); }
 
   var stepMeta=[['video','看的作業','看影片'],['read','唸的作業','錄音上傳'],['write','寫的作業','拍照上傳']];
   var ICON={PLAY:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADYAAAAqCAYAAAD4Uag9AAACdklEQVR42u2ZX0sUURjGf+fMzq7j7oSmthpiEZmlWFFQhoFimYRdlBdakYZYEPUZuuwrdCNd5E0fIXRjXQujJOnP0oYZQRLouprC7jK7O85MF9FF6GUt7snn8p2b8+Oc87zPe0asPbgPgKyooKyz2/M3t1KKKiTi5GIR4a6vA+ADkDV7CF276cmQSanK39yKr2G/l3nyWLipZSSahtHZXdJQvyVDJkZnt4emIbVwHXpjE6pIb2xCC9chtapqD8WkVVV7PhEMbvpgRcfJv5ouCYhAWztGV88fNREMIlFUO2D/PZjechQtXFs8Am/r2l8Hk6aJOXKXQNtZ0P3qHUWj6wKhgUG0+gb17pivYR/m0C3KOs4hDEM98yhr7yB0fRjfgYPquaIWriV0dQijpxdRhFxadLsPnDyNOTiCfrgFhFCrj8nK3QT7Bii/dAVZUaleg/a3HsccvoP/2AmQmlrJQxgG5b2XCfb1I2vC6kUq/dARdt2+R+DUGdB19bKicf4iof4baHvrd0LwluFguy3IevaU/Ns3YNtqgNmfP2FNRXFTSTV2zLMsrOg4hfh7cB01jmIh/o7ci0nc9TU17pi79gNrMoI9lwDPU8M88rOvyU0/x8uk1XBFJ7mENTnBxtcv6th9bnqK/MxLPMtSo49tLHzDikVwvi+o06Ct6AT52RmwC2okDzedJv3oIU5ySa1IZX/8UOS5Z+vazkvwDth2GVu8bHbzsNfVs+mfUynJy2aRzuqKUG23nNUVIZ3kIvb8nDJQ9vwcTnIRieNgxSLC/cehtChTQyaNFYsIHOeXebipZTJjo6KQiJcsVCERJzM2KtzUMgA/ASOUx82o62pWAAAAAElFTkSuQmCC",MIC:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAzCAYAAAD/06q7AAAEPElEQVR42u2Yy1cadxTHvxdGgcrA4AtREQnRUx8x2qZ1kdZzenqy7Tr/Wfdddd1VG7Oomp5TtcUcXxiTKjrIm8CAgDDAr4s21DCDzEw03XCX9/e7dz5zf/f+Hpe+D/4Ao2LlLHBaeDgtDgYAUiVPUqWAq1rFsE/OKMhn7gdsYXimdYgBwG4yhGBij4yA6QYatbvxePwLNmBztZ2zMDyDMX6E/RbZpuhlQpd/k57JDguPJ/6VG2HeyYDNhSf+Feaw8HcDZCLCsmeR2TirZuc2zoplzyIzEd0+0BjvQcA1qTsnAq5JjPGe2wfqtwrMaOXosdUMNGjrN1zKemw1A3kdo4aB9Nia9Ow9H7KB3knZfwzpAnWBukBdoC5QF6gLdMvCcWTGhHOMcSYO0UKCLuWi6sTclQTB6jT0kdyV1HbM3tOHUd7Nao0azvNR4r7xPWYBl6/5rvrx8CfKVZQOLgpxw0AXhbiqXrA48XT2u+b19kyKMNM1GADAQ/es6v03U84aXoZ2tq3f8jnHlTk0M3AffK9dYZwsZcgokJot32vHzMB9bUnt5T2KKKXLb7Ede6kbZjv2EunyW03fAABTWBIVyql+PwjKgOwmQxTT8TSOXSawmwwpHBEIU/1+xfywJMIk5qOKAY/dDbXnstyoYTW8QYfp444wh+ljrIY3SG7UVJ/ZHrtboRfzUZjCUkQ1N5bc84wjs0JfkstYFzfp2eka1KIblkQ8O13DurhJJbms3GfIjCX3vOpyhaUIcUW5hN1kCK2tlYDLh0L1kv0eDaoCn+TO6SR3Ds7EwflvQ0GqFFBTich1eeR5yFor+10LpyiX/knqg/QrqtZlxaRF9xxmB6dvfAbXGjVkyllkytmOMLOD02zRPafQV+syDtKvqFllUqWAreiOqpMV7zKmXH6mluRahUCYcvnZindZdXwrugOpUni/YXWUeUPjDg+bdHoVBt9OfoVJwct24vukVsKd3vVLI/MsIPignjcijjJvmn/bBKqxOtbFTbJxVubuG1K2VQQfAoKP/RnfQyj9uu2Zd/2MmhmcYp+PPGg7J1FMYV3cpBqr/xfN1qanYHFo6pKJ+SguCnEU5RIq9SoAwGLuRV/PJxjjRzo2GDLlLFZP1ylXyb+/vGpdWHtPH772fsl8zvE7uWKcSRFsiFuqUVY9Oi7lIp6HX1Awvn/rMMH4Pp6HX7Rd8rZdWLkhYyu2Q6fSOR6NLHxwtM6kCP6I71KqlLn5gtbJUaqUwc8nv9Jw3yDuCRNsfuhTmEnbRbPOGthPHeEkd07JYhoMnTt7mvrUDAyJYgqJYoqC8T24rE64rAK7J0wokjdSiOGv7BmyVznKXknNhNd8hdUb+kq9ingxhXgxRb3mHtYKJOajCGVeG95Fu6+OLtD/ClRv1DXpPhpQopQmLbo7LfvWTfOXkzXMDU0DAA5Sx+i0E3eSvwGkLMMYKOCRdQAAAABJRU5ErkJggg==",PEN:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABmElEQVR42tXZX0vDMBSH4d/JnGWgYBmIF4LY7/+V7FQEZVgnOtDsT483TtyWrm2a7pwUdrMl7HmXpV0ZMTO0HdP5CpdnJwwAj7MFXV8MYYicY0lbQF5YZONkD1UykyvCxIAHAEPEpePDNjHgD0WYWPBVEeJ74OVziavzYWvEZk+IB5TMMETsOZfEv0KGCCUz+cx9el/KrMDsa410NAiyEkZiw6ajAeeFDbISRupsk42TzhHT+YrAzEd53L1+gx3H7/Nbj3VZOse65onifSP+jxfHt43YHacC3zTC9boafF3E88fC+T69XAfa/LapmE/ZOJE5jXbFV51iq46gKxACv3PFpt0rdm8rEBqfF7YWHyygD/zR9oAkvnOANL5TgAa8d4AWvFeAJnzrAG34VgEa8Y0DtOIbBWjG1wZoxx8MiAFfGRAL3hkQE34vIDb8VkCM+L+AWPEAQPdvFjfpaZT4zT1xtPig98QTAXywgElh6VYAHyRAEt85QBrfKUAD3jtAC94rQBO+dYA2PACYvLCN/lR7mC3U4QHgB0F6N8/n/BAjAAAAAElFTkSuQmCC"};
@@ -830,10 +830,13 @@
   };
   function firstIncomplete(){var o=['video','read','write'];for(var i=0;i<o.length;i++){if(!state.steps[o[i]])return o[i];}return 'write';}
   function setHomeTab(t){homeTab=t;renderHome();}
+  var unitInfo={1:{code:'一-1-1',page:'第一冊 · P5'},2:{code:'一-1-2',page:'第一冊 · P4'},3:{code:'一-2-1',page:'第一冊 · P5'},4:{code:'一-2-2',page:'第一冊 · P18'},5:{code:'一-3-1',page:'第一冊 · P5'},6:{code:'一-3-2',page:'第一冊 · P20'}};
   function renderHome(){
     document.querySelectorAll('.unitN').forEach(function(e){e.textContent=state.unitN});
     document.querySelectorAll('.doneN').forEach(function(e){e.textContent=state.doneCount});
     document.getElementById('coinTop').textContent=state.coins.toLocaleString();
+    var uinfo=unitInfo[state.unitN]||{code:'一-'+Math.ceil(state.unitN/2)+'-'+(((state.unitN-1)%2)+1),page:'第一冊'};
+    var uc=document.getElementById('uCode'),up=document.getElementById('uPage'); if(uc)uc.textContent=uinfo.code; if(up)up.textContent=uinfo.page;
     // 週曆：只顯示登入打勾（與課程脫鉤）
     var days=[['一','18',false,false],['二','19',true,false],['三','20',true,false],['四','21',false,false],['五','22',false,false],['六','23',true,true],['日','24',false,false]];
     var ws=document.getElementById('weekstrip'); ws.innerHTML='';
