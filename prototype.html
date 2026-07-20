@@ -113,6 +113,12 @@
   .homecta{border:none;font-family:inherit;color:#fff;border-radius:26px;padding:14px 32px;font-size:1.05rem;font-weight:800;cursor:pointer}
   .homecta .sm{font-size:.8rem;font-weight:600;opacity:.95;margin-left:2px}
   .unithint{text-align:center;font-size:.74rem;color:var(--dim);margin:7px 16px 6px}
+  .unitinfo{margin:14px 16px 0;background:#fff;border-radius:16px;padding:12px 10px;display:flex;align-items:center;box-shadow:0 2px 10px rgba(34,49,79,.05)}
+  .unitinfo .uiblock{flex:1;text-align:center}
+  .unitinfo .uidiv{width:1px;align-self:stretch;background:var(--line);margin:4px 0}
+  .unitinfo .uilbl{font-size:.68rem;color:var(--dim);letter-spacing:.06em;margin-bottom:3px}
+  .unitinfo .ucode{font-size:1.2rem;font-weight:800;color:var(--coral)}
+  .unitinfo .upage{font-size:1.05rem;font-weight:800;color:var(--blue)}
   .nextwrap{text-align:center;margin:0 16px}
   .nextbtn{border:none;font-family:inherit;color:#fff;background:var(--green-d);border-radius:26px;padding:14px 30px;font-size:1.05rem;font-weight:800;cursor:pointer}
   .steps{margin:14px 16px 0;display:flex;flex-direction:column;gap:9px}
@@ -421,12 +427,17 @@
               <div class="wklabel">2026 年 5 月 · 本週</div>
               <div class="weekstrip" id="weekstrip"></div>
             </div>
-            <div class="cardstage" style="margin-top:18px">
+            <div class="unitinfo">
+              <div class="uiblock"><div class="uilbl">影片進度</div><div class="ucode" id="uCode">一-1-1</div></div>
+              <div class="uidiv"></div>
+              <div class="uiblock"><div class="uilbl">書本頁數</div><div class="upage" id="uPage">第一冊 · P5</div></div>
+            </div>
+            <div class="cardstage" style="margin-top:14px">
               <div class="rail" id="rail"></div>
               <div class="contentcard" id="contentCard"></div>
             </div>
             <div class="nextwrap" id="nextWrap"></div>
-            <div class="unithint">第 <span class="unitN">17</span> 單元 · 全部 254 · 已完成 <span class="doneN">16</span></div>
+            <div class="unithint">今日單元（第 <span class="unitN">17</span> 單元） · 全部 254 · 已完成 <span class="doneN">16</span></div>
           </div></div>
           <div class="nav" id="navHome"></div>
         </section>
