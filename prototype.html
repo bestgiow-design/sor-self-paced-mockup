@@ -1079,18 +1079,25 @@ var PIC={CHECK:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZD
     document.getElementById('dashSub').textContent=c.name+' · '+(c.rhythmSet?'一週 3 天（二、四、六）':'尚未設定練習節奏');
     var b=document.getElementById('dashBody');
     if(c.rhythmSet){
+      var lagCls=c.lag>0?'kpi lag':'kpi', lagTxt=c.lag>0?('\u2212'+c.lag):'0';
       b.innerHTML='<div class="kpis">'
         +'<div class="kpi"><div class="v">'+c.paceP+'</div><label>預定進度</label></div>'
         +'<div class="kpi"><div class="v" style="color:#4a4a4a">'+c.paceA+'</div><label>實際進度</label></div>'
-        +'<div class="kpi lag"><div class="v">\u2212'+c.lag+'</div><label>落後單元</label></div></div>'
+        +'<div class="'+lagCls+'"><div class="v">'+lagTxt+'</div><label>落後單元</label></div></div>'
         +'<div class="card mut" style="text-align:center">距離上次練習：5 天</div>'
         +'<button class="btn ghost" onclick="go(\'setup\')">調整節奏（改練習日）</button>'
-        +'<button class="btn danger" onclick="alert(\'二次確認：從今天重新起算？（可隨時重設，無次數限制）\')">重設基準：從今天重新起算</button>';
+        +'<button class="btn danger" onclick="resetBaseline()">重設基準：從今天重新起算</button>';
     } else {
       b.innerHTML='<div class="kpis"><div class="kpi"><div class="v" style="color:#4a4a4a">'+c.paceA+'</div><label>實際進度（單元）</label></div></div>'
         +'<div class="card" style="text-align:center;color:var(--dim);font-size:.88rem;line-height:1.8;padding:20px">尚未設定練習節奏（承諾書）<br>設定後才會顯示「預定進度」與「落後」提醒。</div>'
         +'<button class="btn coral" onclick="go(\'setup\')">去設定練習節奏（承諾書）</button>';
     }
+  }
+  function resetBaseline(){
+    if(!confirm('從今天重新起算？\n預定進度會拉齊到目前的實際進度，落後單元歸零。（可隨時重設，無次數限制）')) return;
+    var c=childData[activeChild];
+    c.paceP=c.paceA; c.lag=0;
+    renderDashboard();
   }
   var coinsBack='home';
   function goCoins(from){ coinsBack=from; go('coins'); }
