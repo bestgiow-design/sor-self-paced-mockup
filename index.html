@@ -1,441 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>自學模組 — 介面參考圖（平板版 v3）</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SoR 自學模組 · 專案總覽</title>
 <style>
-  :root{
-    --header:#efa074;        /* 首頁 coral 頂欄 */
-    --coral:#f08c7c;         /* 主行動：看的作業 / 影片 / 主按鈕 */
-    --coral-soft:#f2b49f;
-    --green:#7cc39a;         /* 唸的作業 */
-    --green-d:#5fb389;
-    --blue:#7fb2e0;          /* 寫的作業 */
-    --purple:#b9aede;        /* 上傳/錄音 */
-    --coin:#f0a90f;
-    --coin-pill:#fef6e6;
-    --coin-bd:#f5c96b;
-    --cream:#fdf4e3;
-    --banner:#8fc3e8;
-    --paper:#f0ede6;
-    --ink:#4a4a4a;
-    --ink-dim:#9a9a9a;
-    --line:#e8e3da;
-    --toast:#3e7a2e;
-    --alert:#e8617c;
-    --tag-green:#8fd0a8;
-    --tag-red:#f28d7d;
-    --tag-orange:#f0a95a;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:#e7ecf1;color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;padding:40px 24px 90px}
-  .wrap{max-width:1420px;margin:0 auto}
-  header.page h1{font-size:1.55rem;letter-spacing:.06em;color:#2f3e57}
-  .concept{background:#fff;border:1px solid #d9e2ec;border-left:5px solid var(--header);border-radius:14px;padding:22px 28px;margin-top:18px;max-width:960px;box-shadow:0 4px 16px rgba(34,49,79,.06)}
-  .concept h2{font-size:1.12rem;color:#2f3e57;letter-spacing:.04em;margin-bottom:12px}
-  .concept p{font-size:.9rem;line-height:1.9;color:#3f4a5c;margin-bottom:12px}
-  .concept p:last-child{margin-bottom:0}
-  .concept b{color:var(--coral)}
-  header.page p{color:#5b6b82;margin-top:8px;font-size:.9rem;line-height:1.7;max-width:940px}
-  .revbar{background:#fff;border:1px solid #d9e2ec;border-radius:12px;padding:14px 18px;margin:16px 0 4px;font-size:.82rem;line-height:1.75;color:#40506e}
-  .revbar b{color:#2f3e57}
-  .tag-fix{display:inline-block;background:var(--green-d);color:#fff;border-radius:5px;padding:1px 7px;font-size:.66rem;font-weight:700;margin-right:6px}
-  .tag-todo{display:inline-block;background:#e79a3c;color:#fff;border-radius:5px;padding:1px 7px;font-size:.66rem;font-weight:700;margin-right:6px}
-
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:40px 30px;margin-top:34px}
-  .screen{display:flex;flex-direction:column;gap:14px}
-  .screen>h2{font-size:.98rem;letter-spacing:.06em;display:flex;align-items:center;gap:10px;color:#2f3e57}
-  .screen>h2 .no{background:var(--coral);color:#fff;border-radius:50%;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;flex:none}
-
-  .tablet{width:100%;max-width:430px;margin:0 auto;background:#20242c;border-radius:26px;padding:12px;box-shadow:0 20px 46px rgba(34,49,79,.22)}
-  .vp{background:#fff;border-radius:18px;overflow:hidden;min-height:640px;display:flex;flex-direction:column;position:relative}
-  .sb{height:26px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:.6rem;color:#8b93a0;flex:none}
-  .topbar{display:flex;align-items:center;justify-content:center;position:relative;padding:12px 0;font-size:1rem;font-weight:700;color:var(--ink);flex:none;background:#fff}
-  .topbar .back{position:absolute;left:16px;font-size:1.2rem;color:#7a7a7a}
-
-  /* 底部導覽 */
-  .nav{display:flex;justify-content:space-around;padding:8px 0 10px;border-top:1px solid var(--line);background:#fff;flex:none;margin-top:auto}
-  .nav .item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.66rem;color:#8b8b8b}
-  .nav .item .ic{font-size:1.1rem}
-  .nav .item.on{color:var(--header)}
-  .nav .item.on .ic{background:var(--header);color:#fff;border-radius:14px;padding:3px 14px}
-
-  /* A 設定：每日時段（承諾書式） */
-  .setwrap{background:var(--paper);flex:1;padding:16px;display:flex;flex-direction:column;gap:12px}
-  .setcard{background:#fff;border-radius:16px;padding:14px 16px}
-  .dayrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f2efe8}
-  .dayrow:last-child{border-bottom:none}
-  .dayrow .dn{font-size:.95rem;font-weight:800;width:56px;white-space:nowrap;flex:none}
-  .tag{font-size:.66rem;font-weight:700;color:#fff;border-radius:12px;padding:2px 10px;white-space:nowrap}
-  .tag.on{background:var(--tag-green)}
-  .tag.rest{background:#c9c9c9}
-  .slot{display:flex;align-items:center;gap:5px;font-size:.74rem;color:var(--ink-dim);margin-left:auto}
-  .tbox{border:1px solid var(--line);border-radius:8px;padding:4px 9px;font-size:.8rem;font-weight:700;color:var(--ink);background:#fff}
-  .slot.dim{opacity:.4}
-  .setsum{background:#fff6ec;border-radius:14px;padding:13px 16px;font-size:.84rem;line-height:1.85;color:#7a5a3e}
-  .setsum b{color:var(--coral)}
-  .setbtn{width:100%;background:var(--coral);color:#fff;border:none;border-radius:24px;padding:15px;font-size:1.05rem;font-weight:800;font-family:inherit}
-
-  /* B 首頁：單元式 */
-  .home-hd{background:var(--header);padding:16px 18px 18px;border-radius:0 0 22px 22px;color:#fff;text-align:center}
-  .home-hd .streak{font-size:1.3rem;font-weight:800}
-  .home-hd .accum{font-size:.8rem;opacity:.95;margin-top:2px}
-  .banner{margin:14px 16px 0;background:var(--banner);color:#fff;font-weight:700;font-size:.76rem;border-radius:12px;padding:8px 14px;text-align:center}
-  .unitcard{margin:14px 16px 0;background:linear-gradient(150deg,var(--coral),#f2a58f);color:#fff;border-radius:20px;padding:18px}
-  .unitcard .eyebrow{font-size:.68rem;letter-spacing:.24em;opacity:.9}
-  .unitcard h3{font-size:1.5rem;margin:4px 0 2px}
-  .unitcard .total{font-size:.74rem;opacity:.9}
-  .video{margin-top:12px;background:rgba(255,255,255,.2);border-radius:14px;height:104px;display:flex;align-items:center;justify-content:center}
-  .play{width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center}
-  .play::after{content:"";border:9px solid transparent;border-left:15px solid var(--coral);margin-left:7px}
-  .steps{margin:14px 16px 0;display:flex;flex-direction:column;gap:9px}
-  .step{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
-  .step .dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;font-size:.78rem;color:var(--ink-dim);font-weight:700}
-  .step.done{border-color:var(--green);background:#f1fbf6}
-  .step.done .dot{background:var(--green);border-color:var(--green);color:#fff}
-  .step.now{border-color:var(--green-d);box-shadow:0 0 0 3px rgba(124,195,154,.18)}
-  .step.now .dot{border-color:var(--green-d);color:var(--green-d)}
-  .step .t{flex:1;font-size:.9rem;font-weight:700}
-  .step .s{font-size:.7rem;color:var(--ink-dim)}
-  .homebtn{margin:14px 16px 0;background:var(--green-d);color:#fff;border:none;border-radius:24px;padding:14px;font-size:1.02rem;font-weight:800;font-family:inherit}
-  .mappeek{margin:12px 16px 0;display:flex;align-items:center;gap:8px;font-size:.76rem;color:#c0763f;background:#fff5ec;border-radius:12px;padding:9px 14px}
-
-  /* C 看的作業：影片播放 */
-  .vstage{flex:1;background:#141414;position:relative;display:flex;align-items:center;justify-content:center}
-  .vtop{position:absolute;top:0;left:0;right:0;padding:12px 14px;color:#eee;font-size:.78rem;display:flex;align-items:center;gap:10px;z-index:3}
-  .vtop .back{font-size:1.1rem}
-  .speedrail{position:absolute;right:14px;top:52px;display:flex;flex-direction:column;gap:12px;font-size:.74rem;color:#cfcfcf;z-index:3;align-items:center}
-  .speedrail .sp{opacity:.7}
-  .speedrail .sp.on{background:#2f2f2f;color:#fff;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;opacity:1;font-weight:700}
-  .vcover{color:#fff;text-align:center;opacity:.8}
-  .vcover .logo{font-size:1.6rem;font-weight:800;letter-spacing:.1em}
-  .teacher{position:absolute;right:16px;bottom:70px;width:88px;height:88px;border-radius:50%;background:#3a3a3a;border:2px solid #555;display:flex;align-items:center;justify-content:center;font-size:1.8rem;z-index:3}
-  .vfull{position:absolute;right:16px;bottom:16px;color:#ccc;font-size:1.1rem;z-index:3}
-  /* cream popup 通用 */
-  .pop{position:absolute;inset:0;background:rgba(60,60,60,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5;padding:16px}
-  .popcard{background:var(--cream);border-radius:22px;padding:24px 22px;width:82%;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.25)}
-  .popcard .av{width:80px;height:80px;border-radius:50%;background:#fff;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:2rem}
-  .popcard h3{font-size:1.3rem;font-weight:800;color:var(--ink)}
-  .popcard .sub{font-size:.84rem;color:var(--ink-dim);margin:8px 0 15px}
-  .coinpill{display:inline-flex;align-items:center;gap:8px;background:var(--coin-pill);border:1.5px solid var(--coin-bd);border-radius:20px;padding:8px 22px;font-size:1.05rem;font-weight:800;color:#e08a1a}
-  .okbtn{width:100%;background:var(--coral-soft);color:#fff;border:none;border-radius:16px;padding:13px;font-size:1.02rem;font-weight:800;font-family:inherit;margin-top:15px}
-
-  /* D 唸的作業：錄音上傳 + 拼讀格 */
-  .opwrap{background:var(--paper);flex:1;padding:16px;display:flex;flex-direction:column;align-items:center;gap:14px}
-  .opinfo{background:#fff;border-radius:16px;padding:16px;width:100%;text-align:center}
-  .opinfo h3{color:var(--purple);font-size:1.15rem;font-weight:800}
-  .opinfo .rem{text-align:left;font-size:.78rem;color:var(--ink-dim);margin-top:8px;line-height:1.7}
-  .gridcard{border:2.5px solid var(--coral);border-radius:14px;padding:14px;width:100%;background:#fff;display:grid;grid-template-columns:1fr 1fr;gap:6px 18px}
-  .prow{display:flex;align-items:center;gap:6px;font-size:.8rem;color:#8a6a4a;font-weight:700}
-  .prow .idx{width:16px}
-  .sym{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;color:#fff}
-  .sym.t{background:#f0a094}   /* 吐舌 */
-  .sym.s{background:#9cc5e8}   /* 捲舌 */
-  .sym.z{background:#f0a094}   /* 閃電 */
-  .seg{display:flex;background:#fff;border-radius:18px;padding:4px;gap:4px}
-  .seg span{padding:8px 20px;font-size:.82rem;font-weight:700;border-radius:14px;color:var(--ink-dim)}
-  .seg span.on{background:var(--green);color:#fff}
-  .ops{display:flex;gap:10px;width:100%}
-  .opbtn{flex:1;aspect-ratio:1;border-radius:16px;background:var(--purple);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;font-size:.8rem;font-weight:700}
-  .opbtn .ic{font-size:1.4rem}
-  .opbtn.off{background:#e3e0d8;color:#a9a9a9}
-
-  /* E 寫的作業 */
-  .wwrap{background:var(--paper);flex:1;padding:16px;display:flex;flex-direction:column;align-items:center;gap:16px}
-  .winfo{background:#fff;border-radius:16px;padding:18px;width:100%;text-align:center}
-  .winfo h3{color:var(--blue);font-size:1.3rem;font-weight:800}
-  .winfo .pg{font-size:.95rem;margin:12px 0;color:var(--ink)}
-  .bopo{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;font-size:.8rem;font-weight:700;margin:0 1px;vertical-align:middle}
-  .bopo.b{border:1.5px solid var(--blue);color:var(--blue)}
-  .bopo.r{background:var(--tag-red);color:#fff}
-  .winfo .sm{font-size:.82rem;color:var(--ink-dim)}
-  .w-mascot{font-size:2.8rem}
-  .wbtns{display:flex;gap:12px;width:100%}
-  .wbtn{flex:1;border-radius:16px;background:var(--blue);color:#fff;padding:24px 0;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:.9rem;font-weight:700}
-  .wbtn .ic{font-size:1.5rem}
-
-  /* F 單元完成 */
-  .doneback{flex:1;background:#8c8c8c;position:relative;display:flex;flex-direction:column}
-  .donehd{background:#fff;opacity:.5;padding:12px 0;text-align:center;font-weight:700}
-  .donecard{opacity:.5;margin:14px 16px 0;background:#fff;border-radius:16px;padding:18px;text-align:center}
-  .donecard h4{font-size:1.1rem;font-weight:800}
-  .donecard p{font-size:.82rem;color:var(--ink-dim);margin-top:4px}
-  .donecard .chk{color:var(--green-d);font-size:.82rem;font-weight:700;margin-top:8px}
-  .toast{position:absolute;bottom:0;left:0;right:0;background:var(--toast);color:#fff;font-size:.85rem;padding:12px 18px;z-index:4}
-
-  /* G 家長儀表板 */
-  .dashhd{background:var(--header);color:#fff;padding:14px 18px;border-radius:0 0 20px 20px}
-  .dashhd h3{font-size:1.05rem;font-weight:800}
-  .dashhd span{font-size:.74rem;opacity:.95}
-  .dashbody{padding:16px;display:flex;flex-direction:column;gap:14px;background:var(--paper);flex:1}
-  .kpis{display:flex;gap:10px}
-  .kpi{flex:1;text-align:center;background:#fff;border-radius:14px;padding:14px 6px}
-  .kpi .v{font-size:1.3rem;font-weight:800;color:var(--header)}
-  .kpi label{font-size:.66rem;color:var(--ink-dim);display:block;margin-top:3px}
-  .kpi.lag .v{color:var(--alert)}
-  .kpi.lag{box-shadow:inset 0 0 0 1.5px var(--alert)}
-  .chartcard{background:#fff;border-radius:14px;padding:14px}
-  .chartcard h4{font-size:.8rem;color:var(--ink-dim);margin-bottom:8px;font-weight:600}
-  .chartcard svg{width:100%;height:auto;display:block}
-  .chartcard .mut{font-size:.74rem;color:var(--ink-dim);margin-top:6px}
-  .ghostbtn{width:100%;background:#fff;border:1.5px solid var(--header);color:var(--header);border-radius:20px;padding:11px;font-size:.86rem;font-weight:700;font-family:inherit}
-  .dangerbtn{width:100%;background:#fff;border:1.5px solid var(--alert);color:var(--alert);border-radius:20px;padding:11px;font-size:.86rem;font-weight:700;font-family:inherit}
-
-  .notes{background:#fff;border-left:4px solid var(--coral);border-radius:0 10px 10px 0;padding:13px 16px;font-size:.78rem;line-height:1.75;color:#4a4a4a;box-shadow:0 2px 10px rgba(34,49,79,.05)}
-  .notes b{color:var(--coral)}
-  .notes ul{padding-left:18px;margin-top:4px}
-  .notes li{margin-bottom:3px}
-  .notes .fix{color:var(--green-d);font-weight:700}
-  .notes .todo{color:#e79a3c;font-weight:700}
-  @media (max-width:640px){body{padding:20px 12px 60px}}
+:root{--coral:#E0674A;--corald:#B94A30;--navy:#2E5A88;--ink:#2b2b2b;--grey:#8A97A6;--line:#e7ebf0;--bg:#f5f6f8;}
+*{box-sizing:border-box;}
+body{margin:0;font-family:"PingFang TC","Microsoft JhengHei","Noto Sans CJK TC",sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;}
+.hero{background:linear-gradient(135deg,var(--coral),#d9805f);color:#fff;padding:40px 24px 30px;}
+.hero .in{max-width:1000px;margin:0 auto;}
+.hero h1{margin:0 0 8px;font-size:28px;}
+.hero p{margin:0;font-size:15px;opacity:.92;max-width:640px;}
+.wrap{max-width:1000px;margin:0 auto;padding:26px 24px 70px;}
+h2{font-size:16px;color:var(--navy);margin:30px 0 4px;display:flex;align-items:center;gap:8px;}
+h2 .n{font-size:12px;color:var(--grey);font-weight:400;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:14px;}
+.card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;text-decoration:none;color:inherit;transition:.15s;position:relative;}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(0,0,0,.09);border-color:#d7dee6;}
+.card .ic{font-size:30px;margin-bottom:10px;}
+.card h3{margin:0 0 4px;font-size:17px;}
+.card p{margin:0;font-size:13px;color:#5a6b7d;flex:1;}
+.card .go{margin-top:14px;font-size:13px;font-weight:700;color:var(--coral);}
+.tag{position:absolute;top:14px;right:14px;font-size:10.5px;font-weight:700;border-radius:20px;padding:3px 10px;}
+.t-web{background:#E6F0F8;color:var(--navy);}
+.t-page{background:#EAF3E4;color:#3b6d11;}
+.t-doc{background:#F1EFE8;color:#5f5e5a;}
+.foot{text-align:center;color:var(--grey);font-size:12px;margin-top:34px;}
 </style>
 </head>
 <body>
+<div class="hero"><div class="in">
+  <h1>SoR 自學模組 · 專案總覽</h1>
+  <p>自學模組的說明、互動原型，以及金幣／打卡機制的規劃，整合於此。點卡片即可逐個進去看細節。</p>
+</div></div>
 <div class="wrap">
-  <header class="page">
-    <h1>自學模組 · 介面參考圖（平板版 v3）</h1>
-  </header>
 
-  <section class="concept">
-    <h2>設計概念說明（精簡版）</h2>
-    <p>自學模組的核心，是把「日曆」從系統裡拿掉。</p>
-    <p>既有課程由日曆驅動：課務設定開課日，系統照週期推進。搬到自學情境，每一種彈性需求——改週期、請假、長假中斷——都會變成新規則和課務人力的負擔。所以自學模組改用進度驅動：254 個單元是一條序列，完成第 N 個才解鎖第 N+1 個。系統只記一個數字：孩子走到哪裡。於是不需要開課日（第一次練習就是開始）、不需要請假功能（中斷一個月，回來原地繼續）、不需要任何重算。</p>
-    <p><b>家長的設定只扮演鬧鐘的角色。</b>家長只設定「哪幾天練、幾點提醒」，這只驅動通知，完全不封鎖內容——非練習日想練照樣能練，設定隨時改、改了不影響任何進度。</p>
-    <p>但純彈性會養出怠惰，所以疊加一條純顯示的「預定進度線」：預定＝開始至今經過的練習日數，實際＝第 N 單元，落差一目瞭然。落後小，提醒孩子；落後大，通知家長；落後失控，引導降頻或一鍵「重設基準」從今天重新起算——取代請假補課，長假歸來不背心理債。</p>
-    <p>一句話總結：<b>解鎖用進度驅動，保住彈性；激勵用基準線驅動，保住紀律。</b>兩層互不干擾，全程零課務介入。孩子端因此只剩一件事：打開 APP，完成今天的單元——一天最多一個，守住發音學習需要的間隔重複。金幣制度同步換血：「準時／遲交」併為「完成單元」獎勵，streak 改為「連續練習日達成」——獎勵的對象從守住日期，轉為守住自己承諾的節奏。</p>
-  </section>
-
+  <h2>自學模組 <span class="n">· 介面與原型</span></h2>
   <div class="grid">
-
-    <!-- A 設定：每日時段 -->
-    <div class="screen">
-      <h2><span class="no">A</span>家長設定 · 練習時段（Layer 1）</h2>
-      <div class="tablet"><div class="vp">
-        <div class="sb"><span>上午 9:12 · 週六</span><span>🔋 56%</span></div>
-        <div class="topbar"><span class="back">‹</span>設定練習時段</div>
-        <div class="setwrap">
-          <div class="setcard">
-            <div class="dayrow"><span class="dn">星期一</span><span class="tag rest">休息</span><span class="slot dim">未設定</span></div>
-            <div class="dayrow"><span class="dn">星期二</span><span class="tag on">練習日</span><span class="slot">時段1 <span class="tbox">19:00</span>～<span class="tbox">19:40</span></span></div>
-            <div class="dayrow"><span class="dn">星期三</span><span class="tag rest">休息</span><span class="slot dim">未設定</span></div>
-            <div class="dayrow"><span class="dn">星期四</span><span class="tag on">練習日</span><span class="slot">時段1 <span class="tbox">19:00</span>～<span class="tbox">19:40</span></span></div>
-            <div class="dayrow"><span class="dn">星期五</span><span class="tag rest">休息</span><span class="slot dim">未設定</span></div>
-            <div class="dayrow"><span class="dn">星期六</span><span class="tag on">練習日</span><span class="slot">時段1 <span class="tbox">19:00</span>～<span class="tbox">19:40</span></span></div>
-            <div class="dayrow"><span class="dn">星期日</span><span class="tag rest">休息</span><span class="slot dim">未設定</span></div>
-          </div>
-          <div class="setsum">目前節奏：<b>一週 3 天</b><br>進度：第 16 / 254 單元<br>照此節奏，預計 <b>2027 年 12 月</b> 完成全部課程</div>
-          <button class="setbtn">確認設定</button>
-        </div>
-        <div class="nav"><div class="item on"><span class="ic">📖</span>學習</div><div class="item"><span class="ic">✉️</span>訊息</div><div class="item"><span class="ic">🎮</span>遊戲</div><div class="item"><span class="ic">👤</span>個人</div></div>
-      </div></div>
-      <div class="notes"><b>規格註記</b>
-        <ul>
-          <li><span class="fix">［對齊實機 2935］</span>沿用「設定練習時段/承諾書」版型：每日可設「40 分鐘」，亦可兩個時段加起來 40 分鐘</li>
-          <li><span class="todo">［自學版差異］</span>拿掉「線上課／提交日」，並且取消顯示週曆及月曆；只有設定的練習日會跳出提醒，休息日不會跳出提醒，但仍然可以練習（可補進度或超前進度）</li>
-          <li>時間只驅動提醒與基準線，不驅動解鎖；開始日由首次完成單元自動記錄</li>
-          <li>解鎖條件都是「這單元完成，才會解鎖下一單元」</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- B 首頁：單元式 -->
-    <div class="screen">
-      <h2><span class="no">B</span>孩子首頁 · 今日單元（Layer 2）</h2>
-      <div class="tablet"><div class="vp">
-        <div class="sb"><span>上午 9:38 · 週六</span><span>🔋 43%</span></div>
-        <div class="home-hd">
-          <div class="streak">連續學習 1 天</div>
-          <div class="accum">累積 36 天 · 🪙 7,500</div>
-        </div>
-        <div class="unitcard" style="margin-top:16px">
-          <div class="eyebrow">今天的任務</div>
-          <h3>第 17 單元</h3>
-          <div class="total">全部 254 個單元 · 已完成 16</div>
-          <div class="video"><div class="play"></div></div>
-        </div>
-        <div class="steps">
-          <div class="step done"><div class="dot">✓</div><div class="t">看的作業</div><div class="s">已完成</div></div>
-          <div class="step now"><div class="dot">2</div><div class="t">唸的作業</div><div class="s">進行中</div></div>
-          <div class="step"><div class="dot">3</div><div class="t">寫的作業</div><div class="s">待完成</div></div>
-        </div>
-        <button class="homebtn">繼續 · 唸的作業</button>
-        <div class="mappeek">🚩 再完成 2 個單元，就抵達地圖第 4 站！</div>
-        <div class="nav"><div class="item on"><span class="ic">📖</span>學習</div><div class="item"><span class="ic">✉️</span>訊息</div><div class="item"><span class="ic">🎮</span>遊戲</div><div class="item"><span class="ic">👤</span>個人</div></div>
-      </div></div>
-      <div class="notes"><b>規格註記</b>
-        <ul>
-          <li>三步驟卡（看/唸/寫）用實機打勾與色彩（看＝coral、唸＝綠、寫＝藍）</li>
-          <li>首頁唯一內容 = 目前單元 N；三步驟依序解鎖，完成第 3 步 → N+1；一天最多 1 單元、完成後顯示「明天見」（或下次見）</li>
-          <li><span class="todo">［待決］</span>影片門檻一樣 95%（但一樣看完影片才會跳出金幣獎勵）</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- C 看的作業：2964 -->
-    <div class="screen">
-      <h2><span class="no">C</span>看的作業 · 影片觀看完成（點入 = 2964）</h2>
-      <div class="tablet"><div class="vp">
-        <div class="sb"><span>下午 3:20 · 週六</span><span>🔋 45%</span></div>
-        <div class="vstage">
-          <div class="vtop"><span class="back">‹</span>看的作業 ｜ 美語暖聲運動（p.4, 5）</div>
-          <div class="speedrail"><span class="sp">0.75</span><span class="sp">1.0</span><span class="sp">1.25</span><span class="sp">1.5</span><span class="sp on">2.0</span></div>
-          <div class="vcover"><div class="logo">拼讀小達人</div></div>
-          <div class="teacher">👩‍🏫</div>
-          <div class="vfull">⛶</div>
-          <div class="pop">
-            <div class="popcard">
-              <div class="av">🖥️</div>
-              <h3>影片觀看完成</h3>
-              <div class="sub">太棒了！你完成了影片觀看</div>
-              <div class="coinpill">🪙 +300 金幣</div>
-              <button class="okbtn">太厲害了！</button>
-            </div>
-          </div>
-        </div>
-      </div></div>
-      <div class="notes"><b>規格註記</b>
-        <ul>
-          <li>看完彈出「影片觀看完成／太棒了！你完成了影片觀看／🪙 +300 金幣／太厲害了！」</li>
-          <li>完成後回首頁，三步驟「看的作業」打勾，自動解鎖「唸的作業」</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- D 唸的作業：2966 -->
-    <div class="screen">
-      <h2><span class="no">D</span>唸的作業 · 錄音上傳（點入 = 2966）</h2>
-      <div class="tablet"><div class="vp">
-        <div class="sb"><span>下午 3:31 · 週六</span><span>🔋 40%</span></div>
-        <div class="topbar"><span class="back">‹</span>唸的作業</div>
-        <div class="opwrap">
-          <div class="opinfo">
-            <h3>錄音上傳，唸一次簡報內容。</h3>
-            <div class="rem">溫馨提醒：<br>1. 計時目標 7 秒唸完<br>2. 唸快還是要確實做好吐舌、捲舌動作，才是真的厲害！</div>
-          </div>
-          <div class="gridcard">
-            <div class="prow"><span class="idx">1.</span><span class="sym t">👅</span><span class="sym t">👅</span><span class="sym t">👅</span></div>
-            <div class="prow"><span class="idx">5.</span><span class="sym s">🌀</span><span class="sym s">🌀</span><span class="sym s">🌀</span></div>
-            <div class="prow"><span class="idx">2.</span><span class="sym t">👅</span><span class="sym t">👅</span><span class="sym s">🌀</span></div>
-            <div class="prow"><span class="idx">6.</span><span class="sym s">🌀</span><span class="sym s">🌀</span><span class="sym z">⚡</span></div>
-            <div class="prow"><span class="idx">3.</span><span class="sym t">👅</span><span class="sym s">🌀</span><span class="sym s">🌀</span></div>
-            <div class="prow"><span class="idx">7.</span><span class="sym s">🌀</span><span class="sym z">⚡</span><span class="sym z">⚡</span></div>
-            <div class="prow"><span class="idx">4.</span><span class="sym t">👅</span><span class="sym s">🌀</span><span class="sym t">👅</span></div>
-            <div class="prow"><span class="idx">8.</span><span class="sym s">🌀</span><span class="sym z">⚡</span><span class="sym s">🌀</span></div>
-          </div>
-          <div class="seg"><span class="on">⏱ 計時器</span><span>♩ 節拍器</span></div>
-          <div class="ops">
-            <div class="opbtn"><span class="ic">🎤</span>錄音</div>
-            <div class="opbtn"><span class="ic">🖼️</span>選擇檔案</div>
-            <div class="opbtn off"><span class="ic">🎧</span>自己聽</div>
-            <div class="opbtn off"><span class="ic">☁️</span>上傳</div>
-          </div>
-        </div>
-        <div class="nav"><div class="item on"><span class="ic">📖</span>學習</div><div class="item"><span class="ic">✉️</span>訊息</div><div class="item"><span class="ic">🎮</span>遊戲</div><div class="item"><span class="ic">👤</span>個人</div></div>
-      </div></div>
-      <div class="notes"><b>規格註記</b>
-        <ul>
-          <li>同原來的唸的作業介面</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- E 寫的作業：2988 -->
-    <div class="screen">
-      <h2><span class="no">E</span>寫的作業 · 邊唸邊寫（點入 = 2988）</h2>
-      <div class="tablet"><div class="vp">
-        <div class="sb"><span>凌晨 12:39 · 週一</span><span>🔋 22%</span></div>
-        <div class="topbar"><span class="back">‹</span>寫的作業</div>
-        <div class="wwrap">
-          <div class="winfo">
-            <h3>邊唸邊寫</h3>
-            <div class="pg">進度：( <span class="bopo b">ㄅ</span>、<span class="bopo b">ㄆ</span>、<span class="bopo b">ㄇ</span>、<span class="bopo b">ㄈ</span> ) X ( <span class="bopo r">ㄝ</span>、<span class="bopo r">ㄧ</span> )</div>
-            <div class="sm">第一冊，p18 邊唸邊寫</div>
-          </div>
-          <div class="w-mascot">✍️🧑‍🎓</div>
-          <div class="wbtns">
-            <div class="wbtn"><span class="ic">🎵</span>音樂</div>
-            <div class="wbtn"><span class="ic">📷</span>拍照上傳</div>
-          </div>
-        </div>
-        <div class="nav"><div class="item on"><span class="ic">📖</span>學習</div><div class="item"><span class="ic">✉️</span>訊息</div><div class="item"><span class="ic">🎮</span>遊戲</div><div class="item"><span class="ic">👤</span>個人</div></div>
-      </div></div>
-      <div class="notes"><b>規格註記</b>
-        <ul>
-          <li>同原來寫的作業介面</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- F 單元完成：2994 -->
-    <div class="screen">
-      <h2><span class="no">F</span>單元完成 · 作業提交成功（概念 = 2994）</h2>
-      <div class="tablet"><div class="vp">
-        <div class="sb"><span>凌晨 12:41 · 週一</span><span>🔋 20%</span></div>
-        <div class="doneback">
-          <div class="donehd">寫的作業</div>
-          <div class="donecard"><h4>作業一</h4><p>邊唸邊寫</p><div class="chk">✓ 已完成</div></div>
-          <div class="pop" style="position:absolute">
-            <div class="popcard">
-              <div class="av">✍️</div>
-              <h3>單元完成！</h3>
-              <div class="sub">第 17 單元 · 做得好！繼續保持學習的好習慣</div>
-              <div class="coinpill">🪙 +300 金幣</div>
-              <button class="okbtn">不錯喔！</button>
-            </div>
-          </div>
-          <div class="toast">上傳成功！ · 今天的任務完成了，明天見 👋</div>
-        </div>
-      </div></div>
-      <div class="notes"><b>規格註記</b>
-        <ul>
-          <li>同原來金幣獎勵介面</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- G 家長儀表板 -->
-    <div class="screen">
-      <h2><span class="no">G</span>家長儀表板 · 基準線（Layer 3–4）<span style="font-size:.66rem;background:#e79a3c;color:#fff;border-radius:5px;padding:1px 7px">新功能</span></h2>
-      <div class="tablet"><div class="vp">
-        <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
-        <div class="dashhd"><h3>學習進度</h3><span>楊宗翰 · 一週 3 天（二、四、六）</span></div>
-        <div class="dashbody">
-          <div class="kpis">
-            <div class="kpi"><div class="v">20</div><label>預定進度</label></div>
-            <div class="kpi"><div class="v" style="color:#4a4a4a">16</div><label>實際進度</label></div>
-            <div class="kpi lag"><div class="v">−4</div><label>落後單元</label></div>
-          </div>
-          <div class="chartcard">
-            <h4>預定 vs 實際</h4>
-            <svg viewBox="0 0 260 120">
-              <line x1="24" y1="8" x2="24" y2="100" stroke="#e8e3da" stroke-width="1"/>
-              <line x1="24" y1="100" x2="252" y2="100" stroke="#e8e3da" stroke-width="1"/>
-              <polyline points="24,100 60,88 96,76 132,64 168,52 204,40 240,28" fill="none" stroke="#efa074" stroke-width="2.5" stroke-dasharray="6 4"/>
-              <polyline points="24,100 60,90 96,80 132,74 168,68 204,60 240,50" fill="none" stroke="#f08c7c" stroke-width="2.5"/>
-              <circle cx="240" cy="28" r="3.5" fill="#efa074"/>
-              <circle cx="240" cy="50" r="3.5" fill="#f08c7c"/>
-              <text x="30" y="20" font-size="9" fill="#c8894f">預定（練習日累計）</text>
-              <text x="150" y="72" font-size="9" fill="#e07a68">實際（單元 N）</text>
-            </svg>
-            <div class="mut">距離上次練習：5 天</div>
-          </div>
-          <button class="ghostbtn">調整節奏（改練習日）</button>
-          <button class="dangerbtn">重設基準：從今天重新起算</button>
-          <div class="chartcard mut" style="text-align:center;padding:8px">本季已重設 0 / 2 次</div>
-        </div>
-      </div></div>
-      <div class="notes"><b>規格註記</b>
-        <ul>
-          <li><span class="todo">［新功能］</span>家長儀表板為自學版全新頁（實機無家長端進度頁）；套用本 APP coral 頂欄＋白卡＋警示色</li>
-          <li>預定 P = 基準起算日至今練習日數；落後 D = P − N，純顯示層計算（不影響解鎖）</li>
-          <li>通知升級：D ≤ 2 提醒孩子；D 3–5 改推家長；D &gt; 5 引導降頻或重設基準</li>
-          <li>重設基準二次確認、每季限 2 次、紀錄留存；「落後」字樣僅家長端可見</li>
-        </ul>
-      </div>
-    </div>
-
+    <a class="card" href="https://bestgiow-design.github.io/sor-self-paced-mockup/" target="_blank" rel="noopener">
+      <span class="tag t-web">說明</span>
+      <div class="ic">📖</div>
+      <h3>自學模組 · 說明</h3>
+      <p>介面參考圖 v3：設計概念（進度驅動 × 基準線）＋各頁規格註記。</p>
+      <div class="go">開啟說明 →</div>
+    </a>
+    <a class="card" href="https://bestgiow-design.github.io/sor-self-paced-mockup/prototype.html" target="_blank" rel="noopener">
+      <span class="tag t-web">原型</span>
+      <div class="ic">📱</div>
+      <h3>自學模組 · 互動原型</h3>
+      <p>可點擊操作的自學版 App 原型（平板）：今日單元、看／唸／寫、金幣與進度流程。</p>
+      <div class="go">開啟原型 →</div>
+    </a>
   </div>
+
+  <h2>金幣 · 打卡機制 <span class="n">· 規劃與提案</span></h2>
+  <div class="grid">
+    <a class="card" href="checkin-proposal.html">
+      <span class="tag t-page">提案</span>
+      <div class="ic">🗓️</div>
+      <h3>連續打卡機制 · 提案</h3>
+      <p>給負責人決定：原模組（缺一天就斷）vs 自學版（登入即累計、無斷鏈）。含多個情境圖解與 16 週對比。</p>
+      <div class="go">開啟提案 →</div>
+    </a>
+    <a class="card" href="coin-prototype.html">
+      <span class="tag t-page">原型</span>
+      <div class="ic">🪙</div>
+      <h3>金幣系統 · 互動原型</h3>
+      <p>建立在實機介面上，右上可切換<b>手機／平板</b>。含學習首頁、清明上學圖地圖（公仔當棋子）、公仔商店（去背）、金幣明細。</p>
+      <div class="go">開啟原型（手機／平板可切換）→</div>
+    </a>
+    <a class="card" href="map-a-96.png" target="_blank">
+      <span class="tag t-page">圖片</span>
+      <div class="ic">🗺️</div>
+      <h3>學習地圖 A · 96 站 layout</h3>
+      <p>沿手繪路徑放置的 96 站地圖（每 4 站一個寶箱、6 期分區）。</p>
+      <div class="go">開啟圖片 →</div>
+    </a>
+    <a class="card" href="coin-rules.docx">
+      <span class="tag t-doc">Word</span>
+      <div class="ic">📄</div>
+      <h3>金幣獎勵系統 · 規則與獎品價值</h3>
+      <p>完整規則：金幣規則、公仔定價（方案 C）、地圖、平衡比、架構與數據。</p>
+      <div class="go">下載文件 →</div>
+    </a>
+  </div>
+
+  <div class="foot">SoR 自學模組 · 專案總覽</div>
 </div>
 </body>
 </html>

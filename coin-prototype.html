@@ -142,10 +142,35 @@ body{margin:0;background:#c9d0d8;display:flex;flex-direction:column;align-items:
 .pop span{font-size:13px;color:#777;}
 @keyframes sparkle{0%{transform:scale(0) rotate(0);opacity:1}100%{transform:scale(1.6) rotate(60deg);opacity:0}}
 .spark{position:absolute;z-index:20;font-size:22px;animation:sparkle .7s ease-out forwards;pointer-events:none;}
+/* ===== 手機／平板 切換器 ===== */
+.switch{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:14px;}
+.switch .ttl{font-size:14px;color:#41525f;font-weight:700;}
+.seg{display:inline-flex;background:#e6e9ee;border-radius:22px;padding:4px;gap:2px;}
+.seg button{border:0;background:none;font-size:14px;font-weight:800;color:#7a828c;border-radius:18px;padding:7px 22px;cursor:pointer;transition:.15s;}
+.seg button.on{background:var(--coral);color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.15);}
+/* ===== 平板模式 overrides ===== */
+body.tab .phone{width:834px;height:1120px;border-radius:34px;border-width:12px;}
+body.tab .ctop{padding-top:58px;}
+body.tab .wtabs,body.tab .week{max-width:540px;margin-left:auto;margin-right:auto;}
+body.tab .ctop .streak{font-size:28px;}
+body.tab .body{max-width:660px;margin-left:auto;margin-right:auto;}
+body.tab .illus{height:190px;font-size:74px;}
+body.tab .grid{grid-template-columns:1fr 1fr 1fr;}
+body.tab .doll img{height:150px;}
+body.tab .obody{padding:20px 26px;}
+body.tab .ohead{padding-left:26px;padding-right:26px;}
+body.tab .led{max-width:660px;margin-left:auto;margin-right:auto;}
+body.tab .nav .ic{width:34px;height:34px;font-size:22px;}
+body.tab .tool{width:50px;height:50px;font-size:22px;}
+body.tab .dlg{width:460px;}
+body.tab .piece img{width:64px;height:64px;}
 </style>
 </head>
 <body>
-<div class="cap">小達人 App · 金幣／遊戲原型（手機版，建立在實機介面上）</div>
+<div class="switch">
+  <div class="ttl">小達人 App · 金幣／遊戲原型（建立在實機介面上）</div>
+  <div class="seg"><button id="mPhone" class="on" onclick="setMode('phone')">手機</button><button id="mTab" onclick="setMode('tablet')">平板</button></div>
+</div>
 <div class="phone">
   <div class="sb" id="sb"><span>4:43</span><span>••• 4G 🔋</span></div>
   <div class="scroll" id="scroll">
@@ -350,6 +375,15 @@ function closeMask(){document.getElementById('mask').classList.remove('on');}
 let tmr;function toast(b,a,s){const t=document.getElementById('toast');
  t.innerHTML=`<div class="big">${b}</div><b>${a}</b><br><span style="font-size:13px;opacity:.85">${s}</span>`;
  t.classList.add('on');clearTimeout(tmr);tmr=setTimeout(()=>t.classList.remove('on'),1500);}
+function setMode(m){const tab=(m=='tablet');
+ document.body.classList.toggle('tab',tab);
+ document.getElementById('mPhone').classList.toggle('on',!tab);
+ document.getElementById('mTab').classList.toggle('on',tab);
+ // 邊框尺寸改變 → 地圖需重建以符合新比例
+ mapBuilt=false;
+ const gs=document.querySelector('.screen[data-s=game]');
+ if(gs&&gs.classList.contains('on')) buildGameMap();
+}
 renderWeek();renderNav();updBal();
 </script>
 </body>
