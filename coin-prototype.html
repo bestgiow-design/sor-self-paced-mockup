@@ -112,8 +112,8 @@ body{margin:0;background:#c9d0d8;display:flex;flex-direction:column;align-items:
 /* game map */
 .screen[data-s=game]{position:absolute;inset:0;bottom:0;display:none;}
 .screen[data-s=game].on{display:block;}
-.gamewrap{position:absolute;inset:0;overflow-x:auto;overflow-y:hidden;background:#bcd9a0;}
-.gamewrap::-webkit-scrollbar{height:0;}
+.gamewrap{position:absolute;inset:0;overflow:auto;background:#bcd9a0;}
+.gamewrap::-webkit-scrollbar{width:0;height:0;}
 .gamemap{position:relative;background-size:100% 100%;background-repeat:no-repeat;background-position:center;}
 .piece{position:absolute;transform:translate(-50%,-62%);z-index:7;transition:left .8s cubic-bezier(.4,0,.3,1),top .8s ease;filter:drop-shadow(0 4px 4px rgba(0,0,0,.35));}
 .piece img{width:52px;height:52px;border-radius:50%;border:3px solid #fff;object-fit:cover;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3);}
@@ -268,8 +268,8 @@ let NP=[], mapBuilt=false;
 function pieceHTML(){if(S.piece!=null&&DOLLS[S.piece])return `<img src="${DOLLS[S.piece].img}" alt="">`;return '<div class="defpin">🚩</div>';}
 function buildGameMap(){
  if(S.pos==null)S.pos=6; updBal();
- if(mapBuilt){const pc=document.getElementById('piece');if(pc)pc.innerHTML=pieceHTML();return;}
- const wrap=document.getElementById('gamewrap'); const mapH=wrap.clientHeight||680;
+ if(mapBuilt){const pc=document.getElementById('piece');if(pc)pc.innerHTML=pieceHTML();centerGw(false);return;}
+ const wrap=document.getElementById('gamewrap'); const mapH=Math.round((wrap.clientHeight||680)*1.5);
  const mapW=Math.round(mapH*5000/597);
  const map=document.getElementById('gamemap');
  map.style.width=mapW+'px'; map.style.height=mapH+'px'; map.style.backgroundImage="url('map-bg.jpg')";
@@ -283,8 +283,13 @@ function buildGameMap(){
   else nodes+=`<div class="node ${i<S.pos?'done':(i>S.pos?'future':'')}" data-i="${i}" style="left:${NP[i].x}px;top:${NP[i].y}px;">${i}</div>`;}
  nodes+=`<div class="piece" id="piece" style="left:${NP[S.pos].x}px;top:${NP[S.pos].y}px;">${pieceHTML()}</div>`;
  map.innerHTML=svg+nodes; mapBuilt=true;
- setTimeout(()=>{wrap.scrollLeft=NP[S.pos].x-wrap.clientWidth*0.42;},50);
+ setTimeout(()=>centerGw(false),50);
 }
+function centerGw(smooth){const w=document.getElementById('gamewrap');if(!w||S.pos==null||!NP[S.pos])return;
+ w.scrollTo({left:NP[S.pos].x-w.clientWidth/2, top:NP[S.pos].y-w.clientHeight/2, behavior:smooth?'smooth':'auto'});}
+function setPiece(i){if(!S.stage||!S.stage[i]){return;}S.piece=i;
+ const pc=document.getElementById('piece');if(pc)pc.innerHTML=pieceHTML();
+ renderCollect();toast('🚩','已設為棋子',DOLLS[i].name+' 現在是地圖上移動的棋子');}
 function advance(){
  if(S.pos>=96){toast('🏁','已到終點','恭喜完成全部關卡！');return;}
  const arrived=S.pos+1;
@@ -292,7 +297,7 @@ function advance(){
  const nn=document.querySelector(`.node[data-i="${arrived}"]`); if(nn)nn.classList.remove('future');
  S.pos=arrived;
  const pc=document.getElementById('piece'); pc.style.left=NP[arrived].x+'px'; pc.style.top=NP[arrived].y+'px';
- const wrap=document.getElementById('gamewrap'); wrap.scrollTo({left:NP[arrived].x-wrap.clientWidth*0.42,behavior:'smooth'});
+ centerGw(true);
  const map=document.getElementById('gamemap');
  for(let s=0;s<6;s++){const sp=document.createElement('div');sp.className='spark';sp.textContent='✨';
   sp.style.left=(NP[arrived].x-14+Math.random()*28)+'px';sp.style.top=(NP[arrived].y-26+Math.random()*28)+'px';
@@ -324,16 +329,19 @@ function openDetail(i){cur=i;openOv('detail');const d=DOLLS[i],st=S.stage[i]||0;
 function doAct(){const d=DOLLS[cur],st=S.stage[cur]||0,price=PRICE[d.rarity][st];
  if(S.bal<price){dialog('餘額不足',`差 ${fmt(price-S.bal)} 金，先去學習賺金幣吧。`,'知道了',null);return;}
  dialog(st==0?'確定要兌換嗎？':'確定要升階嗎？',`${d.name}（${d.rarity}）· 花費 ${fmt(price)} 金`,'確定',()=>{
-  S.bal-=price;S.stage[cur]=st+1;S.piece=cur;
+  S.bal-=price;S.stage[cur]=st+1;
+  const first=(S.piece==null); if(first)S.piece=cur;
+  const _pc=document.getElementById('piece'); if(_pc)_pc.innerHTML=pieceHTML();
   S.led.unshift({i:'🧸',t:st==0?'兌換公仔':'公仔升階',s:d.name+' · '+(st+1)+' 階',a:'−'+fmt(price),c:'n'});
-  updBal();openDetail(cur);toast('🧸','兌換成功！',(st==0?d.name+' 已成為地圖棋子！':d.name+' 升至 '+(st+1)+' 階'));});}
+  updBal();openDetail(cur);
+  toast('🧸','兌換成功！',(st==0?(first?d.name+' 已設為地圖棋子！':d.name+'｜可到「收藏」設為棋子'):d.name+' 升至 '+(st+1)+' 階'));});}
 function openChest(i){if(S['ch'+i]){toast('🎉','已開啟','這個寶箱開過囉');return;}
  dialog('解鎖寶箱站 '+i,'花 500 金開寶箱，掉落金幣或公仔碎片。',S.bal>=500?'解鎖（500 金）':'餘額不足',S.bal>=500?()=>{
   S.bal-=500;S['ch'+i]=true;S.led.unshift({i:'🎁',t:'解鎖寶箱',s:'站 '+i,a:'−500',c:'n'});updBal();toast('🎁','開箱！','+ 公仔碎片 ×3');}:null);}
 function renderCollect(){document.getElementById('colHead').textContent=owned()+' / 24';
- document.getElementById('collectgrid').innerHTML=DOLLS.map((d,i)=>{const st=S.stage[i]||0;
-  return `<div class="doll">${st?`<img src="${d.img}">`:'<div style="height:118px;background:#eee;display:flex;align-items:center;justify-content:center;font-size:40px;color:#bbb;">？</div>'}
-   <div class="info"><div class="nm">${st?d.name:'？？？'}</div>${st?`<span class="rb r${d.rarity}">${d.rarity} · ${st}/3</span>`:'<span style="font-size:11px;color:#aaa;">未擁有</span>'}</div></div>`;
+ document.getElementById('collectgrid').innerHTML=DOLLS.map((d,i)=>{const st=S.stage[i]||0;const isP=(S.piece===i);
+  return `<div class="doll"${st?` onclick="setPiece(${i})" style="cursor:pointer;${isP?'outline:2px solid var(--coral);outline-offset:-2px;':''}"`:''}>${st?`<img src="${d.img}">`:'<div style="height:118px;background:#eee;display:flex;align-items:center;justify-content:center;font-size:40px;color:#bbb;">？</div>'}
+   <div class="info"><div class="nm">${st?d.name:'？？？'}</div>${st?`<span class="rb r${d.rarity}">${d.rarity} · ${st}/3</span><div style="margin-top:6px;font-size:11px;font-weight:700;text-align:center;border-radius:8px;padding:4px 0;${isP?'background:var(--coral);color:#fff;':'background:#f0ece6;color:#8a7f70;'}">${isP?'✓ 目前棋子':'設為棋子'}</div>`:'<span style="font-size:11px;color:#aaa;">未擁有</span>'}</div></div>`;
  }).join('');}
 function dialog(title,msg,ok,fn){document.getElementById('dlg').innerHTML=
  `<div class="c"><h3>${title}</h3><p>${msg}</p></div><div class="btns">${fn?'<button onclick="closeMask()">取消</button>':''}<button class="pri" onclick="closeMask();(${fn?'window._fn()':''})">${ok}</button></div>`;
