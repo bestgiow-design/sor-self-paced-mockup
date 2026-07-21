@@ -112,9 +112,12 @@ body{margin:0;background:#c9d0d8;display:flex;flex-direction:column;align-items:
 /* game map */
 .screen[data-s=game]{position:absolute;inset:0;bottom:0;display:none;}
 .screen[data-s=game].on{display:block;}
-.gamewrap{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;background:linear-gradient(#bfe08a,#a6d16a);}
-.gamewrap::-webkit-scrollbar{width:0;}
-.gamemap{position:relative;width:100%;}
+.gamewrap{position:absolute;inset:0;overflow-x:auto;overflow-y:hidden;background:#bcd9a0;}
+.gamewrap::-webkit-scrollbar{height:0;}
+.gamemap{position:relative;background-size:100% 100%;background-repeat:no-repeat;background-position:center;}
+.piece{position:absolute;transform:translate(-50%,-62%);z-index:7;transition:left .8s cubic-bezier(.4,0,.3,1),top .8s ease;filter:drop-shadow(0 4px 4px rgba(0,0,0,.35));}
+.piece img{width:52px;height:52px;border-radius:50%;border:3px solid #fff;object-fit:cover;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3);}
+.piece .defpin{font-size:38px;}
 .deco{position:absolute;pointer-events:none;filter:drop-shadow(0 3px 3px rgba(0,0,0,.12));}
 .node{position:absolute;width:52px;height:52px;border-radius:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#3a6b2f;background:#e9f7dd;border:3px solid #fff;box-shadow:0 3px 6px rgba(0,0,0,.2);z-index:3;}
 .node.done{background:#d7f0c2;}
@@ -260,49 +263,41 @@ function renderWeek(){
  document.getElementById('week').innerHTML=d.map(([l,n,b])=>
   `<div class="day"><span class="lbl">${l}</span><div class="ring ${b||''}">${n}<span class="chk">✓</span></div></div>`).join('');
 }
+const ROUTE=[[0.0146, 0.7303], [0.0326, 0.6834], [0.0518, 0.665], [0.071, 0.6499], [0.09, 0.6214], [0.1026, 0.6801], [0.0856, 0.7554], [0.0668, 0.7856], [0.0476, 0.8107], [0.0286, 0.8392], [0.0394, 0.8543], [0.0542, 0.9464], [0.0736, 0.9497], [0.0924, 0.9296], [0.1116, 0.9313], [0.1308, 0.9363], [0.15, 0.9162], [0.1666, 0.8358], [0.1842, 0.7772], [0.1954, 0.8861], [0.2144, 0.8961], [0.2244, 0.7638], [0.24, 0.6784], [0.2584, 0.6315], [0.2776, 0.6248], [0.296, 0.665], [0.3152, 0.6583], [0.3332, 0.6047], [0.317, 0.6918], [0.301, 0.7822], [0.2852, 0.8559], [0.2834, 0.8978], [0.2964, 0.8626], [0.3088, 0.8559], [0.3264, 0.8677], [0.3454, 0.8844], [0.357, 0.7621], [0.3678, 0.6784], [0.3868, 0.6918], [0.4052, 0.6432], [0.4042, 0.5729], [0.3854, 0.5427], [0.366, 0.5377], [0.384, 0.541], [0.3972, 0.4757], [0.3784, 0.4389], [0.3828, 0.4405], [0.3862, 0.5109], [0.3804, 0.665], [0.3678, 0.7152], [0.3706, 0.5561], [0.3742, 0.3953], [0.387, 0.3501], [0.4024, 0.4456], [0.4164, 0.5578], [0.4286, 0.6834], [0.4396, 0.8074], [0.4582, 0.7822], [0.4744, 0.6935], [0.4886, 0.5863], [0.507, 0.5645], [0.5174, 0.6918], [0.536, 0.7203], [0.5544, 0.675], [0.5716, 0.5997], [0.5906, 0.5812], [0.6084, 0.6332], [0.619, 0.7672], [0.6286, 0.8744], [0.6478, 0.8677], [0.6598, 0.9548], [0.6786, 0.933], [0.6948, 0.8459], [0.7138, 0.8275], [0.732, 0.876], [0.7462, 0.9682], [0.7656, 0.9715], [0.7848, 0.9564], [0.8004, 0.871], [0.8118, 0.7822], [0.8272, 0.7856], [0.8452, 0.8191], [0.8634, 0.8409], [0.8538, 0.8492], [0.865, 0.9296], [0.8842, 0.9414], [0.9032, 0.9497], [0.9222, 0.9246], [0.9414, 0.9179], [0.9608, 0.9179], [0.9798, 0.8894], [0.9908, 0.7655], [0.9962, 0.6114], [0.9804, 0.5779], [0.9612, 0.5678], [0.9518, 0.5678]];
 let NP=[], mapBuilt=false;
+function pieceHTML(){if(S.piece!=null&&DOLLS[S.piece])return `<img src="${DOLLS[S.piece].img}" alt="">`;return '<div class="defpin">🚩</div>';}
 function buildGameMap(){
- if(S.pos==null)S.pos=6;
- updBal();
- if(mapBuilt)return;
+ if(S.pos==null)S.pos=6; updBal();
+ if(mapBuilt){const pc=document.getElementById('piece');if(pc)pc.innerHTML=pieceHTML();return;}
+ const wrap=document.getElementById('gamewrap'); const mapH=wrap.clientHeight||680;
+ const mapW=Math.round(mapH*5000/597);
  const map=document.getElementById('gamemap');
- const W=map.clientWidth||368, N=96, SP=88, PAD=110;
- const H=(N-1)*SP+PAD*2; map.style.height=H+'px';
- const cx=W/2, amp=Math.min(118,W/2-46);
- const X=i=>cx+amp*Math.sin((i-1)*0.62), Y=i=>H-PAD-(i-1)*SP;
- NP=[null]; for(let i=1;i<=N;i++)NP[i]={x:X(i),y:Y(i)};
- let d='M '+X(1).toFixed(0)+' '+Y(1).toFixed(0);
- for(let i=2;i<=N;i++)d+=' L '+X(i).toFixed(0)+' '+Y(i).toFixed(0);
- let svg=`<svg width="${W}" height="${H}" style="position:absolute;inset:0;z-index:1;"><path d="${d}" fill="none" stroke="#4c4c4c" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="2 15" stroke-linecap="round"/></svg>`;
- const dset=['🌲','🌳','🌬️','☁️','🪨','🌸','🌳'];
- let deco='';
- for(let k=0;k<74;k++){const e=dset[k%dset.length];const dy=PAD+k*(H-2*PAD)/74+(k%3)*8;
-  const side=(k%2)?1:-1;let dx=cx+side*(amp+48+(k%4)*16);dx=Math.max(18,Math.min(W-30,dx));
-  deco+=`<div class="deco" style="left:${dx}px;top:${dy}px;font-size:${22+(k%3)*9}px;">${e}</div>`;}
- deco+=`<div class="deco" style="left:${Math.max(30,cx-amp-30)}px;top:${Y(10)}px;font-size:40px;">🏠</div>`;
- deco+=`<div class="deco" style="left:${Math.min(W-30,cx+amp+20)}px;top:${Y(28)}px;font-size:34px;">🏪</div>`;
+ map.style.width=mapW+'px'; map.style.height=mapH+'px'; map.style.backgroundImage="url('map-bg.jpg')";
+ NP=[null]; for(let i=1;i<=96;i++)NP[i]={x:ROUTE[i-1][0]*mapW,y:ROUTE[i-1][1]*mapH};
+ let d='M '+NP[1].x.toFixed(0)+' '+NP[1].y.toFixed(0);
+ for(let i=2;i<=96;i++)d+=' L '+NP[i].x.toFixed(0)+' '+NP[i].y.toFixed(0);
+ let svg=`<svg width="${mapW}" height="${mapH}" style="position:absolute;inset:0;z-index:1;"><path d="${d}" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#5a4a3a" stroke-width="4" stroke-dasharray="1 11" stroke-linecap="round"/></svg>`;
  let nodes='';
- for(let i=1;i<=N;i++){const c=CHEST.has(i);
-  if(c)nodes+=`<div class="node chest" style="left:${X(i)}px;top:${Y(i)}px;" onclick="openChest(${i})">${S['ch'+i]?'🎉':'⭐'}<span class="cnum">${i}</span></div>`;
-  else nodes+=`<div class="node ${i<S.pos?'done':(i>S.pos?'future':'')}" data-i="${i}" style="left:${X(i)}px;top:${Y(i)}px;">${i}</div>`;}
- const pin=`<div class="pin" id="pin" style="left:${X(S.pos)}px;top:${Y(S.pos)-26}px;"><div class="halo"></div><svg width="46" height="58" viewBox="0 0 46 58"><path d="M23 2C12 2 3 11 3 22c0 15 20 34 20 34s20-19 20-34C43 11 34 2 23 2z" fill="#e8425f" stroke="#fff" stroke-width="3"/><circle cx="23" cy="21" r="9" fill="#ffd4e0"/></svg></div>`;
- map.innerHTML=svg+deco+nodes+pin; mapBuilt=true;
- setTimeout(()=>{const w=document.getElementById('gamewrap');w.scrollTop=Y(S.pos)-w.clientHeight*0.58;},40);
+ for(let i=1;i<=96;i++){const c=CHEST.has(i);
+  if(c)nodes+=`<div class="node chest" style="left:${NP[i].x}px;top:${NP[i].y}px;" onclick="openChest(${i})">${S['ch'+i]?'🎉':'⭐'}</div>`;
+  else nodes+=`<div class="node ${i<S.pos?'done':(i>S.pos?'future':'')}" data-i="${i}" style="left:${NP[i].x}px;top:${NP[i].y}px;">${i}</div>`;}
+ nodes+=`<div class="piece" id="piece" style="left:${NP[S.pos].x}px;top:${NP[S.pos].y}px;">${pieceHTML()}</div>`;
+ map.innerHTML=svg+nodes; mapBuilt=true;
+ setTimeout(()=>{wrap.scrollLeft=NP[S.pos].x-wrap.clientWidth*0.42;},50);
 }
 function advance(){
  if(S.pos>=96){toast('🏁','已到終點','恭喜完成全部關卡！');return;}
  const arrived=S.pos+1;
- const prev=document.querySelector(`.node[data-i="${S.pos}"]`); if(prev){prev.classList.remove('future');prev.classList.add('done');}
+ const pv=document.querySelector(`.node[data-i="${S.pos}"]`); if(pv){pv.classList.remove('future');pv.classList.add('done');}
  const nn=document.querySelector(`.node[data-i="${arrived}"]`); if(nn)nn.classList.remove('future');
  S.pos=arrived;
- const pin=document.getElementById('pin'); pin.style.left=NP[arrived].x+'px'; pin.style.top=(NP[arrived].y-26)+'px';
- const w=document.getElementById('gamewrap'); w.scrollTo({top:NP[arrived].y-w.clientHeight*0.58,behavior:'smooth'});
- // 火花
+ const pc=document.getElementById('piece'); pc.style.left=NP[arrived].x+'px'; pc.style.top=NP[arrived].y+'px';
+ const wrap=document.getElementById('gamewrap'); wrap.scrollTo({left:NP[arrived].x-wrap.clientWidth*0.42,behavior:'smooth'});
  const map=document.getElementById('gamemap');
  for(let s=0;s<6;s++){const sp=document.createElement('div');sp.className='spark';sp.textContent='✨';
-  sp.style.left=(NP[arrived].x-14+(Math.random()*28))+'px';sp.style.top=(NP[arrived].y-14+(Math.random()*28))+'px';
+  sp.style.left=(NP[arrived].x-14+Math.random()*28)+'px';sp.style.top=(NP[arrived].y-26+Math.random()*28)+'px';
   map.appendChild(sp);setTimeout(()=>sp.remove(),700);}
- setTimeout(()=>pop('🎉','抵達第 '+arrived+' 站！','完成本週進度目標'),450);
+ setTimeout(()=>pop('🎉','抵達第 '+arrived+' 站！',S.piece!=null?DOLLS[S.piece].name+' 往前走一格':'完成本週進度目標'),450);
 }
 function pop(e,t,s){const p=document.getElementById('pop');p.innerHTML=`<div class="e">${e}</div><b>${t}</b><span>${s}</span>`;
  p.classList.add('on');clearTimeout(window._pt);window._pt=setTimeout(()=>p.classList.remove('on'),1600);}
@@ -329,9 +324,9 @@ function openDetail(i){cur=i;openOv('detail');const d=DOLLS[i],st=S.stage[i]||0;
 function doAct(){const d=DOLLS[cur],st=S.stage[cur]||0,price=PRICE[d.rarity][st];
  if(S.bal<price){dialog('餘額不足',`差 ${fmt(price-S.bal)} 金，先去學習賺金幣吧。`,'知道了',null);return;}
  dialog(st==0?'確定要兌換嗎？':'確定要升階嗎？',`${d.name}（${d.rarity}）· 花費 ${fmt(price)} 金`,'確定',()=>{
-  S.bal-=price;S.stage[cur]=st+1;
+  S.bal-=price;S.stage[cur]=st+1;S.piece=cur;
   S.led.unshift({i:'🧸',t:st==0?'兌換公仔':'公仔升階',s:d.name+' · '+(st+1)+' 階',a:'−'+fmt(price),c:'n'});
-  updBal();openDetail(cur);toast('🧸','兌換成功！',d.name+' 升至 '+(st+1)+' 階');});}
+  updBal();openDetail(cur);toast('🧸','兌換成功！',(st==0?d.name+' 已成為地圖棋子！':d.name+' 升至 '+(st+1)+' 階'));});}
 function openChest(i){if(S['ch'+i]){toast('🎉','已開啟','這個寶箱開過囉');return;}
  dialog('解鎖寶箱站 '+i,'花 500 金開寶箱，掉落金幣或公仔碎片。',S.bal>=500?'解鎖（500 金）':'餘額不足',S.bal>=500?()=>{
   S.bal-=500;S['ch'+i]=true;S.led.unshift({i:'🎁',t:'解鎖寶箱',s:'站 '+i,a:'−500',c:'n'});updBal();toast('🎁','開箱！','+ 公仔碎片 ×3');}:null);}
