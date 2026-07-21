@@ -112,7 +112,7 @@ body{margin:0;background:#c9d0d8;display:flex;flex-direction:column;align-items:
 /* game map */
 .screen[data-s=game]{position:absolute;inset:0;bottom:0;display:none;}
 .screen[data-s=game].on{display:block;}
-.gamewrap{position:absolute;inset:0;overflow:auto;background:#bcd9a0;}
+.gamewrap{position:absolute;inset:0;overflow:auto;background:linear-gradient(#c6d7dd 0%,#c6d7dd 22%,#aecab4 100%);}
 .gamewrap::-webkit-scrollbar{width:0;height:0;}
 .gamemap{position:relative;background-size:100% 100%;background-repeat:no-repeat;background-position:center;}
 .piece{position:absolute;transform:translate(-50%,-62%);z-index:7;transition:left .8s cubic-bezier(.4,0,.3,1),top .8s ease;filter:drop-shadow(0 4px 4px rgba(0,0,0,.35));}
@@ -289,13 +289,15 @@ function renderWeek(){
   `<div class="day"><span class="lbl">${l}</span><div class="ring ${b||''}">${n}<span class="chk">✓</span></div></div>`).join('');
 }
 const ROUTE=[[0.0146, 0.7303], [0.0326, 0.6834], [0.0518, 0.665], [0.071, 0.6499], [0.09, 0.6214], [0.1026, 0.6801], [0.0856, 0.7554], [0.0668, 0.7856], [0.0476, 0.8107], [0.0286, 0.8392], [0.0394, 0.8543], [0.0542, 0.9464], [0.0736, 0.9497], [0.0924, 0.9296], [0.1116, 0.9313], [0.1308, 0.9363], [0.15, 0.9162], [0.1666, 0.8358], [0.1842, 0.7772], [0.1954, 0.8861], [0.2144, 0.8961], [0.2244, 0.7638], [0.24, 0.6784], [0.2584, 0.6315], [0.2776, 0.6248], [0.296, 0.665], [0.3152, 0.6583], [0.3332, 0.6047], [0.317, 0.6918], [0.301, 0.7822], [0.2852, 0.8559], [0.2834, 0.8978], [0.2964, 0.8626], [0.3088, 0.8559], [0.3264, 0.8677], [0.3454, 0.8844], [0.357, 0.7621], [0.3678, 0.6784], [0.3868, 0.6918], [0.4052, 0.6432], [0.4042, 0.5729], [0.3854, 0.5427], [0.366, 0.5377], [0.384, 0.541], [0.3972, 0.4757], [0.3784, 0.4389], [0.3828, 0.4405], [0.3862, 0.5109], [0.3804, 0.665], [0.3678, 0.7152], [0.3706, 0.5561], [0.3742, 0.3953], [0.387, 0.3501], [0.4024, 0.4456], [0.4164, 0.5578], [0.4286, 0.6834], [0.4396, 0.8074], [0.4582, 0.7822], [0.4744, 0.6935], [0.4886, 0.5863], [0.507, 0.5645], [0.5174, 0.6918], [0.536, 0.7203], [0.5544, 0.675], [0.5716, 0.5997], [0.5906, 0.5812], [0.6084, 0.6332], [0.619, 0.7672], [0.6286, 0.8744], [0.6478, 0.8677], [0.6598, 0.9548], [0.6786, 0.933], [0.6948, 0.8459], [0.7138, 0.8275], [0.732, 0.876], [0.7462, 0.9682], [0.7656, 0.9715], [0.7848, 0.9564], [0.8004, 0.871], [0.8118, 0.7822], [0.8272, 0.7856], [0.8452, 0.8191], [0.8634, 0.8409], [0.8538, 0.8492], [0.865, 0.9296], [0.8842, 0.9414], [0.9032, 0.9497], [0.9222, 0.9246], [0.9414, 0.9179], [0.9608, 0.9179], [0.9798, 0.8894], [0.9908, 0.7655], [0.9962, 0.6114], [0.9804, 0.5779], [0.9612, 0.5678], [0.9518, 0.5678]];
-let NP=[], mapBuilt=false;
+let NP=[], mapBuilt=false, PADTOP=0;
 function pieceHTML(){if(S.piece!=null&&DOLLS[S.piece])return `<img src="${DOLLS[S.piece].img}" alt="">`;return '<div class="defpin">🚩</div>';}
 function buildGameMap(){
  if(S.pos==null)S.pos=6; updBal();
  if(mapBuilt){const pc=document.getElementById('piece');if(pc)pc.innerHTML=pieceHTML();centerGw(false);return;}
- const wrap=document.getElementById('gamewrap'); const mapH=Math.round((wrap.clientHeight||680)*1.5);
+ const wrap=document.getElementById('gamewrap'); const ch=wrap.clientHeight||680; const mapH=Math.round(ch*1.5);
  const mapW=Math.round(mapH*5000/597);
+ PADTOP=Math.round(ch*0.30); const padBot=Math.round(ch*0.55);
+ wrap.style.paddingTop=PADTOP+'px'; wrap.style.paddingBottom=padBot+'px';
  const map=document.getElementById('gamemap');
  map.style.width=mapW+'px'; map.style.height=mapH+'px'; map.style.backgroundImage="url('map-bg.jpg')";
  NP=[null]; for(let i=1;i<=96;i++)NP[i]={x:ROUTE[i-1][0]*mapW,y:ROUTE[i-1][1]*mapH};
@@ -311,7 +313,9 @@ function buildGameMap(){
  setTimeout(()=>centerGw(false),50);
 }
 function centerGw(smooth){const w=document.getElementById('gamewrap');if(!w||S.pos==null||!NP[S.pos])return;
- w.scrollTo({left:NP[S.pos].x-w.clientWidth/2, top:NP[S.pos].y-w.clientHeight/2, behavior:smooth?'smooth':'auto'});}
+ const topInset=56, botInset=86; // 讓開上方金幣列與下方前進鈕
+ const safeC=topInset+(w.clientHeight-topInset-botInset)/2;
+ w.scrollTo({left:NP[S.pos].x-w.clientWidth/2, top:(PADTOP+NP[S.pos].y)-safeC, behavior:smooth?'smooth':'auto'});}
 function setPiece(i){if(!S.stage||!S.stage[i]){return;}S.piece=i;
  const pc=document.getElementById('piece');if(pc)pc.innerHTML=pieceHTML();
  renderCollect();toast('🚩','已設為棋子',DOLLS[i].name+' 現在是地圖上移動的棋子');}
