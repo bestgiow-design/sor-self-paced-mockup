@@ -121,6 +121,18 @@
   .unitinfo .upage{font-size:1.05rem;font-weight:800;color:var(--blue)}
   .nextwrap{text-align:center;margin:0 16px}
   .nextbtn{border:none;font-family:inherit;color:#fff;background:var(--green-d);border-radius:26px;padding:14px 30px;font-size:1.05rem;font-weight:800;cursor:pointer}
+  .unitnav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px}
+  .unitnavbtn{border:1.5px solid #d8dee8;background:#fff;border-radius:20px;padding:8px 14px;font-family:inherit;font-size:.9rem;font-weight:700;color:#4a4a4a;cursor:pointer}
+  .unitnavbtn:active{background:#f0f0f0}
+  .unitnavbtn:disabled{opacity:.35;cursor:default}
+  .unitnavc{font-size:.95rem;font-weight:800;color:#2f3e57;white-space:nowrap}
+  .backcurwrap{margin-top:8px;text-align:center;min-height:0}
+  .backcur{display:inline-flex;align-items:center;gap:6px;border:none;background:#f08c7c;color:#fff;border-radius:18px;padding:7px 16px;font-family:inherit;font-size:.85rem;font-weight:700;cursor:pointer}
+  .donelist-row{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #eef0f4;border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer}
+  .donelist-row .dchk{color:#5fb389;font-weight:800}
+  .donelist-row .dcode{font-weight:700;color:#2f3e57;font-size:.92rem}
+  .donelist-row .dpage{margin-left:auto;color:#8a94a6;font-size:.82rem}
+  .donelist-empty{text-align:center;color:#8a94a6;font-size:.9rem;line-height:1.9;padding:44px 20px}
   .steps{margin:14px 16px 0;display:flex;flex-direction:column;gap:9px}
   .step{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 14px;cursor:pointer}
   .step .dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;font-size:.78rem;color:var(--dim);font-weight:700}
@@ -388,6 +400,7 @@
       </optgroup>
       <optgroup label="周邊頁">
         <option value="profile">個人 · 我的</option>
+        <option value="donelist">已完成單元</option>
         <option value="coins">金幣紀錄</option>
         <option value="messages">訊息</option>
         <option value="map">地圖 · 遊戲</option>
@@ -411,7 +424,7 @@
             <div class="nm">宗翰</div>
             <div class="su">恭喜您登入成功</div>
             <div class="brand">我們準備加入 拼讀小達人<br>PA + Phonics 的神奇世界</div>
-            <button class="btn" onclick="go('home')">今天先做一個單元試試看！</button>
+            <button class="btn" onclick="enterApp()">今天先做一個單元試試看！</button>
             <button class="welcome-alt" onclick="go('setup')">直接設定我的承諾書（練習節奏）</button>
           </div>
         </section>
@@ -427,6 +440,12 @@
               <div class="wklabel">2026 年 5 月 · 本週</div>
               <div class="weekstrip" id="weekstrip"></div>
             </div>
+            <div class="unitnav">
+              <button class="unitnavbtn" id="uPrev" onclick="browseUnit(-1)">‹ 上一單元</button>
+              <div class="unitnavc"><span class="unitN">1</span> / 254 單元</div>
+              <button class="unitnavbtn" id="uNext" onclick="browseUnit(1)">下一單元 ›</button>
+            </div>
+            <div class="backcurwrap" id="backcurWrap"></div>
             <div class="unitinfo">
               <div class="uiblock"><div class="uilbl">影片進度</div><div class="ucode" id="uCode">一-1-1</div></div>
               <div class="uidiv"></div>
@@ -437,7 +456,7 @@
               <div class="contentcard" id="contentCard"></div>
             </div>
             <div class="nextwrap" id="nextWrap"></div>
-            <div class="unithint">今日單元（第 <span class="unitN">17</span> 單元） · 全部 254 · 已完成 <span class="doneN">16</span></div>
+            <div class="unithint" id="unitHint">目前單元（第 <span class="unitN">1</span> 單元） · 全部 254 · 已完成 <span class="doneN">0</span></div>
           </div></div>
           <div class="nav" id="navHome"></div>
         </section>
@@ -613,6 +632,7 @@
             <div class="profhd"><div class="ava">宗</div><div class="nm">宗翰</div></div>
             <div class="proflist">
               <div class="profrow" onclick="go('setup')"><span class="ic">📝</span>我的承諾書（練習節奏）<span class="ar">›</span></div>
+              <div class="profrow" onclick="go('donelist')"><span class="ic">✅</span>已完成單元列表<span class="ar">›</span></div>
               <div class="profrow" onclick="goCoins('profile')"><span class="ic"><img class="coinic" src="data:image/png;base64,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"></span>金幣紀錄<span class="ar">›</span></div>
               <div class="profrow"><span class="ic">🔑</span>修改密碼<span class="ar">›</span></div>
               <div class="profrow"><span class="ic">🔔</span>通知設定<span class="ar">›</span></div>
@@ -620,6 +640,14 @@
             </div>
           </div></div></div>
           <div class="nav" id="navProfile"></div>
+        </section>
+
+        <!-- 已完成單元 -->
+        <section class="screen" id="scr-donelist">
+          <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
+          <div class="topbar"><span class="back" onclick="go('home')">‹</span>已完成單元</div>
+          <div class="scroll"><div class="maxw"><div class="simplewrap" id="doneListBody"></div></div></div>
+          <div class="nav" id="navDoneList"></div>
         </section>
 
         <!-- 金幣紀錄 -->
@@ -766,7 +794,7 @@
   </div>
 
 <script>
-  var state = { unitN:1, doneCount:0, steps:{video:false,read:false,write:false},
+  var state = { unitN:1, progressN:1, completed:{}, doneCount:0, steps:{video:false,read:false,write:false},
                 rhythmSet:false, firstUnitDone:false, coins:7500 };
   var recorded = false;
   var cur = 'welcome';
@@ -786,6 +814,7 @@
     // reset transient popups
     document.querySelectorAll('.pop').forEach(function(p){p.classList.remove('show')});
     if(id==='home') renderHome();
+    if(id==='donelist') renderDoneList();
     if(id==='setup') renderDays();
     if(id==='map') renderMap();
     if(id==='calendar') renderCalendar();
@@ -799,7 +828,7 @@
     // scroll top
     var sc=document.querySelector('#scr-'+id+' .scroll'); if(sc) sc.scrollTop=0;
   }
-  function restart(){ state={unitN:1,doneCount:0,steps:{video:false,read:false,write:false},rhythmSet:false,firstUnitDone:false,coins:7500}; recorded=false; homeTab='video'; readItems.forEach(function(x){x.done=false;}); curReadItem=0; writeItems.forEach(function(x){x.done=false;}); curWriteItem=0; go('welcome'); }
+  function restart(){ state={unitN:1,progressN:1,completed:{},doneCount:0,steps:{video:false,read:false,write:false},rhythmSet:false,firstUnitDone:false,coins:7500}; recorded=false; homeTab='video'; readItems.forEach(function(x){x.done=false;}); curReadItem=0; writeItems.forEach(function(x){x.done=false;}); curWriteItem=0; go('welcome'); }
 
   var stepMeta=[['video','看的作業','看影片'],['read','唸的作業','錄音上傳'],['write','寫的作業','拍照上傳']];
   var ICON={PLAY:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADYAAAAqCAYAAAD4Uag9AAACdklEQVR42u2ZX0sUURjGf+fMzq7j7oSmthpiEZmlWFFQhoFimYRdlBdakYZYEPUZuuwrdCNd5E0fIXRjXQujJOnP0oYZQRLouprC7jK7O85MF9FF6GUt7snn8p2b8+Oc87zPe0asPbgPgKyooKyz2/M3t1KKKiTi5GIR4a6vA+ADkDV7CF276cmQSanK39yKr2G/l3nyWLipZSSahtHZXdJQvyVDJkZnt4emIbVwHXpjE6pIb2xCC9chtapqD8WkVVV7PhEMbvpgRcfJv5ouCYhAWztGV88fNREMIlFUO2D/PZjechQtXFs8Am/r2l8Hk6aJOXKXQNtZ0P3qHUWj6wKhgUG0+gb17pivYR/m0C3KOs4hDEM98yhr7yB0fRjfgYPquaIWriV0dQijpxdRhFxadLsPnDyNOTiCfrgFhFCrj8nK3QT7Bii/dAVZUaleg/a3HsccvoP/2AmQmlrJQxgG5b2XCfb1I2vC6kUq/dARdt2+R+DUGdB19bKicf4iof4baHvrd0LwluFguy3IevaU/Ns3YNtqgNmfP2FNRXFTSTV2zLMsrOg4hfh7cB01jmIh/o7ci0nc9TU17pi79gNrMoI9lwDPU8M88rOvyU0/x8uk1XBFJ7mENTnBxtcv6th9bnqK/MxLPMtSo49tLHzDikVwvi+o06Ct6AT52RmwC2okDzedJv3oIU5ySa1IZX/8UOS5Z+vazkvwDth2GVu8bHbzsNfVs+mfUynJy2aRzuqKUG23nNUVIZ3kIvb8nDJQ9vwcTnIRieNgxSLC/cehtChTQyaNFYsIHOeXebipZTJjo6KQiJcsVCERJzM2KtzUMgA/ASOUx82o62pWAAAAAElFTkSuQmCC",MIC:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAzCAYAAAD/06q7AAAEPElEQVR42u2Yy1cadxTHvxdGgcrA4AtREQnRUx8x2qZ1kdZzenqy7Tr/Wfdddd1VG7Oomp5TtcUcXxiTKjrIm8CAgDDAr4s21DCDzEw03XCX9/e7dz5zf/f+Hpe+D/4Ao2LlLHBaeDgtDgYAUiVPUqWAq1rFsE/OKMhn7gdsYXimdYgBwG4yhGBij4yA6QYatbvxePwLNmBztZ2zMDyDMX6E/RbZpuhlQpd/k57JDguPJ/6VG2HeyYDNhSf+Feaw8HcDZCLCsmeR2TirZuc2zoplzyIzEd0+0BjvQcA1qTsnAq5JjPGe2wfqtwrMaOXosdUMNGjrN1zKemw1A3kdo4aB9Nia9Ow9H7KB3knZfwzpAnWBukBdoC5QF6gLdMvCcWTGhHOMcSYO0UKCLuWi6sTclQTB6jT0kdyV1HbM3tOHUd7Nao0azvNR4r7xPWYBl6/5rvrx8CfKVZQOLgpxw0AXhbiqXrA48XT2u+b19kyKMNM1GADAQ/es6v03U84aXoZ2tq3f8jnHlTk0M3AffK9dYZwsZcgokJot32vHzMB9bUnt5T2KKKXLb7Ede6kbZjv2EunyW03fAABTWBIVyql+PwjKgOwmQxTT8TSOXSawmwwpHBEIU/1+xfywJMIk5qOKAY/dDbXnstyoYTW8QYfp444wh+ljrIY3SG7UVJ/ZHrtboRfzUZjCUkQ1N5bc84wjs0JfkstYFzfp2eka1KIblkQ8O13DurhJJbms3GfIjCX3vOpyhaUIcUW5hN1kCK2tlYDLh0L1kv0eDaoCn+TO6SR3Ds7EwflvQ0GqFFBTich1eeR5yFor+10LpyiX/knqg/QrqtZlxaRF9xxmB6dvfAbXGjVkyllkytmOMLOD02zRPafQV+syDtKvqFllUqWAreiOqpMV7zKmXH6mluRahUCYcvnZindZdXwrugOpUni/YXWUeUPjDg+bdHoVBt9OfoVJwct24vukVsKd3vVLI/MsIPignjcijjJvmn/bBKqxOtbFTbJxVubuG1K2VQQfAoKP/RnfQyj9uu2Zd/2MmhmcYp+PPGg7J1FMYV3cpBqr/xfN1qanYHFo6pKJ+SguCnEU5RIq9SoAwGLuRV/PJxjjRzo2GDLlLFZP1ylXyb+/vGpdWHtPH772fsl8zvE7uWKcSRFsiFuqUVY9Oi7lIp6HX1Awvn/rMMH4Pp6HX7Rd8rZdWLkhYyu2Q6fSOR6NLHxwtM6kCP6I71KqlLn5gtbJUaqUwc8nv9Jw3yDuCRNsfuhTmEnbRbPOGthPHeEkd07JYhoMnTt7mvrUDAyJYgqJYoqC8T24rE64rAK7J0wokjdSiOGv7BmyVznKXknNhNd8hdUb+kq9ingxhXgxRb3mHtYKJOajCGVeG95Fu6+OLtD/ClRv1DXpPhpQopQmLbo7LfvWTfOXkzXMDU0DAA5Sx+i0E3eSvwGkLMMYKOCRdQAAAABJRU5ErkJggg==",PEN:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABmElEQVR42tXZX0vDMBSH4d/JnGWgYBmIF4LY7/+V7FQEZVgnOtDsT483TtyWrm2a7pwUdrMl7HmXpV0ZMTO0HdP5CpdnJwwAj7MFXV8MYYicY0lbQF5YZONkD1UykyvCxIAHAEPEpePDNjHgD0WYWPBVEeJ74OVziavzYWvEZk+IB5TMMETsOZfEv0KGCCUz+cx9el/KrMDsa410NAiyEkZiw6ajAeeFDbISRupsk42TzhHT+YrAzEd53L1+gx3H7/Nbj3VZOse65onifSP+jxfHt43YHacC3zTC9boafF3E88fC+T69XAfa/LapmE/ZOJE5jXbFV51iq46gKxACv3PFpt0rdm8rEBqfF7YWHyygD/zR9oAkvnOANL5TgAa8d4AWvFeAJnzrAG34VgEa8Y0DtOIbBWjG1wZoxx8MiAFfGRAL3hkQE34vIDb8VkCM+L+AWPEAQPdvFjfpaZT4zT1xtPig98QTAXywgElh6VYAHyRAEt85QBrfKUAD3jtAC94rQBO+dYA2PACYvLCN/lR7mC3U4QHgB0F6N8/n/BAjAAAAAElFTkSuQmCC"};
@@ -837,18 +866,48 @@
       t.onclick=function(){setHomeTab(o[0])};
       rail.appendChild(t);
     });
+    // 狀態：done(已完成) / current(目前進度) / ahead(尚未解鎖)
+    var viewN=state.unitN, curN=state.progressN;
+    var status = viewN<curN ? 'done' : (viewN>curN ? 'ahead' : 'current');
     // 內容卡
-    var m=tabMeta[homeTab], done=state.steps[homeTab], pct=done?'100%':'0%';
+    var m=tabMeta[homeTab];
     var im=document.querySelector(m.mascot); var src=im?im.src:'';
-    document.getElementById('contentCard').innerHTML=
-      '<img class="cm" src="'+src+'">'+
-      '<div class="prog"><span class="lbl">'+m.prog+'</span>'+
-      '<span class="ring2" style="border-color:'+m.color+';color:'+m.color+'">'+pct+'</span></div>'+
-      '<button class="homecta" style="background:'+m.color+'" onclick="go(\''+(homeTab==='read'?'read-list':(homeTab==='write'?'write-list':homeTab))+'\')">'+m.label+' <span class="sm">共 1 項</span></button>';
-    // 今天全部完成 → 顯示下一單元按鈕
+    var cc=document.getElementById('contentCard');
+    if(status==='current'){
+      var done=state.steps[homeTab], pct=done?'100%':'0%';
+      cc.innerHTML=
+        '<img class="cm" src="'+src+'">'+
+        '<div class="prog"><span class="lbl">'+m.prog+'</span>'+
+        '<span class="ring2" style="border-color:'+m.color+';color:'+m.color+'">'+pct+'</span></div>'+
+        '<button class="homecta" style="background:'+m.color+'" onclick="go(\''+(homeTab==='read'?'read-list':(homeTab==='write'?'write-list':homeTab))+'\')">'+m.label+' <span class="sm">共 1 項</span></button>';
+    } else {
+      var isDone=(status==='done');
+      var ring=isDone?'100%':'🔒';
+      var rc=isDone?'#5fb389':'#b8c0cc';
+      var note=isDone?'此單元已完成 ✓　（往後可開放複習）':'完成目前單元後解鎖';
+      cc.innerHTML=
+        '<img class="cm" src="'+src+'">'+
+        '<div class="prog"><span class="lbl">'+m.prog+'</span>'+
+        '<span class="ring2" style="border-color:'+rc+';color:'+rc+'">'+ring+'</span></div>'+
+        '<div class="homecta" style="background:'+rc+';cursor:default">'+(isDone?'已完成 ✓':'尚未解鎖')+'</div>'+
+        '<div class="mut" style="text-align:center;margin-top:8px;color:#8a94a6;font-size:.82rem">'+note+'</div>';
+    }
+    // 上一單元只到第 1；下一單元只到 254
+    var pv=document.getElementById('uPrev'), nx=document.getElementById('uNext');
+    if(pv) pv.disabled=(viewN<=1); if(nx) nx.disabled=(viewN>=254);
+    // 回到目前單元
+    document.getElementById('backcurWrap').innerHTML = (viewN!==curN)
+      ? '<button class="backcur" onclick="backToCurrent()">↩ 回到目前單元（第 '+curN+' 單元）</button>' : '';
+    // 單元提示列
+    var hint;
+    if(status==='current') hint='目前單元（第 '+viewN+' 單元） · 全部 254 · 已完成 '+state.doneCount;
+    else if(status==='done') hint='第 '+viewN+' 單元 · 已完成 ✓（複習中）';
+    else hint='第 '+viewN+' 單元 · 尚未解鎖（搶先看）';
+    var uh=document.getElementById('unitHint'); if(uh) uh.textContent=hint;
+    // 完成 → 下一單元（僅目前單元且三步驟完成）
     var allDone=state.steps.video&&state.steps.read&&state.steps.write;
-    document.getElementById('nextWrap').innerHTML = allDone
-      ? '<button class="nextbtn" onclick="nextUnit()">🎉 今天完成！前往下一單元 →</button>' : '';
+    document.getElementById('nextWrap').innerHTML = (status==='current'&&allDone)
+      ? '<button class="nextbtn" onclick="nextUnit()">🎉 完成！前往下一單元 →</button>' : '';
   }
   function renderCalendar(){
     var grid=document.getElementById('calGrid'); grid.innerHTML='';
@@ -894,11 +953,34 @@
     }
   }
   function nextUnit(){
-    state.doneCount=state.unitN; state.unitN+=1;
+    // 完成目前進度單元 → 記錄、進度前進、視圖跟到新單元
+    state.completed[state.progressN]=true;
+    state.doneCount=Object.keys(state.completed).length;
+    state.progressN+=1;
+    state.unitN=state.progressN;
     state.steps={video:false,read:false,write:false};
     readItems.forEach(function(x){x.done=false;}); curReadItem=0; writeItems.forEach(function(x){x.done=false;}); curWriteItem=0;
     homeTab='video';
     go('home');
+  }
+  // 瀏覽：上一 / 下一單元（永遠可按，範圍 1~254）
+  function browseUnit(d){
+    var n=state.unitN+d; if(n<1)n=1; if(n>254)n=254;
+    state.unitN=n; homeTab='video'; renderHome();
+  }
+  function backToCurrent(){ state.unitN=state.progressN; homeTab='video'; renderHome(); }
+  // 登入／進入 App：從目前還沒完成的單元開始
+  function enterApp(){ state.unitN=state.progressN; homeTab='video'; go('home'); }
+  function renderDoneList(){
+    var body=document.getElementById('doneListBody'); if(!body)return;
+    var keys=Object.keys(state.completed).map(Number).sort(function(a,b){return a-b;});
+    if(keys.length===0){ body.innerHTML='<div class="donelist-empty">還沒有完成的單元。<br>完成目前單元後，就會出現在這裡，隨時可以回來複習。</div>'; return; }
+    body.innerHTML='<div class="mut" style="color:#8a94a6;font-size:.85rem;margin-bottom:10px">共完成 '+keys.length+' 個單元 · 點一下可回顧</div>'+
+      keys.map(function(n){
+        var u=unitInfo[n]||{code:'一-'+Math.ceil(n/2)+'-'+(((n-1)%2)+1),page:'第一冊'};
+        return '<div class="donelist-row" onclick="state.unitN='+n+';homeTab=\'video\';go(\'home\')">'+
+          '<span class="dchk">✓</span><span class="dcode">第 '+n+' 單元 · '+u.code+'</span><span class="dpage">'+u.page+'</span></div>';
+      }).join('');
   }
 
   // 設定頁：每日列
@@ -941,7 +1023,7 @@
       el.appendChild(d);
     });
   }
-  ['navHome:home','navReadList:home','navWriteList:home','navMsg:messages','navMap:map','navProfile:profile','navCoins:home','navSetup:profile','navDash:profile','navCal:home'].forEach(function(pair){
+  ['navHome:home','navReadList:home','navWriteList:home','navMsg:messages','navMap:map','navProfile:profile','navCoins:home','navSetup:profile','navDash:profile','navCal:home','navDoneList:home'].forEach(function(pair){
     var a=pair.split(':'); buildNav(a[0],a[1]);
   });
 
