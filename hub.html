@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SoR 自學模組 · 專案總覽</title>
+<style>
+:root{--coral:#E0674A;--corald:#B94A30;--navy:#2E5A88;--ink:#2b2b2b;--grey:#8A97A6;--line:#e7ebf0;--bg:#f5f6f8;}
+*{box-sizing:border-box;}
+body{margin:0;font-family:"PingFang TC","Microsoft JhengHei","Noto Sans CJK TC",sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;}
+.hero{background:linear-gradient(135deg,var(--coral),#d9805f);color:#fff;padding:40px 24px 30px;}
+.hero .in{max-width:1000px;margin:0 auto;}
+.hero h1{margin:0 0 8px;font-size:28px;}
+.hero p{margin:0;font-size:15px;opacity:.92;max-width:640px;}
+.wrap{max-width:1000px;margin:0 auto;padding:26px 24px 70px;}
+h2{font-size:16px;color:var(--navy);margin:30px 0 4px;display:flex;align-items:center;gap:8px;}
+h2 .n{font-size:12px;color:var(--grey);font-weight:400;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:14px;}
+.card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;text-decoration:none;color:inherit;transition:.15s;position:relative;}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(0,0,0,.09);border-color:#d7dee6;}
+.card .ic{font-size:30px;margin-bottom:10px;}
+.card h3{margin:0 0 4px;font-size:17px;}
+.card p{margin:0;font-size:13px;color:#5a6b7d;flex:1;}
+.card .go{margin-top:14px;font-size:13px;font-weight:700;color:var(--coral);}
+.tag{position:absolute;top:14px;right:14px;font-size:10.5px;font-weight:700;border-radius:20px;padding:3px 10px;}
+.t-page{background:#EAF3E4;color:#3b6d11;}
+.t-doc{background:#F1EFE8;color:#5f5e5a;}
+.foot{text-align:center;color:var(--grey);font-size:12px;margin-top:34px;}
+</style>
+</head>
+<body>
+<div class="hero"><div class="in">
+  <h1>SoR 自學模組 · 專案總覽</h1>
+  <p>自學模組的說明、互動原型，以及金幣／打卡機制的規劃，整合於此。點卡片即可逐個進去看細節。</p>
+</div></div>
+<div class="wrap">
+
+  <h2>自學模組 <span class="n">· 介面與原型</span></h2>
+  <div class="grid">
+    <a class="card" href="index.html">
+      <span class="tag t-page">說明</span>
+      <div class="ic">📖</div>
+      <h3>自學模組 · 說明</h3>
+      <p>介面參考圖 v3：設計概念（進度驅動 × 基準線）＋各頁規格註記。</p>
+      <div class="go">開啟說明 →</div>
+    </a>
+    <a class="card" href="prototype.html">
+      <span class="tag t-page">原型</span>
+      <div class="ic">📱</div>
+      <h3>自學模組 · 互動原型</h3>
+      <p>可點擊操作的自學版 App 原型（平板）：今日單元、看／唸／寫、金幣與進度流程。</p>
+      <div class="go">開啟原型 →</div>
+    </a>
+  </div>
+
+  <h2>金幣 · 打卡機制 <span class="n">· 規劃與提案</span></h2>
+  <div class="grid">
+    <a class="card" href="checkin-proposal.html">
+      <span class="tag t-page">提案</span>
+      <div class="ic">🗓️</div>
+      <h3>連續打卡機制 · 提案</h3>
+      <p>給負責人決定：原模組（缺一天就斷）vs 自學版（登入即累計、無斷鏈）。含多個情境圖解與 16 週對比。</p>
+      <div class="go">開啟提案 →</div>
+    </a>
+    <a class="card" href="coin-prototype.html">
+      <span class="tag t-page">原型</span>
+      <div class="ic">🪙</div>
+      <h3>金幣系統 · 互動原型</h3>
+      <p>錢包、地圖、公仔商店、任務、正音師端的可點擊原型（含兌換、寶箱、簽到）。</p>
+      <div class="go">開啟原型 →</div>
+    </a>
+    <a class="card" href="map-a-96.png" target="_blank">
+      <span class="tag t-page">圖片</span>
+      <div class="ic">🗺️</div>
+      <h3>學習地圖 A · 96 站 layout</h3>
+      <p>沿手繪路徑放置的 96 站地圖（每 4 站一個寶箱、6 期分區）。</p>
+      <div class="go">開啟圖片 →</div>
+    </a>
+    <a class="card" href="coin-rules.docx">
+      <span class="tag t-doc">Word</span>
+      <div class="ic">📄</div>
+      <h3>金幣獎勵系統 · 規則與獎品價值</h3>
+      <p>完整規則：金幣規則、公仔定價（方案 C）、地圖、平衡比、架構與數據。</p>
+      <div class="go">下載文件 →</div>
+    </a>
+  </div>
+
+  <div class="foot">SoR 自學模組 · 專案總覽</div>
+</div>
+</body>
+</html>

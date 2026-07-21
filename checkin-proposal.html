@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>連續打卡機制 · 提案</title>
+<style>
+:root{--navy:#2E5A88;--navyd:#1F3D5C;--gold:#F2B233;--goldd:#9a6b00;--green:#2FAA6E;--red:#D9534F;--grey:#8A97A6;--lgrey:#EEF2F7;--blue:#3D7FB5;}
+*{box-sizing:border-box;}
+body{margin:0;font-family:"PingFang TC","Microsoft JhengHei","Noto Sans CJK TC",sans-serif;color:#222;background:#f4f6f9;line-height:1.6;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px 60px;}
+.hero{background:var(--navy);color:#fff;padding:34px 40px;border-radius:0 0 22px 22px;}
+.hero h1{margin:0 0 6px;font-size:26px;}
+.hero p{margin:0;color:#cfe0f2;font-size:15px;}
+.tag{display:inline-block;background:#ffffff22;border:1px solid #ffffff44;border-radius:20px;padding:3px 14px;font-size:13px;margin-bottom:14px;}
+h2{color:var(--navyd);font-size:20px;margin:34px 0 14px;border-left:5px solid var(--gold);padding-left:12px;}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.card{background:#fff;border-radius:16px;padding:20px 22px;box-shadow:0 2px 10px rgba(0,0,0,.06);border-top:5px solid var(--navy);}
+.card.b{border-top-color:var(--gold);}
+.card h3{margin:0 0 4px;font-size:18px;}
+.card .who{font-size:13px;color:var(--grey);margin-bottom:12px;}
+.card ul{margin:0;padding-left:18px;}
+.card li{margin-bottom:7px;font-size:14.5px;}
+.hl{background:#FFF4D6;padding:1px 5px;border-radius:5px;font-weight:700;}
+.hlr{background:#FDECEA;color:#b52d22;padding:1px 5px;border-radius:5px;font-weight:700;}
+.legend{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;color:#445;margin:10px 2px 0;}
+.legend span{display:inline-flex;align-items:center;gap:6px;}
+.sq{width:16px;height:16px;border-radius:4px;display:inline-block;}
+.ex{background:#fff;border-radius:16px;padding:18px 20px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.ex-h{font-size:17px;font-weight:800;color:var(--navyd);}
+.ex-d{font-size:13.5px;color:#556;margin:3px 0 12px;}
+.gridwrap{overflow-x:auto;padding-bottom:4px;}
+.grid{display:inline-flex;gap:3px;}
+.wkgap{width:14px;}
+.col{display:flex;flex-direction:column;align-items:center;gap:3px;width:34px;flex:none;}
+.dnum{font-size:10px;color:#aab;}
+.day{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;}
+.on{background:#E5F3EC;color:var(--green);border:1.5px solid #9fdcc0;}
+.off{background:#f0f0f2;color:#c2c2c8;border:1.5px solid #e2e2e6;}
+.coin{width:30px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
+.c50{background:#E6F0F8;color:var(--blue);}
+.c100{background:#FCEFC9;color:var(--goldd);}
+.c0{background:transparent;color:#ccd;}
+.rowlab{font-size:10.5px;color:#889;width:56px;flex:none;display:flex;align-items:center;justify-content:flex-end;padding-right:6px;}
+.rowline{display:inline-flex;gap:3px;align-items:center;}
+.totrow{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:14px;}
+.pill{border-radius:10px;padding:6px 14px;font-weight:700;}
+.pa{background:#eef1f5;color:var(--navyd);}
+.pb{background:#FCEFC9;color:var(--goldd);}
+.take{margin-top:10px;font-size:13.5px;color:#445;background:var(--lgrey);border-radius:10px;padding:9px 13px;}
+table{border-collapse:collapse;width:100%;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+th,td{padding:10px 12px;text-align:center;font-size:14px;border-bottom:1px solid #eef1f5;}
+th{background:var(--navy);color:#fff;}
+td.l{text-align:left;font-weight:700;}
+.z{color:var(--red);font-weight:700;}
+.g{color:var(--goldd);font-weight:700;}
+.concl{background:#fff;border-radius:16px;padding:20px 24px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.concl li{margin-bottom:8px;}
+.note{font-size:12px;color:var(--grey);margin-top:8px;}
+@media print{body{background:#fff;}.ex,.card,table,.concl{box-shadow:none;border:1px solid #e2e6ec;}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="tag">提案 · 待負責人決定</div>
+  <h1>連續打卡（登入獎勵）機制</h1>
+  <p>原模組維持嚴格 7 天連續；自學模組因每人週期不同，改為「登入即累計、無斷鏈」。以下用實際情境算給您看差異。</p>
+</div>
+<div class="wrap">
+
+<h2>兩種機制</h2>
+<div class="cards">
+  <div class="card">
+    <h3>A · 原模組（維持）</h3>
+    <div class="who">兒童班 · 有固定上課節奏、承諾每天登入</div>
+    <ul>
+      <li>階梯：第 1–6 天各 <b>+50</b>、第 7 天 <b>+100</b>，滿一輪 <b>400</b>。</li>
+      <li><span class="hlr">缺一天就斷鏈</span>：中斷後重新從第 1 天（50）開始。</li>
+      <li>唯有<b>連續 7 天不中斷</b>，第 7 天才拿得到 <b>100</b>。</li>
+      <li>意思是：<span class="hlr">只要缺過，這輪最多每天 50、拿不到 100</span>（因為前 6 天都是 50）。</li>
+    </ul>
+  </div>
+  <div class="card b">
+    <h3>B · 自學模組（新）</h3>
+    <div class="who">自學版 · 每人自訂週期，別再管承諾書</div>
+    <ul>
+      <li>階梯數字相同：第 1–6 次各 <b>+50</b>、第 7 次 <b>+100</b>，一輪 <b>400</b>。</li>
+      <li><span class="hl">沒有斷鏈問題</span>：不管連不連續、隔多久，每次登入都算並累計。</li>
+      <li><b>每累計滿 7 次登入</b>，第 7 次就給 <b>100</b>。</li>
+      <li>意思是：<span class="hl">登入越多次、拿到越多個 100</span>，不會因為某天沒登入而歸零。</li>
+    </ul>
+  </div>
+</div>
+
+<h2>圖解範例（一格＝一天）</h2>
+<div class="legend">
+  <span><i class="sq on" style="line-height:16px;text-align:center;">✓</i>當天有登入</span>
+  <span><i class="sq off"></i>當天沒登入</span>
+  <span><i class="sq c50"></i>+50</span>
+  <span><i class="sq c100"></i>+100（第 7 次的獎勵）</span>
+  <span>兩排金幣：上排＝原模組 A、下排＝自學 B</span>
+</div>
+<div id="exhost"></div>
+
+<h2>學期尺度對比（16 週）</h2>
+<table>
+  <tr><th>孩子的登入頻率</th><th>總登入次數</th><th>A 原模組總金幣</th><th>拿到幾個 100</th><th>B 自學總金幣</th><th>拿到幾個 100</th></tr>
+  <tbody id="tblhost"></tbody>
+</table>
+<div class="note">＊A 原模組假設「沒有連續 7 天不中斷」——只要每週缺一天，就永遠湊不出連續 7 天，因此一個 100 都拿不到。</div>
+
+<h2>關鍵差異與決策建議</h2>
+<div class="concl">
+  <ul>
+    <li><b>全勤時完全一樣</b>：每天都登入的孩子，兩種機制拿到的金幣相同（例 1）。差異只發生在「有缺過」的孩子身上。</li>
+    <li><b>原模組 A 對「缺席」極嚴</b>：只要不是 100% 全勤，<span class="z">一個 100 都拿不到</span>。連每週只缺一天的勤奮孩子（6 天/週）也是 0 個 100（見對比表）。</li>
+    <li><b>自學模組 B 獎勵累積努力</b>：登入幾次就依比例拿到對應的 100，不會被單日缺席歸零——適合「每人週期不同、想先把孩子黏住」的自學情境。</li>
+    <li><b>取捨</b>：B 的代價是<b>不同頻率的孩子總收入不同</b>（高頻多拿）；但這正是「多登入＝多獎勵」的設計，且金幣主要仍來自完成單元，打卡只是黏著誘因。</li>
+  </ul>
+  <div class="note">建議：兒童班保留 A（維持每天到的紀律）、自學版採 B（配合自訂週期、鼓勵持續登入）。請負責人裁示是否照此雙軌，或兩班統一其一。</div>
+</div>
+
+</div>
+<script>
+function ruleA(p){let s=0,co=[],t=0,b=0;for(const d of p){if(d){s++;let c=s===7?100:50;co.push(c);t+=c;if(s===7){b++;s=0;}}else{s=0;co.push(0);}}return{co,t,b};}
+function ruleB(p){let n=0,co=[],t=0,b=0;for(const d of p){if(d){n++;let c=n%7===0?100:50;co.push(c);t+=c;if(n%7===0)b++;}else co.push(0);}return{co,t,b};}
+function cell(c){if(c===0)return '<div class="coin c0">·</div>';if(c===100)return '<div class="coin c100">100</div>';return '<div class="coin c50">50</div>';}
+function renderGrid(p){
+  const A=ruleA(p),B=ruleB(p);
+  let g='<div class="gridwrap"><div class="grid">';
+  // day + status columns
+  let colrow='', arow='<span class="rowlab">原模組</span>', brow='<span class="rowlab">自學</span>';
+  g='<div class="gridwrap">';
+  // status row
+  let statusRow='<div class="rowline"><span class="rowlab"></span>';
+  let aRow='<div class="rowline"><span class="rowlab">原模組 A</span>';
+  let bRow='<div class="rowline"><span class="rowlab">自學 B</span>';
+  for(let i=0;i<p.length;i++){
+    if(i>0&&i%7===0){statusRow+='<span class="wkgap"></span>';aRow+='<span class="wkgap"></span>';bRow+='<span class="wkgap"></span>';}
+    statusRow+=`<div class="col"><div class="dnum">${i+1}</div><div class="day ${p[i]?'on':'off'}">${p[i]?'✓':'·'}</div></div>`;
+    aRow+=`<div class="col">${cell(A.co[i])}</div>`;
+    bRow+=`<div class="col">${cell(B.co[i])}</div>`;
+  }
+  statusRow+='</div>';aRow+='</div>';bRow+='</div>';
+  g+=statusRow+'<div style="height:4px"></div>'+aRow+'<div style="height:3px"></div>'+bRow+'</div>';
+  return {html:g,A,B};
+}
+const examples=[
+ {h:'例 1 · 全勤寶（每天都登入）',d:'連續 14 天不缺席。',p:Array(14).fill(1),
+  take:'全勤時兩者<b>完全一樣</b>（都拿到 2 個 100）。機制差異對全勤孩子沒影響。'},
+ {h:'例 2 · 每週固定漏一天',d:'很認真，但每週有一天沒登入（例如週日）。',p:[1,1,1,1,1,1,0,1,1,1,1,1,1,0],
+  take:'原模組 A 因為永遠湊不到連續 7 天，<span class="z">一個 100 都拿不到</span>；自學 B 累計到第 7 次就給 100。'},
+ {h:'例 3 · 三天打魚兩天曬網（不規律）',d:'時常中斷、沒有固定節奏。',p:[1,1,1,0,0,1,1,0,1,0,1,1,0,1],
+  take:'A 每次一斷就重來、全是 50；B 不管中斷、第 7 次登入照給 100。'},
+ {h:'例 4 · 複雜：時好時壞（先穩、中間斷一天、後段又穩）',d:'第 1–6 天全到，第 7 天缺；第 8–14 天全勤；第 15 天到、第 16 天缺、之後又全勤。',p:[1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1],
+  take:'A 只拿到 1 個 100（只有第 8–14 那段連續 7 天成立）；<b>第 16 天缺一天，就害 A 少掉一個 100</b>。B 靠累計拿到 2 個 100。單日缺席在 A 代價很大。'},
+];
+const host=document.getElementById('exhost');
+examples.forEach(e=>{
+  const r=renderGrid(e.p);
+  const div=document.createElement('div');div.className='ex';
+  div.innerHTML=`<div class="ex-h">${e.h}</div><div class="ex-d">${e.d}（共 ${e.p.length} 天，登入 ${e.p.filter(x=>x).length} 次）</div>`+
+    r.html+
+    `<div class="totrow"><span class="pill pa">原模組 A：${r.A.t} 金 · ${r.A.b} 個 100</span><span class="pill pb">自學 B：${r.B.t} 金 · ${r.B.b} 個 100</span></div>`+
+    `<div class="take">${e.take}</div>`;
+  host.appendChild(div);
+});
+const wk={'7 天/週（全勤）':[1,1,1,1,1,1,1],'6 天/週':[1,1,1,1,1,1,0],'4 天/週':[1,1,0,1,1,0,0],'2 天/週':[1,0,0,1,0,0,0]};
+const tb=document.getElementById('tblhost');
+for(const [k,w] of Object.entries(wk)){
+  const p=[];for(let i=0;i<16;i++)p.push(...w);
+  const A=ruleA(p),B=ruleB(p);
+  const az=A.b===0?'z':'g',bz=B.b===0?'z':'g';
+  tb.innerHTML+=`<tr><td class="l">${k}</td><td>${p.filter(x=>x).length}</td><td>${A.t.toLocaleString()}</td><td class="${az}">${A.b}</td><td>${B.t.toLocaleString()}</td><td class="${bz}">${B.b}</td></tr>`;
+}
+</script>
+</body>
+</html>
