@@ -1,61 +1,45 @@
 <!DOCTYPE html>
 <html lang="zh-Hant"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SoR 美語 · 發音聽力練習</title>
+<title>SoR 自學模組 · 專案總覽</title>
 <style>
-  :root{--coral:#f08c7c;--green:#5fb389;--blue:#7fb2e0;--ink:#38414f;--dim:#8a94a6;--line:#e3e8ef;--bg:#eef2f6;}
+  :root{--coral:#f08c7c;--green:#5fb389;--blue:#7fb2e0;--amber:#e79a3c;--purple:#8f7fc4;--ink:#38414f;--dim:#8a94a6;--line:#e3e8ef;--bg:#eef2f6;}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;justify-content:center}
-  .wrap{width:100%;max-width:560px;padding:28px 16px 48px}
-  h1{font-size:1.5rem;text-align:center;color:#2f3e57;letter-spacing:.03em}
-  .sub{text-align:center;color:var(--dim);font-size:.86rem;margin:6px 0 22px}
-  .sec{font-weight:800;color:#2f3e57;font-size:.95rem;margin:22px 4px 10px;display:flex;align-items:center;gap:8px}
+  .wrap{width:100%;max-width:600px;padding:0 16px 48px}
+  .hd{background:linear-gradient(135deg,#f08c7c,#e5765f);color:#fff;margin:0 -16px 8px;padding:34px 22px 30px;border-radius:0 0 22px 22px}
+  .hd h1{font-size:1.6rem;letter-spacing:.03em}
+  .hd p{font-size:.86rem;margin-top:8px;line-height:1.7;opacity:.95}
+  .sec{font-weight:800;color:#2f3e57;font-size:.98rem;margin:24px 4px 11px;display:flex;align-items:center;gap:8px}
+  .sec span{font-weight:600;color:var(--dim);font-size:.78rem}
   .sec::before{content:"";width:5px;height:16px;border-radius:3px;background:var(--coral)}
-  a.card{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:11px;box-shadow:0 3px 12px rgba(34,49,79,.05);transition:transform .08s,border-color .12s}
-  a.card:active{transform:scale(.985)}
-  a.card:hover{border-color:var(--coral)}
+  a.card{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px 17px;margin-bottom:11px;box-shadow:0 3px 12px rgba(34,49,79,.05);transition:transform .08s,border-color .12s}
+  a.card:active{transform:scale(.985)} a.card:hover{border-color:var(--coral)}
   .ic{width:46px;height:46px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#fff}
-  .ic.c1{background:var(--coral)} .ic.c2{background:var(--green)} .ic.c3{background:var(--blue)} .ic.c4{background:#e79a3c} .ic.c5{background:#8f7fc4}
+  .c1{background:var(--coral)}.c2{background:var(--green)}.c3{background:var(--blue)}.c4{background:var(--amber)}.c5{background:var(--purple)}.c6{background:#7f9cc4}
   .tx{flex:1;min-width:0}
-  .tt{font-weight:800;font-size:1.02rem;color:#2f3e57}
-  .ds{font-size:.8rem;color:var(--dim);margin-top:3px;line-height:1.5}
-  .ar{color:var(--dim);font-size:1.3rem;flex:none}
-  .foot{text-align:center;color:var(--dim);font-size:.72rem;margin-top:26px;line-height:1.7}
+  .tt{font-weight:800;font-size:1.01rem;color:#2f3e57}
+  .ds{font-size:.79rem;color:var(--dim);margin-top:3px;line-height:1.5}
+  .tag{font-size:.66rem;font-weight:800;color:#fff;background:var(--dim);border-radius:20px;padding:3px 9px;flex:none}
+  .foot{text-align:center;color:var(--dim);font-size:.72rem;margin-top:28px;line-height:1.7}
 </style></head>
 <body><div class="wrap">
-  <h1>SoR 美語 · 發音聽力練習</h1>
-  <div class="sub">聽音辨字 · 看字唸音 · 自學模組</div>
+  <div class="hd"><h1>SoR 自學模組 · 專案總覽</h1><p>自學模組、金幣機制、發音聽力遊戲，整合於此。點卡片即可進去看細節。</p></div>
 
-  <div class="sec">聽音辨字（聽一個音，選出正確的字）</div>
-  <a class="card" href="cv.html">
-    <div class="ic c1">▶</div>
-    <div class="tx"><div class="tt">CV · 母音 × 頭子音</div><div class="ds">160 音 · 4 課累加 · 注音圖／英文</div></div>
-    <div class="ar">›</div>
-  </a>
-  <a class="card" href="ccv.html">
-    <div class="ic c2">▶</div>
-    <div class="tx"><div class="tt">CCV · 複合子音</div><div class="ds">140 音 · 14 複合子音（dr／tr…str）× 10 母音</div></div>
-    <div class="ar">›</div>
-  </a>
-  <a class="card" href="coda-cvc.html">
-    <div class="ic c3">▶</div>
-    <div class="tx"><div class="tt">CVC · 尾子音</div><div class="ds">480 音 · 8 韻 × 3 前綴（裸／st／str）× 20 尾子音</div></div>
-    <div class="ar">›</div>
-  </a>
+  <div class="sec">自學模組 <span>· 介面與原型</span></div>
+  <a class="card" href="prototype.html"><div class="ic c5">&#128241;</div><div class="tx"><div class="tt">自學 App · 互動原型</div><div class="ds">可點擊的自學版 App（學生／家長）· 今日單元 · 看／唸／寫 · 金幣與進度流程</div></div><div class="tag">原型</div></a>
 
-  <div class="sec">看字唸音（看字，唸出來，評分）</div>
-  <a class="card" href="read-poc.html">
-    <div class="ic c4">&#127908;</div>
-    <div class="tx"><div class="tt">看字唸音 · POC</div><div class="ds">看注音圖 → 錄音 → 逐音評分雛形（示範模式）</div></div>
-    <div class="ar">›</div>
-  </a>
+  <div class="sec">金幣 · 打卡機制 <span>· 規劃與提案</span></div>
+  <a class="card" href="checkin-proposal.html"><div class="ic c4">&#128197;</div><div class="tx"><div class="tt">連續打卡機制 · 提案</div><div class="ds">原模組（缺一天就斷）vs 自學版（登入即累計、無斷鏈）· 含情境圖解</div></div><div class="tag">提案</div></a>
+  <a class="card" href="coin-prototype.html"><div class="ic c4">&#129689;</div><div class="tx"><div class="tt">金幣系統 · 互動原型</div><div class="ds">建立在實機介面上，可切換手機／平板 · 首頁 · 地圖 · 公仔商城 · 金幣明細</div></div><div class="tag">原型</div></a>
+  <a class="card" href="map-a-96.png"><div class="ic c4">&#128506;&#65039;</div><div class="tx"><div class="tt">學習地圖 A · 96 站 layout</div><div class="ds">地圖站點設計圖</div></div><div class="tag">圖片</div></a>
+  <a class="card" href="coin-rules.docx"><div class="ic c4">&#128196;</div><div class="tx"><div class="tt">金幣獎勵系統 · 規則與獎品價值</div><div class="ds">金幣規則、公仔定價、地圖與寶箱設定（Word）</div></div><div class="tag">Word</div></a>
 
-  <div class="sec">自學模組</div>
-  <a class="card" href="prototype.html">
-    <div class="ic c5">&#128241;</div>
-    <div class="tx"><div class="tt">自學 App 互動原型</div><div class="ds">學生／家長介面 · 打卡 · 承諾書 · 金幣 · 地圖</div></div>
-    <div class="ar">›</div>
-  </a>
+  <div class="sec">發音聽力遊戲 <span>· 聽音辨字 · 看字唸音</span></div>
+  <a class="card" href="cv.html"><div class="ic c1">&#9654;</div><div class="tx"><div class="tt">聽音辨字 · CV（母音 × 頭子音）</div><div class="ds">160 音 · 4 課累加 · 注音圖／英文可切 · 精熟地圖</div></div><div class="tag">遊戲</div></a>
+  <a class="card" href="ccv.html"><div class="ic c2">&#9654;</div><div class="tx"><div class="tt">聽音辨字 · CCV（複合子音）</div><div class="ds">140 音 · 14 複合子音（dr／tr…str）× 10 母音</div></div><div class="tag">遊戲</div></a>
+  <a class="card" href="coda-cvc.html"><div class="ic c3">&#9654;</div><div class="tx"><div class="tt">聽音辨字 · CVC（尾子音）</div><div class="ds">480 音 · 8 韻 × 3 前綴（裸／st／str）× 20 尾子音</div></div><div class="tag">遊戲</div></a>
+  <a class="card" href="read-poc.html"><div class="ic c6">&#127908;</div><div class="tx"><div class="tt">看字唸音 · POC</div><div class="ds">看注音圖 → 錄音 → 逐音評分雛形（示範模式）· 需麥克風</div></div><div class="tag">POC</div></a>
 
-  <div class="foot">蕭博士 SoR 美語 · 內部原型<br>提示：遊戲首次載入需幾秒（音檔內嵌）；看字唸音需允許麥克風。</div>
+  <div class="foot">蕭博士 SoR 美語 · 內部原型<br>提示：遊戲首次載入需幾秒（音檔內嵌）。</div>
 </div></body></html>
