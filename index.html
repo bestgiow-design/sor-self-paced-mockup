@@ -1,92 +1,61 @@
-<!doctype html>
-<html lang="zh-Hant">
-<head>
-<meta charset="utf-8">
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SoR 自學模組 · 專案總覽</title>
+<title>SoR 美語 · 發音聽力練習</title>
 <style>
-:root{--coral:#E0674A;--corald:#B94A30;--navy:#2E5A88;--ink:#2b2b2b;--grey:#8A97A6;--line:#e7ebf0;--bg:#f5f6f8;}
-*{box-sizing:border-box;}
-body{margin:0;font-family:"PingFang TC","Microsoft JhengHei","Noto Sans CJK TC",sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;}
-.hero{background:linear-gradient(135deg,var(--coral),#d9805f);color:#fff;padding:40px 24px 30px;}
-.hero .in{max-width:1000px;margin:0 auto;}
-.hero h1{margin:0 0 8px;font-size:28px;}
-.hero p{margin:0;font-size:15px;opacity:.92;max-width:640px;}
-.wrap{max-width:1000px;margin:0 auto;padding:26px 24px 70px;}
-h2{font-size:16px;color:var(--navy);margin:30px 0 4px;display:flex;align-items:center;gap:8px;}
-h2 .n{font-size:12px;color:var(--grey);font-weight:400;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:14px;}
-.card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;text-decoration:none;color:inherit;transition:.15s;position:relative;}
-.card:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(0,0,0,.09);border-color:#d7dee6;}
-.card .ic{font-size:30px;margin-bottom:10px;}
-.card h3{margin:0 0 4px;font-size:17px;}
-.card p{margin:0;font-size:13px;color:#5a6b7d;flex:1;}
-.card .go{margin-top:14px;font-size:13px;font-weight:700;color:var(--coral);}
-.tag{position:absolute;top:14px;right:14px;font-size:10.5px;font-weight:700;border-radius:20px;padding:3px 10px;}
-.t-web{background:#E6F0F8;color:var(--navy);}
-.t-page{background:#EAF3E4;color:#3b6d11;}
-.t-doc{background:#F1EFE8;color:#5f5e5a;}
-.foot{text-align:center;color:var(--grey);font-size:12px;margin-top:34px;}
-</style>
-</head>
-<body>
-<div class="hero"><div class="in">
-  <h1>SoR 自學模組 · 專案總覽</h1>
-  <p>自學模組的說明、互動原型，以及金幣／打卡機制的規劃，整合於此。點卡片即可逐個進去看細節。</p>
-</div></div>
-<div class="wrap">
+  :root{--coral:#f08c7c;--green:#5fb389;--blue:#7fb2e0;--ink:#38414f;--dim:#8a94a6;--line:#e3e8ef;--bg:#eef2f6;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;justify-content:center}
+  .wrap{width:100%;max-width:560px;padding:28px 16px 48px}
+  h1{font-size:1.5rem;text-align:center;color:#2f3e57;letter-spacing:.03em}
+  .sub{text-align:center;color:var(--dim);font-size:.86rem;margin:6px 0 22px}
+  .sec{font-weight:800;color:#2f3e57;font-size:.95rem;margin:22px 4px 10px;display:flex;align-items:center;gap:8px}
+  .sec::before{content:"";width:5px;height:16px;border-radius:3px;background:var(--coral)}
+  a.card{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:11px;box-shadow:0 3px 12px rgba(34,49,79,.05);transition:transform .08s,border-color .12s}
+  a.card:active{transform:scale(.985)}
+  a.card:hover{border-color:var(--coral)}
+  .ic{width:46px;height:46px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#fff}
+  .ic.c1{background:var(--coral)} .ic.c2{background:var(--green)} .ic.c3{background:var(--blue)} .ic.c4{background:#e79a3c} .ic.c5{background:#8f7fc4}
+  .tx{flex:1;min-width:0}
+  .tt{font-weight:800;font-size:1.02rem;color:#2f3e57}
+  .ds{font-size:.8rem;color:var(--dim);margin-top:3px;line-height:1.5}
+  .ar{color:var(--dim);font-size:1.3rem;flex:none}
+  .foot{text-align:center;color:var(--dim);font-size:.72rem;margin-top:26px;line-height:1.7}
+</style></head>
+<body><div class="wrap">
+  <h1>SoR 美語 · 發音聽力練習</h1>
+  <div class="sub">聽音辨字 · 看字唸音 · 自學模組</div>
 
-  <h2>自學模組 <span class="n">· 介面與原型</span></h2>
-  <div class="grid">
-    <a class="card" href="https://bestgiow-design.github.io/sor-self-paced-mockup/" target="_blank" rel="noopener">
-      <span class="tag t-web">說明</span>
-      <div class="ic">📖</div>
-      <h3>自學模組 · 說明</h3>
-      <p>介面參考圖 v3：設計概念（進度驅動 × 基準線）＋各頁規格註記。</p>
-      <div class="go">開啟說明 →</div>
-    </a>
-    <a class="card" href="https://bestgiow-design.github.io/sor-self-paced-mockup/prototype.html" target="_blank" rel="noopener">
-      <span class="tag t-web">原型</span>
-      <div class="ic">📱</div>
-      <h3>自學模組 · 互動原型</h3>
-      <p>可點擊操作的自學版 App 原型（平板）：今日單元、看／唸／寫、金幣與進度流程。</p>
-      <div class="go">開啟原型 →</div>
-    </a>
-  </div>
+  <div class="sec">聽音辨字（聽一個音，選出正確的字）</div>
+  <a class="card" href="cv.html">
+    <div class="ic c1">▶</div>
+    <div class="tx"><div class="tt">CV · 母音 × 頭子音</div><div class="ds">160 音 · 4 課累加 · 注音圖／英文</div></div>
+    <div class="ar">›</div>
+  </a>
+  <a class="card" href="ccv.html">
+    <div class="ic c2">▶</div>
+    <div class="tx"><div class="tt">CCV · 複合子音</div><div class="ds">140 音 · 14 複合子音（dr／tr…str）× 10 母音</div></div>
+    <div class="ar">›</div>
+  </a>
+  <a class="card" href="coda-cvc.html">
+    <div class="ic c3">▶</div>
+    <div class="tx"><div class="tt">CVC · 尾子音</div><div class="ds">480 音 · 8 韻 × 3 前綴（裸／st／str）× 20 尾子音</div></div>
+    <div class="ar">›</div>
+  </a>
 
-  <h2>金幣 · 打卡機制 <span class="n">· 規劃與提案</span></h2>
-  <div class="grid">
-    <a class="card" href="checkin-proposal.html">
-      <span class="tag t-page">提案</span>
-      <div class="ic">🗓️</div>
-      <h3>連續打卡機制 · 提案</h3>
-      <p>給負責人決定：原模組（缺一天就斷）vs 自學版（登入即累計、無斷鏈）。含多個情境圖解與 16 週對比。</p>
-      <div class="go">開啟提案 →</div>
-    </a>
-    <a class="card" href="coin-prototype.html">
-      <span class="tag t-page">原型</span>
-      <div class="ic">🪙</div>
-      <h3>金幣系統 · 互動原型</h3>
-      <p>建立在實機介面上，右上可切換<b>手機／平板</b>。含學習首頁、清明上學圖地圖（公仔當棋子）、公仔商店（去背）、金幣明細。</p>
-      <div class="go">開啟原型（手機／平板可切換）→</div>
-    </a>
-    <a class="card" href="map-a-96.png" target="_blank">
-      <span class="tag t-page">圖片</span>
-      <div class="ic">🗺️</div>
-      <h3>學習地圖 A · 96 站 layout</h3>
-      <p>沿手繪路徑放置的 96 站地圖（每 4 站一個寶箱、6 期分區）。</p>
-      <div class="go">開啟圖片 →</div>
-    </a>
-    <a class="card" href="coin-rules.docx">
-      <span class="tag t-doc">Word</span>
-      <div class="ic">📄</div>
-      <h3>金幣獎勵系統 · 規則與獎品價值</h3>
-      <p>完整規則：金幣規則、公仔定價（方案 C）、地圖、平衡比、架構與數據。</p>
-      <div class="go">下載文件 →</div>
-    </a>
-  </div>
+  <div class="sec">看字唸音（看字，唸出來，評分）</div>
+  <a class="card" href="read-poc.html">
+    <div class="ic c4">&#127908;</div>
+    <div class="tx"><div class="tt">看字唸音 · POC</div><div class="ds">看注音圖 → 錄音 → 逐音評分雛形（示範模式）</div></div>
+    <div class="ar">›</div>
+  </a>
 
-  <div class="foot">SoR 自學模組 · 專案總覽</div>
-</div>
-</body>
-</html>
+  <div class="sec">自學模組</div>
+  <a class="card" href="prototype.html">
+    <div class="ic c5">&#128241;</div>
+    <div class="tx"><div class="tt">自學 App 互動原型</div><div class="ds">學生／家長介面 · 打卡 · 承諾書 · 金幣 · 地圖</div></div>
+    <div class="ar">›</div>
+  </a>
+
+  <div class="foot">蕭博士 SoR 美語 · 內部原型<br>提示：遊戲首次載入需幾秒（音檔內嵌）；看字唸音需允許麥克風。</div>
+</div></body></html>
