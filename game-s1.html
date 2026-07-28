@@ -48,6 +48,25 @@
   .step.done{border-color:var(--green);background:#eaf8f1;color:var(--green)}.step.cur{border-color:var(--amber);background:#fdf3e3;color:var(--amber)}
   @keyframes pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
   .unlock{text-align:center;padding:20px}.unlock .em{font-size:3.4rem;animation:pop .6s ease}.unlock .t{font-size:1.3rem;font-weight:800;color:var(--green);margin-top:8px;animation:pop .6s .1s both}
+
+  /* 精熟地圖 */
+  .mmwrap{padding:2px 0}
+  .mmtog{display:flex;gap:8px;margin-bottom:12px}
+  .mmtog button{flex:1;border:1.5px solid var(--line);background:#fff;color:var(--dim);font-family:inherit;font-weight:800;font-size:.9rem;padding:9px;border-radius:11px;cursor:pointer}
+  .mmtog button.on{background:#7fb2e0;border-color:#7fb2e0;color:#fff}
+  .mmtog button.on.en{background:#f08c7c;border-color:#f08c7c}
+  .mmsum{display:flex;gap:6px;margin:2px 0 12px}
+  .mmsum>div{flex:1;text-align:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:7px 2px}
+  .mmsum b{display:block;font-size:1.15rem;line-height:1.1}.mmsum small{font-size:.6rem;color:var(--dim)}
+  .mmgrid{display:grid;gap:3px;align-items:center}
+  .mmh{font-size:.52rem;font-weight:800;color:var(--dim);text-align:center;line-height:1;padding:2px 0;word-break:break-all}
+  .mmrl{font-size:.55rem;font-weight:800;color:#5a6474;text-align:right;padding-right:3px;line-height:1.02;word-break:break-all}
+  .mmc{position:relative;aspect-ratio:1;border-radius:6px;background:#e6eaf0}
+  .mmc.g{background:#5fb389}.mmc.y{background:#e79a3c}.mmc.r{background:#e8776a}.mmc.n{background:#e6eaf0}
+  .mmc.hist::after{content:"";position:absolute;top:2px;right:2px;width:4px;height:4px;border-radius:50%;background:rgba(47,62,87,.6)}
+  .mmleg{display:flex;flex-wrap:wrap;gap:9px 12px;margin-top:14px;font-size:.72rem;color:var(--dim)}
+  .mmleg span{display:flex;align-items:center;gap:5px}
+  .mmdot{width:12px;height:12px;border-radius:4px;display:inline-block;position:relative}
 </style></head>
 <body><div class="device">
   <div class="dstat"><span>9:41</span><span>🔋 82%</span></div>
@@ -61,6 +80,29 @@ const CFG={xc:{nq:5,need:4,color:'#f08c7c',timed:false,combo:false},fx:{nq:10,ne
 let done=load();function load(){try{return JSON.parse(localStorage.getItem('sor_tri'))||{xc:{},fx:{},gate:{}};}catch(e){return{xc:{},fx:{},gate:{}};}}function save(){try{localStorage.setItem('sor_tri',JSON.stringify(done));}catch(e){}}
 const ac={};function aud(f){if(!ac[f])ac[f]=new Audio(AUD[f]);return ac[f];}
 let scr='home',mode=null,item=null,phase='zhu',pool=[],lang='注音',qi=0,score=0,streak=0,best=0,questions=[],curr=null,answered=false,qStart=0,tmr=null;
+let MA=loadMA();function loadMA(){try{return JSON.parse(localStorage.getItem('sor_mastery'))||{zhu:{},en:{}};}catch(e){return{zhu:{},en:{}};}}
+function saveMA(){try{localStorage.setItem('sor_mastery',JSON.stringify(MA));}catch(e){}}
+const WIN=8;
+function statA(w){if(!w||!w.length)return'n';const n=w.length,acc=w.reduce((a,b)=>a+b,0)/n;if(n>=4&&acc>=0.85)return'g';if(n>=3&&acc<0.5)return'r';return'y';}
+function langKey(l){return(l==='英文'||l==='en')?'en':'zhu';}
+function rec(f,l,ok){const k=langKey(l);const o=MA[k][f]||(MA[k][f]={w:[],hist:false});o.w.push(ok?1:0);if(o.w.length>WIN)o.w.shift();if(statA(o.w)==='r')o.hist=true;saveMA();}
+const ONSETS=[],VOWELS=[],CELLF={};FILES.forEach(f=>{const o=SND[f].on,v=SND[f].vo;if(!ONSETS.includes(o))ONSETS.push(o);if(!VOWELS.includes(v))VOWELS.push(v);CELLF[o+'|'+v]=f;});
+function onLabel(o){return o===''?'母音':o;}
+let mmLang='注音';
+function setMMLang(l){mmLang=l;mapScreen();}
+function mapScreen(){scr='map';mode=null;clearTimer();theme('#7fb2e0');setHead('精熟地圖','看最近表現·會進步的燈',null,'');
+  const k=langKey(mmLang);let g=0,y=0,r=0,n=0;FILES.forEach(f=>{const s=statA((MA[k][f]||{}).w);if(s==='g')g++;else if(s==='y')y++;else if(s==='r')r++;else n++;});
+  let h='<div class="mmwrap">';
+  h+='<div class="mmtog"><button class="'+(mmLang==='注音'?'on':'')+'" onclick="setMMLang(\'注音\')">注音進度</button><button class="'+(mmLang==='英文'?'on en':'')+'" onclick="setMMLang(\'英文\')">英文進度</button></div>';
+  h+='<div class="mmsum"><div><b style="color:#5fb389">'+g+'</b><small>精熟</small></div><div><b style="color:#e79a3c">'+y+'</b><small>會但不熟</small></div><div><b style="color:#e8776a">'+r+'</b><small>未達</small></div><div><b style="color:#9aa4b2">'+n+'</b><small>未測</small></div></div>';
+  const cols=VOWELS.length;
+  h+='<div class="mmgrid" style="grid-template-columns:48px repeat('+cols+',1fr)">';
+  h+='<div></div>'+VOWELS.map(v=>'<div class="mmh">'+v+'</div>').join('');
+  ONSETS.forEach(o=>{h+='<div class="mmrl">'+onLabel(o)+'</div>';VOWELS.forEach(v=>{const f=CELLF[o+'|'+v];if(!f){h+='<div class="mmc n" style="opacity:.22"></div>';return;}const oo=MA[k][f];const s=statA((oo||{}).w);const cls=s;const hist=(oo&&oo.hist)?' hist':'';h+='<div class="mmc '+cls+hist+'"></div>';});});
+  h+='</div>';
+  h+='<div class="mmleg"><span><i class="mmdot" style="background:#5fb389"></i>精熟</span><span><i class="mmdot" style="background:#e79a3c"></i>會但不熟</span><span><i class="mmdot" style="background:#e8776a"></i>未達</span><span><i class="mmdot" style="background:#e6eaf0"></i>未測</span><span><i class="mmdot" style="background:#e6eaf0"><em style="position:absolute;top:0;right:0;width:4px;height:4px;border-radius:50%;background:rgba(47,62,87,.6)"></em></i>曾卡關</span></div>';
+  h+='<div class="hint">燈號只看每個音<b>最近 '+WIN+' 次</b>作答：最近穩定答對就變綠，之前錯過的不會一直算。右上角小點代表「曾經卡關」，只給老師參考，不影響目前燈號。</div>';
+  h+='</div>';document.getElementById('body').innerHTML=h;}
 function theme(c){document.getElementById('dhead').style.background=c;}
 function setHead(t,s,prog,stk){document.getElementById('ti').textContent=t;document.getElementById('sub').textContent=s;
   document.getElementById('streak').textContent=stk||'';document.getElementById('prw').style.display=(prog==null?'none':'block');if(prog!=null)document.getElementById('pri').style.width=prog+'%';}
@@ -71,6 +113,7 @@ function home(){scr='home';clearTimer();theme('#f08c7c');setHead('發音遊戲',
    '<div class="tcard" onclick="xcList()"><div class="ic" style="background:#f08c7c">⚡</div><div style="flex:1"><div class="tt">課末小測</div><div class="ds">每課看完影片，秒測這課的音 · 5 題快答</div></div><div class="ar">›</div></div>'
    +'<div class="tcard" onclick="fxList()"><div class="ic" style="background:#5fb389">🔥</div><div style="flex:1"><div class="tt">複習關</div><div class="ds">累積音組挑戰 · 10 題 · 連擊加成</div></div><div class="ar">›</div></div>'
    +'<div class="tcard" onclick="gateIntro()"><div class="ic" style="background:#e79a3c">🗝️</div><div style="flex:1"><div class="tt">升階門檻</div><div class="ds">整階綜合 · 限時作答 · 注音＋英文雙關 · 過了解鎖下一階</div></div><div class="ar">›</div></div>'
+   +'<div class="tcard" onclick="mapScreen()"><div class="ic" style="background:#7fb2e0">🗺️</div><div style="flex:1"><div class="tt">精熟地圖</div><div class="ds">三關作答累積·看每個音最近熟不熟·分注音/英文</div></div><div class="ar">›</div></div>'
    +'<div class="hint">三種關卡玩法相同（聽音選字），但範圍、節奏、壓力不同：小測輕快、複習關拚連擊、升階門檻限時且雙語言。</div>';
 }
 // 小測
@@ -116,11 +159,11 @@ function loadQ(){answered=false;curr=questions[qi];const cfg=CFG[mode];
 function headTitle(){if(mode==='xc')return '課'+item.c+' 小測（'+item.lang+'）';if(mode==='fx')return '課'+item.c0+'-'+item.c1+' 複習關';return (phase==='zhu'?'注音':'英文')+' 段 · 升階門檻';}
 function startTimer(){clearTimer();let total=6000,t0=Date.now();const bar=document.getElementById('tb');if(!bar)return;bar.style.width='100%';
   tmr=setInterval(()=>{const el=Date.now()-t0;const w=Math.max(0,100-el/total*100);if(bar)bar.style.width=w+'%';if(el>=total){clearTimer();if(!answered)timeout();}},60);}
-function timeout(){answered=true;const fd=document.getElementById('feed');streak=0;
+function timeout(){answered=true;const fd=document.getElementById('feed');streak=0;rec(curr.t,lang,false);
   document.querySelectorAll('#grid .cell').forEach((c,j)=>{if(curr.opts[j]===curr.t)c.classList.add('reveal');});
   fd.textContent='時間到！正解在綠框';fd.className='feed no';setTimeout(nextQ,1000);}
 function play(){const a=aud(curr.t);a.currentTime=0;a.play().catch(()=>{});}
-function answer(i,btn){if(answered)return;answered=true;clearTimer();const f=curr.opts[i],correct=(f===curr.t);const fd=document.getElementById('feed');const cfg=CFG[mode];
+function answer(i,btn){if(answered)return;answered=true;clearTimer();const f=curr.opts[i],correct=(f===curr.t);const fd=document.getElementById('feed');const cfg=CFG[mode];rec(curr.t,lang,correct);
   if(correct){btn.classList.add('right');score++;streak++;if(streak>best)best=streak;fd.textContent=(cfg.combo&&streak>=3)?('連擊 x'+streak+'！🔥'):'答對了！';fd.className='feed ok';}
   else{btn.classList.add('wrong');streak=0;document.querySelectorAll('#grid .cell').forEach((c,j)=>{if(curr.opts[j]===curr.t)c.classList.add('reveal');});fd.textContent='正解在綠框';fd.className='feed no';}
   document.getElementById('sub').textContent='第 '+(qi+1)+' / '+cfg.nq+' 題 · 得分 '+score;
