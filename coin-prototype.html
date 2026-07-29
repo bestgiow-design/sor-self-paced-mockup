@@ -218,6 +218,8 @@ body.tab .piece img{width:64px;height:64px;}
 .stcard .sc-note{margin:8px 2px 14px;}
 .sc-slot.miss .sc-coin{background:#f3e0de;color:#c0392b;border-color:#fff;}
 .sc-slot.just .sc-coin{box-shadow:0 0 0 3px rgba(239,159,114,.55),0 2px 4px rgba(0,0,0,.14);animation:scpulse 1.15s infinite;}
+.sc-slot.d7.lost .sc-coin{background:#eef0f2 !important;color:#aab0b6 !important;}
+.sc-slot.d7.lost .sc-lbl{color:var(--grey);}
 </style>
 </head>
 <body>
@@ -403,12 +405,13 @@ function renderTrackSelf(N){ const t=document.getElementById('stTrack'); let h='
   h+=`<div class="sc-slot ${cls}${i==7?' d7':''}"><div class="sc-coin">${c}</div><div class="sc-lbl">第${i}次</div></div>`; }
  t.innerHTML=h; }
 function renderTrackCourse(snap,cur){ const t=document.getElementById('stTrack'); let h='';
- const perfect=snap.length>=7 && snap.every(x=>x==='hit');
+ const lost=snap.some(x=>x==='miss');           // 本輪已缺過 → 拿不到 +100
+ const perfect=snap.length>=7 && !lost;
  for(let i=1;i<=7;i++){ let cls,c;
   if(i<=snap.length){ const k=snap[i-1];
     if(k==='miss'){cls='miss';c='✕';}
-    else{cls='done'; c=(i===7)?(perfect?'+100':'+50'):'✓';}
-  }else{cls='future'; c=(i===7?'+100':'+50');}
+    else{cls='done'; c=(i===7)?(perfect?'+100':'+50'):'✓'; if(i===7&&!perfect)cls+=' lost';}
+  }else{ cls='future'; if(i===7){ c=lost?'+50':'+100'; if(lost)cls+=' lost'; } else c='+50'; }
   if(i===cur) cls+=' just';
   h+=`<div class="sc-slot ${cls}${i==7?' d7':''}"><div class="sc-coin">${c}</div><div class="sc-lbl">第${i}天</div></div>`; }
  t.innerHTML=h; }
