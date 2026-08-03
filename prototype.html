@@ -404,6 +404,42 @@
   .mgcta{display:block;width:100%;border:none;color:#fff;font-family:inherit;font-weight:800;font-size:1rem;padding:13px;border-radius:13px;cursor:pointer;margin-top:10px}
   .mgcta2{display:block;width:100%;border:1.5px solid #e3e8ef;background:#fff;color:#5a6474;font-family:inherit;font-weight:700;padding:11px;border-radius:13px;cursor:pointer;margin-top:9px}
   .mgres{text-align:center;padding:14px 0}.mgrt{font-size:1.4rem;font-weight:800}.mgrb{font-size:2.4rem;font-weight:800;margin:6px 0;color:#2f3e57}.mgmut{color:#8a94a6;font-size:.9rem;margin-bottom:6px}
+  /* 金幣區 */
+  .coinbal{background:linear-gradient(135deg,#fbe08a,#f0a90f);border-radius:20px;padding:18px 20px;color:#7a4a00;text-align:center;margin-bottom:14px}
+  .coinbal .n{font-size:2.4rem;font-weight:800;line-height:1.1}
+  .coinbal .l{font-size:.8rem;opacity:.85}
+  .streakcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px}
+  .streakcard h4{font-size:.9rem;color:#4a4a4a;margin-bottom:10px}
+  .ladder{display:flex;gap:5px}
+  .ladstep{flex:1;text-align:center;font-size:.58rem;color:var(--dim)}
+  .ladstep .b{height:34px;border-radius:8px;background:#f0ede6;display:flex;align-items:center;justify-content:center;font-weight:800;color:#c9a24a;font-size:.6rem;margin-bottom:3px}
+  .ladstep.on .b{background:#f0a90f;color:#fff}
+  .ladstep.big .b{background:#fef0d0;color:#e0736b}
+  .ladstep.on.big .b{background:#e0736b;color:#fff}
+  .coinentry{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer}
+  .coinentry .ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex:none}
+  .coinentry .tt{font-weight:800;color:#4a4a4a}.coinentry .ds{font-size:.75rem;color:var(--dim);margin-top:2px}
+  .coinentry .ar{margin-left:auto;color:var(--dim);font-size:1.2rem}
+  .shopgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .toycard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+  .toycard.n{border-top:3px solid #b8c0cc}.toycard.r{border-top:3px solid #7fb2e0}.toycard.l{border-top:3px solid #d9a441}
+  .toycard .em{font-size:2.2rem}
+  .toycard .nm{font-weight:800;font-size:.85rem;color:#4a4a4a;margin-top:3px}
+  .toycard .rr{font-size:.58rem;font-weight:800;padding:1px 7px;border-radius:20px;display:inline-block;margin-top:3px;color:#fff}
+  .rr.n{background:#b8c0cc}.rr.r{background:#7fb2e0}.rr.l{background:#d9a441}
+  .toycard .tier{font-size:.66rem;color:var(--dim);margin-top:4px}
+  .toybuy{width:100%;border:none;color:#fff;font-family:inherit;font-weight:800;font-size:.76rem;padding:8px;border-radius:9px;cursor:pointer;margin-top:8px;background:#f0a90f}
+  .toybuy.dis{background:#e0ddd6;color:#a29a8c;cursor:not-allowed}
+  .toybuy.max{background:#eaf8f1;color:#5fb389}
+  .maprow{display:flex;gap:7px;align-items:center;margin-bottom:9px}
+  .maprow.rev .mapcells{flex-direction:row-reverse}
+  .mapcells{display:flex;gap:7px;flex:1}
+  .mapmonth{font-size:.58rem;color:var(--dim);width:24px;text-align:center;flex:none}
+  .mapst{flex:1;aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.68rem;position:relative}
+  .mapst.lit{background:#7cc39a;color:#fff}.mapst.dim{background:#eceae4;color:#b9b3a8}
+  .mapst.chest{border-radius:12px;font-size:1.1rem}
+  .mapst.chest.open{background:#fdf0e6}.mapst.chest.canopen{background:#f0a90f;cursor:pointer}.mapst.chest.lock{background:#eceae4}
+  .mappiece{position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:1.15rem}
 </style>
 </head>
 <body>
@@ -435,7 +471,7 @@
       <optgroup label="周邊頁">
         <option value="profile">個人 · 我的</option>
         <option value="donelist">已完成單元</option>
-        <option value="coins">金幣紀錄</option>
+        <option value="coin">金幣首頁</option><option value="coinmap">學習地圖</option><option value="shop">公仔商店</option><option value="coins">金幣明細</option>
         <option value="messages">訊息</option>
         <option value="map">地圖 · 遊戲</option>
       </optgroup>
@@ -684,6 +720,7 @@
             <div class="proflist">
               <div class="profrow" onclick="go('setup')"><span class="ic">📝</span>我的承諾書（練習節奏）<span class="ar">›</span></div>
               <div class="profrow" onclick="go('donelist')"><span class="ic">✅</span>已完成單元列表<span class="ar">›</span></div>
+              <div class="profrow" onclick="go('messages')"><span class="ic">✉️</span>訊息通知<span class="ar">›</span></div>
               <div class="profrow" onclick="go('backend')"><span class="ic">⚙️</span>後台設定（遊戲/解鎖）<span class="ar">›</span></div>
               <div class="profrow" onclick="goCoins('profile')"><span class="ic"><img class="coinic" src="data:image/png;base64,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"></span>金幣紀錄<span class="ar">›</span></div>
               <div class="profrow"><span class="ic">🔑</span>修改密碼<span class="ar">›</span></div>
@@ -706,17 +743,40 @@
         <section class="screen" id="scr-coins">
           <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
           <div class="topbar"><span class="back" onclick="go(coinsBack)">‹</span>金幣紀錄</div>
-          <div class="scroll"><div class="maxw"><div class="coinwrap">
-            <div class="cointot"><div class="n"><img class="coinic" src="data:image/png;base64,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"> <span id="coinTot">9,300</span></div><div class="l">目前累積金幣</div></div>
-            <div class="coinlist">
-              <div class="coinrow">寫的作業完成<span class="d">今天 15:23</span><span class="amt">+100</span></div>
-              <div class="coinrow">唸的作業完成<span class="d">今天 15:14</span><span class="amt">+100</span></div>
-              <div class="coinrow">影片觀看完成<span class="d">今天 15:02</span><span class="amt">+300</span></div>
-              <div class="coinrow">寫的作業完成<span class="d">昨天 19:50</span><span class="amt">+100</span></div>
-              <div class="coinrow">唸的作業完成<span class="d">昨天 19:41</span><span class="amt">+100</span></div>
-            </div>
-          </div></div></div>
+          <div class="scroll"><div class="maxw"><div class="coinwrap"><div class="coinbal"><div class="n" id="ledgerBal">0</div><div class="l">目前金幣</div></div><div class="coinlist" id="ledgerList"></div></div></div></div>
           <div class="nav" id="navCoins"></div>
+        </section>
+
+        <!-- 金幣首頁 -->
+        <section class="screen" id="scr-coin">
+          <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
+          <div class="topbar">金幣</div>
+          <div class="scroll"><div class="maxw">
+            <div class="coinbal"><div class="n" id="coinBal">0</div><div class="l">目前金幣</div></div>
+            <div class="streakcard"><h4>🔥 連續登入獎勵（登入即算，不斷鏈）</h4><div class="ladder" id="ladder"></div><div id="streakNote" style="margin-top:8px;font-size:.72rem;color:#9a9a9a"></div></div>
+            <div class="coinentry" onclick="go('coinmap')"><div class="ic" style="background:#eaf6ee">🗺️</div><div><div class="tt">學習地圖</div><div class="ds">96 站 · 公仔當棋子 · 每 4 站一個寶箱</div></div><span class="ar">›</span></div>
+            <div class="coinentry" onclick="go('shop')"><div class="ic" style="background:#fef0d0">🧸</div><div><div class="tt">公仔商店</div><div class="ds">24 隻公仔 · 三階升級 · 蒐集滿級</div></div><span class="ar">›</span></div>
+            <div class="coinentry" onclick="go('coins')"><div class="ic" style="background:#eef3fb">📜</div><div><div class="tt">金幣明細</div><div class="ds">看每一筆賺取與兌換紀錄</div></div><span class="ar">›</span></div>
+          </div></div>
+          <div class="nav" id="navCoin"></div>
+        </section>
+
+        <!-- 公仔商店 -->
+        <section class="screen" id="scr-shop">
+          <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
+          <div class="topbar" style="display:flex;align-items:center"><span class="back" onclick="go('coin')">‹</span>公仔商店<span style="margin-left:auto;font-size:.8rem;color:#f0a90f;font-weight:800">🪙 <span id="shopBal">0</span></span></div>
+          <div class="scroll"><div class="maxw"><div class="shopgrid" id="shopGrid"></div>
+            <div style="margin-top:12px;font-size:.72rem;color:#9a9a9a;line-height:1.7">方案 C 定價：普通 1,400／稀有 2,800／傳說 4,500 起，各三階；每隻限一隻、升階不可跳級、兌換後不可退。</div>
+          </div></div>
+          <div class="nav" id="navShop"></div>
+        </section>
+
+        <!-- 學習地圖 -->
+        <section class="screen" id="scr-coinmap">
+          <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
+          <div class="topbar" style="display:flex;align-items:center"><span class="back" onclick="go('coin')">‹</span>學習地圖<span style="margin-left:auto;font-size:.8rem;color:#f0a90f;font-weight:800">🪙 <span id="mapBal">0</span></span></div>
+          <div class="scroll"><div class="maxw"><div id="mapRows"></div><div id="mapNote" style="text-align:center;font-size:.72rem;color:#9a9a9a;margin-top:8px"></div></div></div>
+          <div class="nav" id="navCoinMap"></div>
         </section>
 
         <!-- 訊息 -->
@@ -853,7 +913,9 @@
 
 <script>
   var state = { unitN:1, progressN:1, completed:{}, doneCount:0, steps:{video:false,read:false,write:false,game:false},
-                rhythmSet:false, firstUnitDone:false, coins:7500 };
+                rhythmSet:false, firstUnitDone:false, coins:7500,
+                ledger:[{l:'寫的作業完成',a:100,t:'今天 15:23'},{l:'唸的作業完成',a:100,t:'今天 15:14'},{l:'影片觀看完成',a:300,t:'今天 15:02'},{l:'兌換公仔·小綿羊',a:-1400,t:'昨天'},{l:'唸的作業完成',a:100,t:'昨天 19:41'}],
+                toys:{s1:1}, chests:{}, loginStreak:3 };
   var recorded = false;
   var cur = 'welcome';
   function gcfg(){try{return JSON.parse(localStorage.getItem('sor_cfg'))||{};}catch(e){return{};}}
@@ -866,7 +928,7 @@
   function assignmentsDone(){return state.steps.video&&state.steps.read&&state.steps.write;}
   function unitComplete(){return assignmentsDone()&&(!gameGateOn()||state.steps.game);}
   function startUnitGame(){ go('game'); if(window.MG) window.MG.start((state.unitN-1)%window.MG.count, onUnitGamePass); }
-  function onUnitGamePass(){ state.steps.game=true; state.coins+=200; if(unitComplete()){ go('unitdone'); afterUnit(); } else { homeTab=firstIncomplete(); go('home'); } }
+  function onUnitGamePass(){ state.steps.game=true; earn('單元小遊戲通過',200); if(unitComplete()){ go('unitdone'); afterUnit(); } else { homeTab=firstIncomplete(); go('home'); } }
   function mgExit(){ go('home'); }
   function afterAssignmentStep(){ if(gameGateOn() && !state.steps.game && preOK()){ startUnitGame(); return; } if(unitComplete()){ go('unitdone'); afterUnit(); } else { homeTab=firstIncomplete(); go('home'); } }
 
@@ -889,6 +951,10 @@
     if(id==='setup') renderDays();
     if(id==='map') renderMap();
     if(id==='backend') renderBackend();
+    if(id==='coin') renderCoin();
+    if(id==='shop') renderShop();
+    if(id==='coinmap') renderCoinMap();
+    if(id==='coins') renderLedger();
     if(id==='game' && window.MG){ var _b=document.getElementById('mgBody'); if(_b && !_b.innerHTML.trim()){ window.MG.start((state.unitN-1)%window.MG.count, onUnitGamePass); } }
     if(id==='video'){var vn=document.getElementById('vNote'); if(vn) vn.textContent='影片看到 '+videoThresh()+'% 即算完成（後台可調）';}
     if(id==='calendar') renderCalendar();
@@ -902,7 +968,7 @@
     // scroll top
     var sc=document.querySelector('#scr-'+id+' .scroll'); if(sc) sc.scrollTop=0;
   }
-  function restart(){ state={unitN:1,progressN:1,completed:{},doneCount:0,steps:{video:false,read:false,write:false,game:false},rhythmSet:false,firstUnitDone:false,coins:7500}; recorded=false; homeTab='video'; readItems.forEach(function(x){x.done=false;}); curReadItem=0; writeItems.forEach(function(x){x.done=false;}); curWriteItem=0; go('welcome'); }
+  function restart(){ state={unitN:1,progressN:1,completed:{},doneCount:0,steps:{video:false,read:false,write:false,game:false},rhythmSet:false,firstUnitDone:false,coins:7500,ledger:[],toys:{s1:1},chests:{},loginStreak:3}; recorded=false; homeTab='video'; readItems.forEach(function(x){x.done=false;}); curReadItem=0; writeItems.forEach(function(x){x.done=false;}); curWriteItem=0; go('welcome'); }
 
   var stepMeta=[['video','看的作業','看影片'],['read','唸的作業','錄音上傳'],['write','寫的作業','拍照上傳']];
   var ICON={PLAY:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADYAAAAqCAYAAAD4Uag9AAACdklEQVR42u2ZX0sUURjGf+fMzq7j7oSmthpiEZmlWFFQhoFimYRdlBdakYZYEPUZuuwrdCNd5E0fIXRjXQujJOnP0oYZQRLouprC7jK7O85MF9FF6GUt7snn8p2b8+Oc87zPe0asPbgPgKyooKyz2/M3t1KKKiTi5GIR4a6vA+ADkDV7CF276cmQSanK39yKr2G/l3nyWLipZSSahtHZXdJQvyVDJkZnt4emIbVwHXpjE6pIb2xCC9chtapqD8WkVVV7PhEMbvpgRcfJv5ouCYhAWztGV88fNREMIlFUO2D/PZjechQtXFs8Am/r2l8Hk6aJOXKXQNtZ0P3qHUWj6wKhgUG0+gb17pivYR/m0C3KOs4hDEM98yhr7yB0fRjfgYPquaIWriV0dQijpxdRhFxadLsPnDyNOTiCfrgFhFCrj8nK3QT7Bii/dAVZUaleg/a3HsccvoP/2AmQmlrJQxgG5b2XCfb1I2vC6kUq/dARdt2+R+DUGdB19bKicf4iof4baHvrd0LwluFguy3IevaU/Ns3YNtqgNmfP2FNRXFTSTV2zLMsrOg4hfh7cB01jmIh/o7ci0nc9TU17pi79gNrMoI9lwDPU8M88rOvyU0/x8uk1XBFJ7mENTnBxtcv6th9bnqK/MxLPMtSo49tLHzDikVwvi+o06Ct6AT52RmwC2okDzedJv3oIU5ySa1IZX/8UOS5Z+vazkvwDth2GVu8bHbzsNfVs+mfUynJy2aRzuqKUG23nNUVIZ3kIvb8nDJQ9vwcTnIRieNgxSLC/cehtChTQyaNFYsIHOeXebipZTJjo6KQiJcsVCERJzM2KtzUMgA/ASOUx82o62pWAAAAAElFTkSuQmCC",MIC:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAzCAYAAAD/06q7AAAEPElEQVR42u2Yy1cadxTHvxdGgcrA4AtREQnRUx8x2qZ1kdZzenqy7Tr/Wfdddd1VG7Oomp5TtcUcXxiTKjrIm8CAgDDAr4s21DCDzEw03XCX9/e7dz5zf/f+Hpe+D/4Ao2LlLHBaeDgtDgYAUiVPUqWAq1rFsE/OKMhn7gdsYXimdYgBwG4yhGBij4yA6QYatbvxePwLNmBztZ2zMDyDMX6E/RbZpuhlQpd/k57JDguPJ/6VG2HeyYDNhSf+Feaw8HcDZCLCsmeR2TirZuc2zoplzyIzEd0+0BjvQcA1qTsnAq5JjPGe2wfqtwrMaOXosdUMNGjrN1zKemw1A3kdo4aB9Nia9Ow9H7KB3knZfwzpAnWBukBdoC5QF6gLdMvCcWTGhHOMcSYO0UKCLuWi6sTclQTB6jT0kdyV1HbM3tOHUd7Nao0azvNR4r7xPWYBl6/5rvrx8CfKVZQOLgpxw0AXhbiqXrA48XT2u+b19kyKMNM1GADAQ/es6v03U84aXoZ2tq3f8jnHlTk0M3AffK9dYZwsZcgokJot32vHzMB9bUnt5T2KKKXLb7Ede6kbZjv2EunyW03fAABTWBIVyql+PwjKgOwmQxTT8TSOXSawmwwpHBEIU/1+xfywJMIk5qOKAY/dDbXnstyoYTW8QYfp444wh+ljrIY3SG7UVJ/ZHrtboRfzUZjCUkQ1N5bc84wjs0JfkstYFzfp2eka1KIblkQ8O13DurhJJbms3GfIjCX3vOpyhaUIcUW5hN1kCK2tlYDLh0L1kv0eDaoCn+TO6SR3Ds7EwflvQ0GqFFBTich1eeR5yFor+10LpyiX/knqg/QrqtZlxaRF9xxmB6dvfAbXGjVkyllkytmOMLOD02zRPafQV+syDtKvqFllUqWAreiOqpMV7zKmXH6mluRahUCYcvnZindZdXwrugOpUni/YXWUeUPjDg+bdHoVBt9OfoVJwct24vukVsKd3vVLI/MsIPignjcijjJvmn/bBKqxOtbFTbJxVubuG1K2VQQfAoKP/RnfQyj9uu2Zd/2MmhmcYp+PPGg7J1FMYV3cpBqr/xfN1qanYHFo6pKJ+SguCnEU5RIq9SoAwGLuRV/PJxjjRzo2GDLlLFZP1ylXyb+/vGpdWHtPH772fsl8zvE7uWKcSRFsiFuqUVY9Oi7lIp6HX1Awvn/rMMH4Pp6HX7Rd8rZdWLkhYyu2Q6fSOR6NLHxwtM6kCP6I71KqlLn5gtbJUaqUwc8nv9Jw3yDuCRNsfuhTmEnbRbPOGthPHeEkd07JYhoMnTt7mvrUDAyJYgqJYoqC8T24rE64rAK7J0wokjdSiOGv7BmyVznKXknNhNd8hdUb+kq9ingxhXgxRb3mHtYKJOajCGVeG95Fu6+OLtD/ClRv1DXpPhpQopQmLbo7LfvWTfOXkzXMDU0DAA5Sx+i0E3eSvwGkLMMYKOCRdQAAAABJRU5ErkJggg==",PEN:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABmElEQVR42tXZX0vDMBSH4d/JnGWgYBmIF4LY7/+V7FQEZVgnOtDsT483TtyWrm2a7pwUdrMl7HmXpV0ZMTO0HdP5CpdnJwwAj7MFXV8MYYicY0lbQF5YZONkD1UykyvCxIAHAEPEpePDNjHgD0WYWPBVEeJ74OVziavzYWvEZk+IB5TMMETsOZfEv0KGCCUz+cx9el/KrMDsa410NAiyEkZiw6ajAeeFDbISRupsk42TzhHT+YrAzEd53L1+gx3H7/Nbj3VZOse65onifSP+jxfHt43YHacC3zTC9boafF3E88fC+T69XAfa/LapmE/ZOJE5jXbFV51iq46gKxACv3PFpt0rdm8rEBqfF7YWHyygD/zR9oAkvnOANL5TgAa8d4AWvFeAJnzrAG34VgEa8Y0DtOIbBWjG1wZoxx8MiAFfGRAL3hkQE34vIDb8VkCM+L+AWPEAQPdvFjfpaZT4zT1xtPig98QTAXywgElh6VYAHyRAEt85QBrfKUAD3jtAC94rQBO+dYA2PACYvLCN/lR7mC3U4QHgB0F6N8/n/BAjAAAAAElFTkSuQmCC"};
@@ -1024,7 +1090,7 @@
   }
 
   function finishStep(key){
-    state.steps[key]=true; state.coins+=300;
+    state.steps[key]=true; earn('看的作業完成（影片）',300);
     document.querySelectorAll('.pop').forEach(function(p){p.classList.remove('show')});
     recorded=false;
     // reset read buttons for next time
@@ -1118,7 +1184,7 @@
     if(cur==='home') renderHome();
   }
   function buildNav(containerId, activeTab){
-    var items=[['home','📖','學習'],['messages','✉️','訊息'],['map','🎮','遊戲'],['profile','👤','個人']];
+    var items=[['home','📖','學習'],['map','🎮','遊戲'],['coin','🪙','金幣'],['profile','👤','個人']];
     var el=document.getElementById(containerId); el.innerHTML='';
     items.forEach(function(it){
       var d=document.createElement('div'); d.className='item'+(it[0]===activeTab?' on':'');
@@ -1127,7 +1193,7 @@
       el.appendChild(d);
     });
   }
-  ['navHome:home','navReadList:home','navWriteList:home','navMsg:messages','navMap:map','navProfile:profile','navCoins:home','navSetup:profile','navBackend:profile','navGame:home','navDash:profile','navCal:home','navDoneList:home'].forEach(function(pair){
+  ['navHome:home','navReadList:home','navWriteList:home','navMsg:messages','navMap:map','navProfile:profile','navCoins:coin','navCoin:coin','navShop:coin','navCoinMap:coin','navSetup:profile','navBackend:profile','navGame:home','navDash:profile','navCal:home','navDoneList:home'].forEach(function(pair){
     var a=pair.split(':'); buildNav(a[0],a[1]);
   });
 
@@ -1229,7 +1295,7 @@ var PIC={CHECK:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZD
     });
   }
   function submitRead(){
-    readItems[curReadItem].done=true; state.coins+=100;
+    readItems[curReadItem].done=true; earn('唸的作業完成',100);
     document.querySelectorAll('.pop').forEach(function(p){p.classList.remove('show')}); recorded=false;
     document.getElementById('readListen').className='opbtn off';
     document.getElementById('readUp').className='opbtn off';
@@ -1251,7 +1317,7 @@ var PIC={CHECK:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZD
     });
   }
   function submitWrite(){
-    writeItems[curWriteItem].done=true; state.coins+=100;
+    writeItems[curWriteItem].done=true; earn('寫的作業完成',100);
     document.querySelectorAll('.pop').forEach(function(p){p.classList.remove('show')});
     if(writeItems.every(function(x){return x.done;})){
       state.steps.write=true;
@@ -1335,6 +1401,63 @@ const MG_BLOB={"SND":{"0001.mp3":{"stk":[53],"ph":"e","on":"","vo":"ㄝ"},"0002.
       var t=document.getElementById('mgTitle');if(t)t.textContent='課'+lesson.c+' 小測'+(adv?' ⚡進階':'')+'（'+lesson.lang+'）';buildQ();loadQ();},
     retry:function(){qi=0;score=0;clearTimer();buildQ();loadQ();},
     _ans:function(i,b){answer(i,b);},_play:function(){play();},_cont:function(){cont();},_pass:function(){if(onDone)onDone();}};
+})();
+</script>
+
+<script>
+(function(){
+  var TOYS=[
+   {id:'s1',nm:'小綿羊',em:'🐑',rar:'n'},{id:'s2',nm:'阿柴',em:'🐕',rar:'n'},{id:'s3',nm:'圓企鵝',em:'🐧',rar:'n'},{id:'s4',nm:'胖橘貓',em:'🐱',rar:'n'},
+   {id:'s5',nm:'呆兔子',em:'🐰',rar:'n'},{id:'s6',nm:'河馬弟',em:'🦛',rar:'n'},{id:'s7',nm:'小刺蝟',em:'🦔',rar:'n'},{id:'s8',nm:'鴨嘴獸',em:'🦫',rar:'n'},
+   {id:'s9',nm:'樹懶哥',em:'🦥',rar:'n'},{id:'s10',nm:'浣熊妹',em:'🦝',rar:'n'},{id:'s11',nm:'水豚君',em:'🐹',rar:'n'},{id:'s12',nm:'羊駝',em:'🦙',rar:'n'},
+   {id:'r1',nm:'火狐狸',em:'🦊',rar:'r'},{id:'r2',nm:'雪梟',em:'🦉',rar:'r'},{id:'r3',nm:'藍孔雀',em:'🦚',rar:'r'},{id:'r4',nm:'金鹿',em:'🦌',rar:'r'},
+   {id:'r5',nm:'紫水母',em:'🪼',rar:'r'},{id:'r6',nm:'白老虎',em:'🐯',rar:'r'},{id:'r7',nm:'綠鬣蜥',em:'🦎',rar:'r'},{id:'r8',nm:'粉紅豚',em:'🐬',rar:'r'},
+   {id:'l1',nm:'彩虹龍',em:'🐲',rar:'l'},{id:'l2',nm:'鳳凰',em:'🔥',rar:'l'},{id:'l3',nm:'獨角獸',em:'🦄',rar:'l'},{id:'l4',nm:'星空鯨',em:'🐳',rar:'l'}
+  ];
+  var PRICE={n:[1400,1000,1500],r:[2800,1800,2600],l:[4500,3200,4300]};
+  var RN={n:'普通',r:'稀有',l:'傳說'};
+  function updTop(){var e=document.getElementById('coinTop');if(e)e.textContent=state.coins.toLocaleString();}
+  window.earn=function(label,amt){state.coins+=amt;state.ledger.unshift({l:label,a:amt,t:'剛剛'});updTop();};
+  window.spend=function(label,amt){state.coins-=amt;state.ledger.unshift({l:label,a:-amt,t:'剛剛'});updTop();};
+  window.renderCoin=function(){
+    document.getElementById('coinBal').textContent=state.coins.toLocaleString();
+    var vals=[50,50,50,50,50,50,100];var cyc=((state.loginStreak-1)%7);
+    document.getElementById('ladder').innerHTML=vals.map(function(v,i){return '<div class="ladstep '+(i<=cyc?'on':'')+' '+(i===6?'big':'')+'"><div class="b">+'+v+'</div>第'+(i+1)+'天</div>';}).join('');
+    document.getElementById('streakNote').textContent='連續登入 '+state.loginStreak+' 天 · 滿 7 天一輪共 +400，非登入日不算也不斷鏈';
+  };
+  window.renderShop=function(){
+    document.getElementById('shopBal').textContent=state.coins.toLocaleString();
+    document.getElementById('shopGrid').innerHTML=TOYS.map(function(t){
+      var tier=state.toys[t.id]||0;var btn;
+      if(tier>=3){btn='<button class="toybuy max">✨ 滿級</button>';}
+      else{var price=PRICE[t.rar][tier];var can=state.coins>=price;var lbl=(tier===0?'購買 ':'⭐升'+(tier+1)+'階 ')+price.toLocaleString();
+        btn='<button class="toybuy '+(can?'':'dis')+'" '+(can?'onclick="buyToy(\''+t.id+'\')"':'')+'>'+lbl+'</button>';}
+      var tl=tier===0?'未擁有':('⭐'.repeat(tier)+' '+tier+'階');
+      return '<div class="toycard '+t.rar+'"><div class="em">'+t.em+'</div><div class="nm">'+t.nm+'</div><span class="rr '+t.rar+'">'+RN[t.rar]+'</span><div class="tier">'+tl+'</div>'+btn+'</div>';
+    }).join('');
+  };
+  window.buyToy=function(id){var t=null;for(var i=0;i<TOYS.length;i++)if(TOYS[i].id===id)t=TOYS[i];if(!t)return;var tier=state.toys[id]||0;if(tier>=3)return;var price=PRICE[t.rar][tier];if(state.coins<price)return;spend((tier===0?'兌換公仔·':'升階·')+t.nm,price);state.toys[id]=tier+1;renderShop();};
+  window.renderCoinMap=function(){
+    document.getElementById('mapBal').textContent=state.coins.toLocaleString();
+    var cur=Math.max(1,Math.min(96,Math.round((state.doneCount||state.progressN)/254*96)));
+    var rows='';
+    for(var k=1;k<=24;k++){
+      var cells='';
+      for(var j=0;j<3;j++){var st=4*(k-1)+j+1;var lit=st<=cur;cells+='<div class="mapst '+(lit?'lit':'dim')+'">'+st+(st===cur?'<span class="mappiece">🐾</span>':'')+'</div>';}
+      var cst=4*k;var opened=state.chests[cst];var canopen=(cst<=cur&&!opened);var ccls=opened?'open':(canopen?'canopen':'lock');
+      var chest='<div class="mapst chest '+ccls+'" '+(canopen?'onclick="openChest('+cst+')"':'')+'>'+(opened?'✅':'🎁')+'</div>';
+      rows+='<div class="maprow'+(k%2===0?' rev':'')+'"><span class="mapmonth">M'+k+'</span><div class="mapcells">'+cells+chest+'</div></div>';
+    }
+    document.getElementById('mapRows').innerHTML=rows;
+    document.getElementById('mapNote').textContent='目前在第 '+cur+' 站 · 完成單元自動前進 · 寶箱每 4 站一個，解鎖 500 金';
+  };
+  window.openChest=function(st){if(state.chests[st])return;if(state.coins<500){alert('金幣不足 500，無法開寶箱');return;}spend('開寶箱·第'+st+'站',500);state.chests[st]=true;alert('🎁 獲得公仔碎片 ×5！');renderCoinMap();};
+  window.renderLedger=function(){
+    var bal=document.getElementById('ledgerBal');if(bal)bal.textContent=state.coins.toLocaleString();
+    var box=document.getElementById('ledgerList');if(!box)return;
+    if(!state.ledger.length){box.innerHTML='<div style="padding:16px;text-align:center;color:#9a9a9a">還沒有金幣紀錄。</div>';return;}
+    box.innerHTML=state.ledger.map(function(e){return '<div class="coinrow">'+e.l+'<span class="d">'+e.t+'</span><span class="amt'+(e.a<0?' neg':'')+'">'+(e.a<0?'':'+')+e.a.toLocaleString()+'</span></div>';}).join('');
+  };
 })();
 </script>
 </body>
