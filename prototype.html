@@ -1,4 +1,97 @@
 <!DOCTYPE html>
+<!-- 版本資訊
+     版本：v3.0.1
+     日期：2026-09-01
+     變更：
+       v3.0.1  2026-09-01  家長端學習進度移除「距離上次練習：5 天」（原本就是寫死的假資料）。
+                           重設基準的紀錄保留，但只在真的重設過才顯示。
+       v3.0.0  2026-09-01  · 學習日改定義為「登入 ∩ 完成一個單元」（＝當天通過一次小遊戲）。
+                             看影片、交作業不再算學習日——那是過程，完成單元才是結果。
+                           · 每日登入獎勵回到最單純：每天 +100、不看學習、跟原課程模組一致。
+                             實測資料顯示純登入打卡沒有不良影響，連續階梯移到第二階段。
+                           · 每個數值加浮動說明（data-tip），滑上去就看得到怎麼算的，共 13 處。
+                             加新數字只要加屬性，不用改程式。
+       v2.9.0  2026-09-01  家長端全面拿掉「率」與「總數」——沒有應完成日就沒有分母：
+                           · 三張卡拿掉進度條與百分比，單元完成數改為不可點（它沒有明細頁）
+                           · 影片紀錄拿掉整體觀看率、完成度分桶、總數 254，只列看完的
+                           · 作業紀錄拿掉完成率、未完成 476、每列的「應完成 X/XX」，只列完成清單
+       v2.8.1  2026-09-01  學習總覽改成有層次的版面，讓「影片與作業包含在單元裡」看得出來：
+                           單元數字放大、加「其中包含」標題、影片與作業縮排在左邊線內；
+                           連續／累積學習另成一張卡（不同問題：做了多少 vs 多常做）。
+                           修：家長端呼叫 overviewHTML 時漏傳 learnTotal，累積天數一直顯示 0。
+       v2.8.0  2026-09-01  兩端數據真正連動：新增 studentStats() 當唯一來源，
+                           家長端「宗翰」的所有數字改由 syncChildFromState() 從學生 state 同步，
+                           不再是寫死的示範資料。第二個孩子維持示範資料。
+                           ⚠️ 待跨線拍板：建議把打卡金幣從「連續登入」改掛「連續學習」，
+                              只留一個連續天數——見 自學-規格-畫面數值定義。
+       v2.7.0  2026-09-01  兩端指標統一：學生「個人 › 我的學習總覽」與家長「孩子」頁
+                           顯示完全相同的四格（已完成單元／連續學習／看完的影片／交出的作業），
+                           兩邊互相指認對方看到的是同一組數字。
+                           家長端卡片改為 單元→影片→作業（單元是主單位），
+                           並加一行說明三者是同一段學習的三種顆粒度。
+       v2.6.0  2026-09-01  首頁「連續學習 N 天」與「累積 N 天」原本是寫死的假數字，
+                           現在真的會算：學習日 ＝ 當天至少完成一件事（影片／唸／寫／小遊戲），
+                           光登入不算，同一天只記一次。金幣頁的「連續登入」維持登入即算（B-1），
+                           兩者名稱與定義分開。定義見 自學-規格-畫面數值定義。
+       v2.5.2  2026-09-01  首頁「累積 36 天 · 🪙 7,500」膠囊沒有置中：它是 inline-flex，
+                           會跟後面同樣 inline-flex 的打卡紀錄鈕（隱藏但仍佔空間）擠同一行。
+                           改成 flex + width:fit-content + 左右 auto，自己一行、確實置中。
+       v2.5.1  2026-09-01  承諾書底下的摘要改成動態：第一次設定時不顯示「進度：第 N / 254 單元」
+                           （那時候一定是 0，講了沒意義），有進度之後才出現；
+                           預計完課日改成照選的天數即時計算，不再寫死；一天都沒選時改成提示。
+       v2.5.0  2026-09-01  用語修正：自學版時限是孩子自己訂的，沒有截止日，
+                           所以沒有「遲做／補做」這回事——只是做的順序不一樣。
+                           所有使用者看得到的字改成中性：「做這份作業」「還沒做」「未做」，
+                           不再出現「補做」「待補」「跳過了」「那份金幣就沒拿到」。
+                           金幣一律全額，沒有減半原則。
+       v2.4.0  2026-09-01  · 承諾書底下加「提醒時間」（所有練習日共用一個，不是每天各自設時段）。
+                             訊息的提醒會帶入這個時間。
+                           · 補做作業回到第一階段：入口改在首頁——瀏覽過去的單元時，
+                             那一課跳過的作業會出現「補做這份作業 +100 金幣」。
+                             不再依附「已完成單元列表」（那一頁仍在第二階段）。
+       v2.3.1  2026-09-01  金幣照原課程模組：頂欄膠囊直接進「金幣紀錄」，不經金幣首頁。
+                           連續登入階梯併進金幣紀錄頁（原模組沒這一塊，但打卡規則已定案）。
+                           金幣首頁降為第二階段——它存在的理由是公仔商店與學習地圖的入口。
+       v2.3.0  2026-09-01  底部導覽對齊原課程模組：學習／訊息／遊戲／個人。
+                           訊息頁做成「公告／提醒」兩個分頁（原模組的「批改」不做——自學版無正音師批改）；
+                           提醒來自承諾書設定，沒設承諾書時提醒頁是空的並引導去設定。
+                           金幣移出底部分頁，改由首頁頂欄常駐膠囊顯示、點一下進金幣頁。
+                           ⚠️ 待確認：承諾書已拿掉練習時段，但「提醒時間」要不要留一個。
+       v2.2.1  2026-08-27  首頁單元卡的「書本頁數」改標為「進度說明」
+       v2.2.0  2026-08-27  · 首頁那三個元素改用 visibility:hidden，橘色區塊維持原本高度不縮小
+                           · 金幣回到第一階段：餘額、連續登入階梯、金幣明細、發放邏輯全部照跑；
+                             只有「要花金幣」的公仔商店與學習地圖延到第二階段
+                           · 拿掉 v2.1.0 的「開發中」佔位頁，金幣首頁恢復原樣
+       v2.1.0  2026-08-27  依部長圈選調整：首頁移除打卡紀錄鈕／月份標題／週曆整組；
+                           解鎖模式四選一放回個人頁（留在第一階段）；
+                           家長端「調整節奏」改為浮動視窗「請於孩子介面更改承諾書」
+       v2.0.0  2026-08-26  分三階段。第一階段＝能跑完一個單元的最小閉環：
+                           學生端 登入直接進承諾書（拿掉「先做一個單元試試看」）、承諾書只選哪幾天不設時段、
+                                  個人頁只留承諾書／密碼／通知／關於（其餘五項移二階）、底部導覽收成三區；
+                           家長端 拿掉打卡紀錄、觀看與作業紀錄不顯示分母、新增單元完成數、
+                                  沒設承諾書則基準線卡鎖住、重設基準規則寫進畫面；
+                           金幣系統與精熟地圖等移到第二階段（畫面保留並加紫色標記）。
+                           ⚠️ 首頁版面待部長確認；首頁要拿掉的範圍尚未收到截圖。
+       v1.4.0  2026-08-21  依 20 項決議實作：D1 跳過的作業可回頭補做（已完成單元列表加補做入口，
+                           補做全額給金幣、不影響進度指標）；D13 進階限時改為總開關預設關閉，
+                           過關後的挑戰入口只在開啟時出現
+       v1.3.0  2026-08-21  解鎖邏輯改為「過關即解鎖」：家長模式只決定何時可以測，不再另外
+                           要求作業全完成（原本模式一過了測驗仍不解鎖，等於模式一二形同虛設）。
+                           鎖住的單元卡改成明講還差什麼；過關時若有作業沒做會提示少拿的金幣。
+                           補上通用 toast。
+       v1.2.2  2026-08-21  修：小測第一次點擊若在畫面更新前丟出例外，answered 旗標已鎖住，
+                           整個九宮格會永久按不動且毫無提示。精熟記錄改到畫面更新之後、
+                           包 try/catch；點擊加 try/catch 並把錯誤顯示在畫面上；
+                           九宮格加事件委派備援；修掉 go() 與 startUnitGame() 重複啟動導致音檔疊播
+       v1.2.1  2026-08-21  小測答錯後九宮格會凍結（這是設計），但看起來像壞掉：
+                           改為淡出非答案格子、回饋文字明講下一步、「繼續」鈕自動捲進畫面
+       v1.2.0  2026-08-21  精熟地圖併入（個人 › 精熟地圖）；解鎖模式改家長四選一並新增「模式零」；
+                           影片完成門檻固定 95% 並移除後台三檔設定
+       v1.1.0  2026-08-04  金幣系統整合為統一原型（學習／遊戲／金幣／個人四區底部導覽）；
+                           小遊戲內嵌為 MG 模組；過關即解鎖
+       v1.0.0  2026-07-12  學生端＋家長端全流程、平板／手機切換
+     版本規則：major＝結構改變／minor＝新增功能或畫面／patch＝修字修樣式
+-->
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
@@ -390,19 +483,24 @@
   #scr-game .mghead .back{font-size:1.4rem;cursor:pointer}
   #scr-game .mghead #mgTitle{font-weight:800;font-size:1.02rem;flex:1}
   #scr-game .mghead #mgSub{font-size:.7rem;opacity:.95;text-align:right;max-width:38%}
-  .mgplaywrap{text-align:center;margin:10px 0 14px}
-  .mgplay{width:88px;height:88px;border-radius:50%;border:none;background:#f08c7c;color:#fff;font-size:1.9rem;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.15)}
-  .mgreplay{margin-top:8px;color:#7fb2e0;font-weight:700;font-size:.9rem;cursor:pointer}
-  .mgtbar{height:7px;background:#e3e8ef;border-radius:5px;overflow:hidden;margin:2px 24px 12px}.mgtbar>i{display:block;height:100%;background:#e79a3c;width:100%}
-  .mggrid{display:grid;gap:9px;grid-template-columns:repeat(3,1fr)}
-  .mgcell{aspect-ratio:1;border:2px solid #e3e8ef;background:#fff;border-radius:14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5px;overflow:hidden}
+  .mgplaywrap{text-align:center;margin:6px 0 10px}
+  .mgplay{width:64px;height:64px;border-radius:50%;border:none;background:#f08c7c;color:#fff;font-size:1.5rem;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.15)}
+  .mgreplay{margin-top:6px;color:#7fb2e0;font-weight:700;font-size:.8rem;cursor:pointer}
+  .mgtbar{height:6px;background:#e3e8ef;border-radius:5px;overflow:hidden;margin:2px 40px 10px}.mgtbar>i{display:block;height:100%;background:#e79a3c;width:100%}
+  .mggrid{display:grid;gap:7px;grid-template-columns:repeat(3,1fr);max-width:280px;margin:0 auto}
+  .mgcell{aspect-ratio:1;border:1.5px solid #e3e8ef;background:#fff;border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;overflow:hidden}
   .mgcell .mgzhu{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:100%;min-height:0}
   .mgcell .mgzhu img{flex:0 1 auto;min-height:0;max-height:calc((100% - 2px)/var(--n,3));max-width:92%;width:auto;object-fit:contain}
-  .mgcell .mgen{font-size:1.3rem;font-weight:800;color:#2f3e57}
+  .mgcell .mgen{font-size:1.05rem;font-weight:800;color:#2f3e57}
   .mgcell.mgright,.mgcell.mgreveal{border-color:#5fb389;background:#eaf8f1}.mgcell.mgwrong{border-color:#f08c7c;background:#fdeee9}
-  .mgfeed{text-align:center;font-weight:800;margin-top:10px;min-height:22px}.mgfeed.ok{color:#5fb389}.mgfeed.no{color:#f08c7c}
-  .mgcta{display:block;width:100%;border:none;color:#fff;font-family:inherit;font-weight:800;font-size:1rem;padding:13px;border-radius:13px;cursor:pointer;margin-top:10px}
-  .mgcta2{display:block;width:100%;border:1.5px solid #e3e8ef;background:#fff;color:#5a6474;font-family:inherit;font-weight:700;padding:11px;border-radius:13px;cursor:pointer;margin-top:9px}
+  /* 答錯／時間到 → 九宮格凍結。淡出非答案的格子，讓「按不動」看起來是刻意的而不是壞掉 */
+  .mggrid.frozen .mgcell{cursor:default;opacity:.32;transition:opacity .2s}
+  .mggrid.frozen .mgcell.mgreveal,.mggrid.frozen .mgcell.mgwrong{opacity:1}
+  #mgcont{animation:mgpulse 1.4s ease-in-out 2}
+  @keyframes mgpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+  .mgfeed{text-align:center;font-weight:800;margin-top:8px;min-height:20px;font-size:.9rem}.mgfeed.ok{color:#5fb389}.mgfeed.no{color:#f08c7c}
+  .mgcta{display:block;width:100%;max-width:280px;margin:10px auto 0;border:none;color:#fff;font-family:inherit;font-weight:800;font-size:.95rem;padding:11px;border-radius:12px;cursor:pointer}
+  .mgcta2{display:block;width:100%;max-width:280px;margin:9px auto 0;border:1.5px solid #e3e8ef;background:#fff;color:#5a6474;font-family:inherit;font-weight:700;padding:9px;border-radius:12px;cursor:pointer}
   .mgres{text-align:center;padding:14px 0}.mgrt{font-size:1.4rem;font-weight:800}.mgrb{font-size:2.4rem;font-weight:800;margin:6px 0;color:#2f3e57}.mgmut{color:#8a94a6;font-size:.9rem;margin-bottom:6px}
   /* 金幣區 */
   .coinbal{background:linear-gradient(135deg,#fbe08a,#f0a90f);border-radius:20px;padding:18px 20px;color:#7a4a00;text-align:center;margin-bottom:14px}
@@ -440,11 +538,119 @@
   .mapst.chest{border-radius:12px;font-size:1.1rem}
   .mapst.chest.open{background:#fdf0e6}.mapst.chest.canopen{background:#f0a90f;cursor:pointer}.mapst.chest.lock{background:#eceae4}
   .mappiece{position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:1.15rem}
+  .pcard.locked{opacity:.72;cursor:default}
+  .pcard.locked .prow{filter:grayscale(.35)}
+  .pcard.nolink{cursor:default}
+  .lockhint{font-size:.76rem;color:#8a94a6;background:#f6f7f9;border-radius:9px;padding:8px 11px;margin-top:9px;line-height:1.6}
+
+    /* 用 flex＋width:fit-content＋左右 auto，而不是 inline-flex。
+     inline-flex 會讓它跟後面同樣是 inline-flex 的「打卡紀錄」鈕擠在同一行
+     （那顆是 visibility:hidden，看不見但還佔空間），兩個一起置中就把膠囊推歪了。 */
+  .home-hd .coinpillhd{display:flex;width:fit-content;margin:6px auto 0;align-items:center;gap:4px;background:rgba(255,255,255,.2);border-radius:20px;padding:4px 14px}
+  /* 兩端共用的四個數字（學生「我的學習總覽」／家長「孩子」頁） */
+  .ovbox{background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px 16px;margin-bottom:14px}
+  .ovttl{font-weight:800;font-size:.95rem;color:#4a4a4a;margin-bottom:11px}
+  .ovgrid{display:flex;flex-direction:column;gap:9px}
+  .ovunit{background:#f8f9fb;border-radius:12px;padding:13px 15px}
+  .ovbig{font-size:1.75rem;font-weight:800;line-height:1.15;color:#2f3e57}
+  .ovbig em{font-style:normal;font-size:.8rem;font-weight:700;color:#8a929e;margin-left:3px}
+  .ovlbl{font-size:.76rem;color:#8a929e;margin-top:1px}
+  .ovpartsttl{font-size:.7rem;color:#a6aeb9;margin:11px 0 5px}
+  .ovparts{display:flex;gap:8px;padding-left:11px;border-left:2px solid #d8dee6}
+  .ovpart{flex:1;background:#fff;border:1px solid #eceff3;border-radius:9px;padding:8px 10px}
+  .ovpart b{display:block;font-size:1.02rem;font-weight:800;color:#5a6474;line-height:1.3}
+  .ovpart span{font-size:.68rem;color:#9aa4b2}
+  .ovhabit{display:flex;gap:9px}
+  .ovh{flex:1;background:#f8f9fb;border-radius:12px;padding:11px 14px}
+  .ovh b{display:block;font-size:1.45rem;font-weight:800;line-height:1.2;color:#2f3e57}
+  .ovh span{font-size:.72rem;color:#8a929e}
+  .ovnote{font-size:.73rem;color:#a6aeb9;margin-top:10px;line-height:1.6}
+  .ovhint{font-size:.75rem;color:#8a94a6;background:#f6f7f9;border-radius:10px;padding:9px 12px;margin-bottom:11px;line-height:1.65}
+  .remindcard{margin-top:12px}
+  .rcttl{font-weight:800;font-size:.95rem;color:#4a4a4a}
+  .rcsub{font-size:.76rem;color:#9aa4b2;margin:2px 0 11px}
+  .rcrow{display:flex;gap:7px;flex-wrap:wrap}
+  .rcbtn{border:1.5px solid #e3e8ef;background:#fff;color:#6b7280;border-radius:10px;padding:8px 14px;font:inherit;font-size:.86rem;font-weight:700;cursor:pointer}
+  .rcbtn.on{border-color:#f08c7c;background:#fdeeeb;color:#c9573f}
+  .msgtabs{display:flex;background:#fff;border-bottom:1px solid var(--line);flex:none}
+  .msgtabs button{flex:1;border:none;background:none;font:inherit;font-size:.92rem;font-weight:700;color:#9aa4b2;padding:12px 0 10px;cursor:pointer;border-bottom:2.5px solid transparent}
+  .msgtabs button.on{color:#f08c7c;border-bottom-color:#f08c7c}
+  .msgtabs button .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#e8617c;margin-left:5px;vertical-align:middle}
+  .msgempty{text-align:center;color:#9aa4b2;font-size:.86rem;padding:40px 20px;line-height:1.9}
+  .msgfrom{font-size:.7rem;color:#a6aeb9;margin-top:6px}
+  /* 數值說明的浮動視窗：滑鼠移上去就說明這個數字怎麼來的 */
+  [data-tip]{cursor:help}
+  [data-tip]:hover{outline:1.5px dashed rgba(120,140,170,.55);outline-offset:3px;border-radius:6px}
+  #tipbox{position:fixed;z-index:9999;max-width:290px;background:#2b3038;color:#eef1f5;
+    font-size:.78rem;line-height:1.65;padding:10px 13px;border-radius:10px;
+    box-shadow:0 10px 30px rgba(20,26,38,.32);pointer-events:none;opacity:0;
+    transform:translateY(4px);transition:opacity .12s,transform .12s}
+  #tipbox.on{opacity:1;transform:translateY(0)}
+  #tipbox b{color:#ffd9a0}
+  #tipbox i{font-style:normal;color:#9aa8bd;display:block;margin-top:5px;font-size:.72rem}
+  .loginsimple{font-size:1.05rem;color:#4a4a4a}
+  .loginsimple b{color:#e79a3c;font-size:1.25rem}
+  .loginnote{margin-top:7px;font-size:.75rem;color:#9a9a9a;line-height:1.7}
+  .s2inline{color:#7a5fb0}
+  .coinentry.soon2{opacity:.6}
+  .s2tag{display:inline-block;font-size:.62rem;font-weight:800;color:#5b3fa0;background:#efe8fb;border-radius:20px;padding:1px 7px;margin-left:5px;vertical-align:middle}
+  .coinsoonnote{background:#fff8f0;border-radius:12px;padding:11px 14px;margin-bottom:13px;font-size:.8rem;color:#8a6a2e;line-height:1.75}
+  .coinsoonnote b{color:#b5711f}
+
+  /* ===== 開發中（第二階段功能的佔位頁）===== */
+  .popemo{font-size:2.5rem;line-height:1;margin-bottom:8px}
+  .soonwrap{text-align:center;padding:52px 22px 30px}
+  .soonemo{font-size:3.4rem;line-height:1;margin-bottom:14px;filter:grayscale(.15)}
+  .soont{font-size:1.16rem;font-weight:800;color:#4a515c;margin-bottom:9px}
+  .soons{font-size:.88rem;color:#8a929e;line-height:1.85}
+  .soons b{color:#6f52a8}
+  .soonnote{margin-top:20px;background:#fff8f0;border-radius:12px;padding:13px 16px;font-size:.83rem;color:#8a6a2e;line-height:1.8}
+  .soonbtn{margin-top:22px;border:1.5px solid #e3e8ef;background:#fff;color:#8a929e;border-radius:11px;padding:9px 18px;font:inherit;font-size:.8rem;cursor:pointer}
+
+  /* ===== 階段標記（2026-08-26 分階段）===== */
+  .stagebar{position:absolute;left:0;right:0;top:0;z-index:30;font-size:.72rem;font-weight:700;
+    padding:5px 10px;text-align:center;letter-spacing:.02em}
+  .stagebar.s2{background:#efe8fb;color:#5b3fa0;border-bottom:1px solid #ddd0f5}
+  .stagebar.ask{background:#fff3e0;color:#a05f00;border-bottom:1px solid #f3ddb8}
+  .screen.hasbar .sb{margin-top:22px}
+
+  /* ===== 回頭做過去單元的作業 ===== */
+  .makeuptip{background:#fff8f0;border:1px solid #f6e2c8;border-radius:11px;padding:11px 13px;margin-bottom:11px;font-size:.86rem;color:#8a6a2e}
+  .makeuptip b{font-size:1.05rem;color:#b5711f}
+  .makeuptip span{font-size:.76rem;color:#a89372}
+  .donelist-row.hasmk{flex-wrap:wrap}
+  .mkrow{display:flex;gap:7px;flex-wrap:wrap;width:100%;margin-top:8px}
+  .mkbtn{border:1.5px solid #cfe8db;background:#f2faf6;color:#3f8a66;border-radius:9px;padding:6px 11px;font:inherit;font-size:.78rem;font-weight:700;cursor:pointer}
+  .mkbtn.w{border-color:#d3e3f5;background:#f1f7fd;color:#4a7db0}
+  .mkbtn:hover{filter:brightness(.97)}
+
+  /* ===== 精熟地圖（自 發音遊戲_第一階 移植） ===== */
+  #scr-mastery .mmwrap{padding:4px 2px 18px}
+  .mmtog{display:flex;gap:8px;margin-bottom:12px}
+  .mmtog button{flex:1;padding:9px;border:1.5px solid #e3e8ef;background:#fff;border-radius:11px;font:inherit;font-size:.86rem;font-weight:700;color:#8a929e;cursor:pointer}
+  .mmtog button.on{background:#7fb2e0;border-color:#7fb2e0;color:#fff}
+  .mmtog button.on.en{background:#9b7fd4;border-color:#9b7fd4}
+  .mmsum{display:flex;gap:7px;margin-bottom:13px}
+  .mmsum>div{flex:1;background:#fff;border-radius:11px;padding:9px 4px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+  .mmsum b{display:block;font-size:1.3rem;line-height:1.2}
+  .mmsum small{font-size:.63rem;color:#8a929e}
+  .mmgrid{display:grid;gap:3px;margin-bottom:12px}
+  .mmh{font-size:.6rem;color:#8a929e;text-align:center;padding-bottom:3px;line-height:1.25;word-break:break-all}
+  .mmrl{font-size:.62rem;color:#6b7280;display:flex;align-items:center;justify-content:flex-end;padding-right:4px;line-height:1.15}
+  .mmc{aspect-ratio:1;border-radius:4px;background:#e6eaf0;position:relative}
+  .mmc.g{background:#5fb389}.mmc.y{background:#e79a3c}.mmc.r{background:#e8776a}.mmc.n{background:#e6eaf0}
+  .mmc.hist:after{content:'';position:absolute;top:1px;right:1px;width:4px;height:4px;border-radius:50%;background:rgba(47,62,87,.55)}
+  .mmleg{display:flex;flex-wrap:wrap;gap:10px;font-size:.68rem;color:#8a929e;margin-bottom:10px}
+  .mmleg span{display:flex;align-items:center;gap:4px}
+  .mmdot{width:10px;height:10px;border-radius:3px;display:inline-block;position:relative}
+  .mmhint{font-size:.72rem;color:#8a929e;line-height:1.7;background:#f8f9fb;border-radius:10px;padding:10px 12px}
+  .mmhint b{color:#4a515c}
+  .mmempty{text-align:center;color:#8a929e;font-size:.85rem;padding:30px 10px;line-height:1.9}
 </style>
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v3.0.1 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -466,12 +672,15 @@
         <option value="setup">設定練習時段</option>
         <option value="dashboard">家長儀表板</option>
         <option value="calendar">月曆（打卡）</option>
-        <option value="backend">⚙️ 後台設定（遊戲/解鎖）</option>
+        <option value="backend">［二階］⚙️ 後台設定</option>
       </optgroup>
       <optgroup label="周邊頁">
         <option value="profile">個人 · 我的</option>
+        <option value="donelist">［二階］已完成單元列表</option>
+        <option value="unlock">🔓 解鎖模式（家長四選一）</option>
+        <option value="mastery">［二階］🗺️ 精熟地圖</option>
         <option value="donelist">已完成單元</option>
-        <option value="coin">金幣首頁</option><option value="coinmap">學習地圖</option><option value="shop">公仔商店</option><option value="coins">金幣明細</option>
+        <option value="coin">［二階］金幣首頁</option><option value="coinmap">學習地圖</option><option value="shop">公仔商店</option><option value="coins">金幣明細</option>
         <option value="messages">訊息</option>
         <option value="map">地圖 · 遊戲</option>
       </optgroup>
@@ -494,32 +703,35 @@
             <div class="nm">宗翰</div>
             <div class="su">恭喜您登入成功</div>
             <div class="brand">我們準備加入 拼讀小達人<br>PA + Phonics 的神奇世界</div>
-            <button class="btn" onclick="enterApp()">今天先做一個單元試試看！</button>
-            <button class="welcome-alt" onclick="go('setup')">直接設定我的承諾書（練習節奏）</button>
+            <button class="btn" onclick="go('setup')">設定我的承諾書（練習節奏）</button>
+            <div class="welcome-alt" style="cursor:default;color:#a6aeb9">先訂好一週練幾天，再開始第一課</div>
           </div>
         </section>
 
         <!-- 首頁 -->
-        <section class="screen" id="scr-home">
+        <section class="screen hasbar" id="scr-home">
+          <div class="stagebar ask">⚠️ 這一頁部長說要調整，找時間讓部長確認</div>
           <div class="sb"><span>上午 9:38 · 週六</span><span>🔋 43%</span></div>
           <div class="scroll"><div class="maxw">
             <div class="home-hd">
-              <div class="streak">連續學習 <span id="streakDays">1</span> 天</div>
-              <div class="accum" onclick="goCoins('home')">累積 36 天 · <img class="coinic" src="data:image/png;base64,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"> <span id="coinTop">7,500</span></div>
-              <div class="schbtn" onclick="go('calendar')"><img class="calic" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAAAiCAYAAADGUiAIAAABxElEQVR42u2XS0vDQBDH/5s0bazah0q9qFUREQ+CD1AEwYPeBU9+Cj+Ln8KT4N1DBaFV8AEepEhQURGUoqHWtGnSjIeKuo2hwfpoYecUhs3sb5P/zOwwIoKX2TenVD7a4nzq8jqT2rvQqDkvjyjtbHCbB6dXEeifYF7vSGghE7C/ZYH3JyI4T7dw8vdEhl7V1XPOrWMtTUxRG96YrJLLV7k7Az0/EACwcAxSpJdJ8T6AVWXMiAhkm7Cyu2Rr6eb7miPzUMYWGQuEqjKwtUxTgr79SdhahgBAIkOHlU01tVatbApk6JCcQo5aIbmcQo4kMo2WqARkGqLOClgBK2AF7J/duj5ZaHYNrC3yfw2gmId5sOkPlkUS+InR5dut1eMKKjQrYL006zE244uxmfOVj7dhX598BB+YRHBqpXa8xxfjva8cETIQsH41y+QglNEF3heOuk8e74OidnysaYu5Y4Wj7lhy8Adh1Q4o40v1gw3N1F0jdychdyeFZgXsryYYlQqwL/b5UyZGIPcM8gX/8hBU1LkEq9VxJXcF50HjIYbnwD4lZmOwlTKs8z2+g3Um3J3u6dbVwVADS8W8K5acnALzwfEKnNmfHZSw3K0AAAAASUVORK5CYII=">打卡紀錄</div>
-              <div class="wklabel">2026 年 5 月 · 本週</div>
-              <div class="weekstrip" id="weekstrip"></div>
+              <div class="streak" data-tip="<b>連續學習 N 天</b>連續有「完成一個單元」的天數。||完成單元 ＝ 通過該單元的小遊戲，所以只看影片或只交作業不算。斷鏈規則待拍板。">連續學習 <span id="streakDays">1</span> 天</div>
+              <div class="accum coinpillhd" data-tip="<b>累積 N 天</b>從開始到現在，完成過單元的天數總和。||不是日曆天，也不是登入天數。" onclick="goCoins('home')">累積 <span id="learnTotal">36</span> 天 · <img class="coinic" src="data:image/png;base64,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"> <span id="coinTop">7,500</span></div>
+              <!-- 2026-08-27：打卡紀錄鈕、月份標題、週曆整組移除（部長圈選範圍）。
+                   用 visibility 而不是 display，橘色區塊的高度維持原樣、不縮小。 -->
+              <div class="schbtn" style="visibility:hidden" onclick="go('calendar')"><img class="calic" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAAAiCAYAAADGUiAIAAABxElEQVR42u2XS0vDQBDH/5s0bazah0q9qFUREQ+CD1AEwYPeBU9+Cj+Ln8KT4N1DBaFV8AEepEhQURGUoqHWtGnSjIeKuo2hwfpoYecUhs3sb5P/zOwwIoKX2TenVD7a4nzq8jqT2rvQqDkvjyjtbHCbB6dXEeifYF7vSGghE7C/ZYH3JyI4T7dw8vdEhl7V1XPOrWMtTUxRG96YrJLLV7k7Az0/EACwcAxSpJdJ8T6AVWXMiAhkm7Cyu2Rr6eb7miPzUMYWGQuEqjKwtUxTgr79SdhahgBAIkOHlU01tVatbApk6JCcQo5aIbmcQo4kMo2WqARkGqLOClgBK2AF7J/duj5ZaHYNrC3yfw2gmId5sOkPlkUS+InR5dut1eMKKjQrYL006zE244uxmfOVj7dhX598BB+YRHBqpXa8xxfjva8cETIQsH41y+QglNEF3heOuk8e74OidnysaYu5Y4Wj7lhy8Adh1Q4o40v1gw3N1F0jdychdyeFZgXsryYYlQqwL/b5UyZGIPcM8gX/8hBU1LkEq9VxJXcF50HjIYbnwD4lZmOwlTKs8z2+g3Um3J3u6dbVwVADS8W8K5acnALzwfEKnNmfHZSw3K0AAAAASUVORK5CYII=">打卡紀錄</div>
+              <div class="wklabel" style="visibility:hidden">2026 年 5 月 · 本週</div>
+              <div class="weekstrip" id="weekstrip" style="visibility:hidden"></div>
             </div>
             <div class="unitnav">
               <button class="unitnavbtn" id="uPrev" onclick="browseUnit(-1)">‹ 上一單元</button>
-              <div class="unitnavc"><span class="unitN">1</span> / 254 單元</div>
+              <div class="unitnavc" data-tip="<b>第 N / 254 單元</b>N ＝ 目前的進度指標，254 ＝ 課程總單元數。||一個單元 ＝ 一部影片 ＋ 它的作業。"><span class="unitN">1</span> / 254 單元</div>
               <button class="unitnavbtn" id="uNext" onclick="browseUnit(1)">下一單元 ›</button>
             </div>
             <div class="backcurwrap" id="backcurWrap"></div>
             <div class="unitinfo">
               <div class="uiblock"><div class="uilbl">影片進度</div><div class="ucode" id="uCode">一-1-1</div></div>
               <div class="uidiv"></div>
-              <div class="uiblock"><div class="uilbl">書本頁數</div><div class="upage" id="uPage">第一冊 · P5</div></div>
+              <div class="uiblock"><div class="uilbl">進度說明</div><div class="upage" id="uPage">第一冊 · P5</div></div>
             </div>
             <div class="cardstage" style="margin-top:14px">
               <div class="rail" id="rail"></div>
@@ -644,6 +856,21 @@
         </section>
 
         <!-- 單元完成 -->
+        <section class="screen" id="scr-unlock">
+          <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
+          <div class="topbar" style="display:flex;align-items:center;gap:8px"><span style="cursor:pointer" onclick="go('profile')">‹</span>解鎖模式</div>
+          <div class="scroll"><div class="maxw"><div id="ulBody" style="padding:4px 2px 18px"></div></div></div>
+          <div class="nav" id="navUnlock"></div>
+        </section>
+
+        <section class="screen hasbar" id="scr-mastery">
+          <div class="stagebar s2">🗺️ 精熟地圖 — 第二階段（作答資料第一階段就要開始收）</div>
+          <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
+          <div class="topbar" style="display:flex;align-items:center;gap:8px"><span style="cursor:pointer" onclick="go('profile')">‹</span>精熟地圖</div>
+          <div class="scroll"><div class="maxw"><div id="mmBody"></div></div></div>
+          <div class="nav" id="navMastery"></div>
+        </section>
+
         <section class="screen" id="scr-unitdone">
           <div class="sb"><span>下午 3:40 · 週六</span><span>🔋 44%</span></div>
           <div class="celebrate">
@@ -678,17 +905,23 @@
         <!-- 設定練習時段 -->
         <section class="screen" id="scr-setup">
           <div class="sb"><span>上午 9:12 · 週六</span><span>🔋 56%</span></div>
-          <div class="topbar"><span class="back" onclick="go('profile')">‹</span>設定練習時段</div>
+          <div class="topbar"><span class="back" onclick="go('profile')">‹</span>我的承諾書</div>
           <div class="scroll"><div class="maxw"><div class="setwrap">
             <div class="setcard" id="dayCard"></div>
-            <div class="setsum">目前節奏：<b><span id="rhythmDays">一週 3 天</span></b><br>進度：第 16 / 254 單元<br>照此節奏，預計 <b>2027 年 12 月</b> 完成全部課程</div>
+            <div class="setcard remindcard">
+              <div class="rcttl">🔔 提醒時間</div>
+              <div class="rcsub">練習日到了會提醒你一次。休息日不提醒。</div>
+              <div class="rcrow" id="remindRow"></div>
+            </div>
+            <div class="setsum" id="setSum"></div>
             <button class="btn coral" onclick="saveRhythm()">確認設定</button>
           </div></div></div>
           <div class="nav" id="navSetup"></div>
         </section>
 
         <!-- 後台設定（產品端） -->
-        <section class="screen" id="scr-backend">
+        <section class="screen hasbar" id="scr-backend">
+          <div class="stagebar s2">⚙️ 解鎖模式設定 — 第二階段（第一階段固定一種模式，待拍板）</div>
           <div class="sb"><span>上午 9:12 · 週六</span><span>🔋 56%</span></div>
           <div class="topbar"><span class="back" onclick="go('profile')">‹</span>後台設定 · 遊戲與解鎖</div>
           <div class="scroll"><div class="maxw"><div class="setwrap" id="bkBody"></div></div></div>
@@ -717,13 +950,15 @@
           <div class="topbar">我的</div>
           <div class="scroll"><div class="maxw"><div class="profwrap">
             <div class="profhd"><div class="ava">宗</div><div class="nm">宗翰</div></div>
+            <div class="ovbox">
+              <div class="ovttl">我的學習總覽</div>
+              <div class="ovgrid" id="myOverview"></div>
+              <div class="ovnote">爸爸媽媽在家長 App 看到的，就是這幾個數字。</div>
+            </div>
             <div class="proflist">
               <div class="profrow" onclick="go('setup')"><span class="ic">📝</span>我的承諾書（練習節奏）<span class="ar">›</span></div>
-              <div class="profrow" onclick="go('donelist')"><span class="ic">✅</span>已完成單元列表<span class="ar">›</span></div>
-              <div class="profrow" onclick="go('messages')"><span class="ic">✉️</span>訊息通知<span class="ar">›</span></div>
-              <div class="profrow" onclick="go('backend')"><span class="ic">⚙️</span>後台設定（遊戲/解鎖）<span class="ar">›</span></div>
-              <div class="profrow" onclick="goCoins('profile')"><span class="ic"><img class="coinic" src="data:image/png;base64,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"></span>金幣紀錄<span class="ar">›</span></div>
-              <div class="profrow"><span class="ic">🔑</span>修改密碼<span class="ar">›</span></div>
+              <div class="profrow" onclick="go('unlock')"><span class="ic">🔓</span>解鎖模式（小遊戲何時出現）<span class="ar">›</span></div>
+                            <div class="profrow"><span class="ic">🔑</span>修改密碼<span class="ar">›</span></div>
               <div class="profrow"><span class="ic">🔔</span>通知設定<span class="ar">›</span></div>
               <div class="profrow"><span class="ic">ℹ️</span>關於（v1.1.28）<span class="ar">›</span></div>
             </div>
@@ -732,7 +967,8 @@
         </section>
 
         <!-- 已完成單元 -->
-        <section class="screen" id="scr-donelist">
+        <section class="screen hasbar" id="scr-donelist">
+          <div class="stagebar s2">✅ 已完成單元列表 — 第二階段（回頭做作業第一階段就有，入口在首頁）</div>
           <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
           <div class="topbar"><span class="back" onclick="go('home')">‹</span>已完成單元</div>
           <div class="scroll"><div class="maxw"><div class="simplewrap" id="doneListBody"></div></div></div>
@@ -743,26 +979,36 @@
         <section class="screen" id="scr-coins">
           <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
           <div class="topbar"><span class="back" onclick="go(coinsBack)">‹</span>金幣紀錄</div>
-          <div class="scroll"><div class="maxw"><div class="coinwrap"><div class="coinbal"><div class="n" id="ledgerBal">0</div><div class="l">目前金幣</div></div><div class="coinlist" id="ledgerList"></div></div></div></div>
+          <div class="scroll"><div class="maxw"><div class="coinwrap"><div class="coinbal" data-tip="<b>目前金幣</b>所有入帳減去支出。||影片 +300、唸／寫／上傳每份 +100、單元小遊戲 +200、每天登入 +100。"><div class="n" id="ledgerBal">0</div><div class="l">目前金幣</div></div>
+            <div class="streakcard" data-tip="<b>每日登入獎勵</b>打開 App 就給 100 金，不看有沒有學習。||實際資料顯示純登入打卡沒有明顯不良影響（378 位真實學生半年，只來領錢的僅 4 人），所以維持原課程模組的做法。連續階梯是第二階段。"><h4>🔥 每日登入獎勵</h4>
+              <div class="loginsimple">每天打開 App <b>+100 金</b></div>
+              <div class="loginnote">跟原課程模組一樣，不看有沒有學習、也沒有階梯。<br>
+                <span class="s2inline">連續打卡階梯（1–6 天各 +50、第 7 天 +100）是第二階段的項目。</span></div>
+            </div>
+            <div class="coinlist" id="ledgerList"></div></div></div></div>
           <div class="nav" id="navCoins"></div>
         </section>
 
         <!-- 金幣首頁 -->
-        <section class="screen" id="scr-coin">
+        <section class="screen hasbar" id="scr-coin">
+          <div class="stagebar s2">🪙 金幣首頁 — 第二階段（第一階段照原模組：頂欄膠囊直接進金幣紀錄）</div>
           <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
           <div class="topbar">金幣</div>
           <div class="scroll"><div class="maxw">
             <div class="coinbal"><div class="n" id="coinBal">0</div><div class="l">目前金幣</div></div>
+            <div class="coinsoonnote">金幣<b>照賺、照記</b>。可以兌換的公仔商店與學習地圖會在<b>第二階段</b>開放——到時候這些存款就派得上用場了。</div>
             <div class="streakcard"><h4>🔥 連續登入獎勵（登入即算，不斷鏈）</h4><div class="ladder" id="ladder"></div><div id="streakNote" style="margin-top:8px;font-size:.72rem;color:#9a9a9a"></div></div>
-            <div class="coinentry" onclick="go('coinmap')"><div class="ic" style="background:#eaf6ee">🗺️</div><div><div class="tt">學習地圖</div><div class="ds">96 站 · 公仔當棋子 · 每 4 站一個寶箱</div></div><span class="ar">›</span></div>
-            <div class="coinentry" onclick="go('shop')"><div class="ic" style="background:#fef0d0">🧸</div><div><div class="tt">公仔商店</div><div class="ds">24 隻公仔 · 三階升級 · 蒐集滿級</div></div><span class="ar">›</span></div>
+            <!-- 第一階段：金幣照賺照記，但「花金幣」的兩處延到第二階段 -->
+            <div class="coinentry soon2" onclick="go('coinmap')"><div class="ic" style="background:#eef0f4">🗺️</div><div><div class="tt">學習地圖 <span class="s2tag">第二階段</span></div><div class="ds">96 站 · 公仔當棋子 · 每 4 站一個寶箱</div></div><span class="ar">›</span></div>
+            <div class="coinentry soon2" onclick="go('shop')"><div class="ic" style="background:#eef0f4">🧸</div><div><div class="tt">公仔商店 <span class="s2tag">第二階段</span></div><div class="ds">24 隻公仔 · 三階升級 · 蒐集滿級</div></div><span class="ar">›</span></div>
             <div class="coinentry" onclick="go('coins')"><div class="ic" style="background:#eef3fb">📜</div><div><div class="tt">金幣明細</div><div class="ds">看每一筆賺取與兌換紀錄</div></div><span class="ar">›</span></div>
           </div></div>
           <div class="nav" id="navCoin"></div>
         </section>
 
         <!-- 公仔商店 -->
-        <section class="screen" id="scr-shop">
+        <section class="screen hasbar" id="scr-shop">
+          <div class="stagebar s2">🧸 公仔商店 — 第二階段（金幣第一階段就開始累積）</div>
           <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
           <div class="topbar" style="display:flex;align-items:center"><span class="back" onclick="go('coin')">‹</span>公仔商店<span style="margin-left:auto;font-size:.8rem;color:#f0a90f;font-weight:800">🪙 <span id="shopBal">0</span></span></div>
           <div class="scroll"><div class="maxw"><div class="shopgrid" id="shopGrid"></div>
@@ -772,7 +1018,8 @@
         </section>
 
         <!-- 學習地圖 -->
-        <section class="screen" id="scr-coinmap">
+        <section class="screen hasbar" id="scr-coinmap">
+          <div class="stagebar s2">🗺️ 學習地圖 96 站 — 第二階段（金幣第一階段就開始累積）</div>
           <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
           <div class="topbar" style="display:flex;align-items:center"><span class="back" onclick="go('coin')">‹</span>學習地圖<span style="margin-left:auto;font-size:.8rem;color:#f0a90f;font-weight:800">🪙 <span id="mapBal">0</span></span></div>
           <div class="scroll"><div class="maxw"><div id="mapRows"></div><div id="mapNote" style="text-align:center;font-size:.72rem;color:#9a9a9a;margin-top:8px"></div></div></div>
@@ -783,11 +1030,8 @@
         <section class="screen" id="scr-messages">
           <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
           <div class="topbar">訊息</div>
-          <div class="scroll"><div class="maxw"><div class="simplewrap">
-            <div class="msgrow"><div class="tt">🔔 練習提醒</div><div class="bd">今天是練習日，19:00 記得完成一個單元喔！</div></div>
-            <div class="msgrow"><div class="tt">📢 系統公告</div><div class="bd">金幣商城即將開放，敬請期待。</div></div>
-            <div class="msgrow"><div class="tt">🎉 里程碑</div><div class="bd">你已經連續學習 1 天，繼續加油！</div></div>
-          </div></div></div>
+          <div class="msgtabs" id="msgTabs"></div>
+          <div class="scroll"><div class="maxw"><div class="simplewrap" id="msgBody"></div></div></div>
           <div class="nav" id="navMsg"></div>
         </section>
 
@@ -857,17 +1101,16 @@
           <div class="sb"><span>下午 1:15 · 週二</span><span>🔋 60%</span></div>
           <div class="topbar"><span class="back" onclick="go('p-home')">‹</span>影片觀看紀錄 — 楊宗翰</div>
           <div class="scroll"><div class="maxw"><div class="pdwrap">
-            <div class="pbig"><div class="pbignum" style="color:#5f97cf">6%</div><div class="l">整體觀看率</div></div>
-            <div class="buckets">
-              <div class="bk g"><b>16</b>95%+</div><div class="bk b"><b>0</b>70-95%</div>
-              <div class="bk o"><b>0</b>50-70%</div><div class="bk r"><b>238</b>&lt;50%</div></div>
-            <div class="psec">影片明細（254）</div>
+            <!-- 2026-09-01：拿掉整體觀看率與完成度分桶。自學版沒有應完成日，算不出率；
+                 而「238 部未看」那種數字只會製造不存在的落後感。只顯示看完的。 -->
+            <div class="pbig"><div class="pbignum" style="color:#5f97cf">16 部</div><div class="l">看完的影片</div></div>
+            <div class="psec">影片明細</div>
             <div class="plist">
-              <div class="pitem"><div class="badge" style="border-color:#7cc39a;color:#5fb389">100%</div><div class="imid"><div class="it">第 17 單元影片 · SoR 發音課</div><div class="is">▶ 1 次 · ⏱ 3:20</div></div><div class="idate">5/23</div></div>
-              <div class="pitem"><div class="badge" style="border-color:#7cc39a;color:#5fb389">100%</div><div class="imid"><div class="it">第 16 單元影片 · SoR 發音課</div><div class="is">▶ 1 次 · ⏱ 2:58</div></div><div class="idate">5/20</div></div>
-              <div class="pitem"><div class="badge" style="border-color:#7cc39a;color:#5fb389">100%</div><div class="imid"><div class="it">第 15 單元影片 · SoR 發音課</div><div class="is">▶ 2 次 · ⏱ 3:05</div></div><div class="idate">5/16</div></div>
-              <div class="pitem"><div class="badge">0%</div><div class="imid"><div class="it">第 18 單元影片 · SoR 發音課</div><div class="is">▶ 0 次 · ⏱ 0s</div></div><div class="idate">—</div></div>
-              <div class="pitem"><div class="badge">0%</div><div class="imid"><div class="it">第 19 單元影片 · SoR 發音課</div><div class="is">▶ 0 次 · ⏱ 0s</div></div><div class="idate">—</div></div>
+              <div class="pitem"><div class="badge" style="border-color:#7cc39a;color:#5fb389">✓</div><div class="imid"><div class="it">第 17 單元影片 · SoR 發音課</div><div class="is">▶ 1 次 · ⏱ 3:20</div></div><div class="idate">5/23</div></div>
+              <div class="pitem"><div class="badge" style="border-color:#7cc39a;color:#5fb389">✓</div><div class="imid"><div class="it">第 16 單元影片 · SoR 發音課</div><div class="is">▶ 1 次 · ⏱ 2:58</div></div><div class="idate">5/20</div></div>
+              <div class="pitem"><div class="badge" style="border-color:#7cc39a;color:#5fb389">✓</div><div class="imid"><div class="it">第 15 單元影片 · SoR 發音課</div><div class="is">▶ 2 次 · ⏱ 3:05</div></div><div class="idate">5/16</div></div>
+              <div class="idate">—</div></div>
+              <div class="idate">—</div></div>
             </div>
           </div></div></div>
           <div class="nav" id="navPVideo"></div>
@@ -878,24 +1121,24 @@
           <div class="sb"><span>下午 1:17 · 週二</span><span>🔋 60%</span></div>
           <div class="topbar"><span class="back" onclick="go('p-home')">‹</span>作業提交紀錄 — 楊宗翰</div>
           <div class="scroll"><div class="maxw"><div class="pdwrap">
-            <div class="statrow">
-              <div><b style="color:#e0954a">6%</b><div class="l">完成率</div></div>
-              <div><b style="color:#5fb389">32</b><div class="l">已完成</div></div>
-              <div><b style="color:#e0736b">476</b><div class="l">未完成</div></div></div>
-            <div class="psec" style="color:#5fb389">已完成（32）</div>
+            <!-- 2026-09-01：拿掉完成率與未完成數。沒有應完成日就沒有分母，
+                 「未完成 476」更是憑空生出來的焦慮。 -->
+            <div class="pbig"><div class="pbignum" style="color:#5fb389">32 份</div><div class="l">交出的作業</div></div>
+            <div class="psec">完成清單</div>
             <div class="plist">
-              <div class="pitem"><div class="ico2" style="background:#eaf2fb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABmElEQVR42tXZX0vDMBSH4d/JnGWgYBmIF4LY7/+V7FQEZVgnOtDsT483TtyWrm2a7pwUdrMl7HmXpV0ZMTO0HdP5CpdnJwwAj7MFXV8MYYicY0lbQF5YZONkD1UykyvCxIAHAEPEpePDNjHgD0WYWPBVEeJ74OVziavzYWvEZk+IB5TMMETsOZfEv0KGCCUz+cx9el/KrMDsa410NAiyEkZiw6ajAeeFDbISRupsk42TzhHT+YrAzEd53L1+gx3H7/Nbj3VZOse65onifSP+jxfHt43YHacC3zTC9boafF3E88fC+T69XAfa/LapmE/ZOJE5jXbFV51iq46gKxACv3PFpt0rdm8rEBqfF7YWHyygD/zR9oAkvnOANL5TgAa8d4AWvFeAJnzrAG34VgEa8Y0DtOIbBWjG1wZoxx8MiAFfGRAL3hkQE34vIDb8VkCM+L+AWPEAQPdvFjfpaZT4zT1xtPig98QTAXywgElh6VYAHyRAEt85QBrfKUAD3jtAC94rQBO+dYA2PACYvLCN/lR7mC3U4QHgB0F6N8/n/BAjAAAAAElFTkSuQmCC" style="width:20px"></div><div class="imid"><div class="it">邊唸邊寫（寫）</div><div class="is">第 17 單元 · 應完成 5/13 · <b style="color:#5fb389">5/22 完成</b></div></div><span class="iact">🖼️</span></div>
-              <div class="pitem"><div class="ico2" style="background:#fdf0e6"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAzCAYAAAD/06q7AAAEPElEQVR42u2Yy1cadxTHvxdGgcrA4AtREQnRUx8x2qZ1kdZzenqy7Tr/Wfdddd1VG7Oomp5TtcUcXxiTKjrIm8CAgDDAr4s21DCDzEw03XCX9/e7dz5zf/f+Hpe+D/4Ao2LlLHBaeDgtDgYAUiVPUqWAq1rFsE/OKMhn7gdsYXimdYgBwG4yhGBij4yA6QYatbvxePwLNmBztZ2zMDyDMX6E/RbZpuhlQpd/k57JDguPJ/6VG2HeyYDNhSf+Feaw8HcDZCLCsmeR2TirZuc2zoplzyIzEd0+0BjvQcA1qTsnAq5JjPGe2wfqtwrMaOXosdUMNGjrN1zKemw1A3kdo4aB9Nia9Ow9H7KB3knZfwzpAnWBukBdoC5QF6gLdMvCcWTGhHOMcSYO0UKCLuWi6sTclQTB6jT0kdyV1HbM3tOHUd7Nao0azvNR4r7xPWYBl6/5rvrx8CfKVZQOLgpxw0AXhbiqXrA48XT2u+b19kyKMNM1GADAQ/es6v03U84aXoZ2tq3f8jnHlTk0M3AffK9dYZwsZcgokJot32vHzMB9bUnt5T2KKKXLb7Ede6kbZjv2EunyW03fAABTWBIVyql+PwjKgOwmQxTT8TSOXSawmwwpHBEIU/1+xfywJMIk5qOKAY/dDbXnstyoYTW8QYfp444wh+ljrIY3SG7UVJ/ZHrtboRfzUZjCUkQ1N5bc84wjs0JfkstYFzfp2eka1KIblkQ8O13DurhJJbms3GfIjCX3vOpyhaUIcUW5hN1kCK2tlYDLh0L1kv0eDaoCn+TO6SR3Ds7EwflvQ0GqFFBTich1eeR5yFor+10LpyiX/knqg/QrqtZlxaRF9xxmB6dvfAbXGjVkyllkytmOMLOD02zRPafQV+syDtKvqFllUqWAreiOqpMV7zKmXH6mluRahUCYcvnZindZdXwrugOpUni/YXWUeUPjDg+bdHoVBt9OfoVJwct24vukVsKd3vVLI/MsIPignjcijjJvmn/bBKqxOtbFTbJxVubuG1K2VQQfAoKP/RnfQyj9uu2Zd/2MmhmcYp+PPGg7J1FMYV3cpBqr/xfN1qanYHFo6pKJ+SguCnEU5RIq9SoAwGLuRV/PJxjjRzo2GDLlLFZP1ylXyb+/vGpdWHtPH772fsl8zvE7uWKcSRFsiFuqUVY9Oi7lIp6HX1Awvn/rMMH4Pp6HX7Rd8rZdWLkhYyu2Q6fSOR6NLHxwtM6kCP6I71KqlLn5gtbJUaqUwc8nv9Jw3yDuCRNsfuhTmEnbRbPOGthPHeEkd07JYhoMnTt7mvrUDAyJYgqJYoqC8T24rE64rAK7J0wokjdSiOGv7BmyVznKXknNhNd8hdUb+kq9ingxhXgxRb3mHtYKJOajCGVeG95Fu6+OLtD/ClRv1DXpPhpQopQmLbo7LfvWTfOXkzXMDU0DAA5Sx+i0E3eSvwGkLMMYKOCRdQAAAABJRU5ErkJggg==" style="width:18px"></div><div class="imid"><div class="it">直接合併正唸＋倒車（唸）</div><div class="is">第 17 單元 · 應完成 5/13 · <b style="color:#5fb389">5/22 完成</b></div></div><span class="iact">▶</span></div>
-              <div class="pitem"><div class="ico2" style="background:#eaf2fb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABmElEQVR42tXZX0vDMBSH4d/JnGWgYBmIF4LY7/+V7FQEZVgnOtDsT483TtyWrm2a7pwUdrMl7HmXpV0ZMTO0HdP5CpdnJwwAj7MFXV8MYYicY0lbQF5YZONkD1UykyvCxIAHAEPEpePDNjHgD0WYWPBVEeJ74OVziavzYWvEZk+IB5TMMETsOZfEv0KGCCUz+cx9el/KrMDsa410NAiyEkZiw6ajAeeFDbISRupsk42TzhHT+YrAzEd53L1+gx3H7/Nbj3VZOse65onifSP+jxfHt43YHacC3zTC9boafF3E88fC+T69XAfa/LapmE/ZOJE5jXbFV51iq46gKxACv3PFpt0rdm8rEBqfF7YWHyygD/zR9oAkvnOANL5TgAa8d4AWvFeAJnzrAG34VgEa8Y0DtOIbBWjG1wZoxx8MiAFfGRAL3hkQE34vIDb8VkCM+L+AWPEAQPdvFjfpaZT4zT1xtPig98QTAXywgElh6VYAHyRAEt85QBrfKUAD3jtAC94rQBO+dYA2PACYvLCN/lR7mC3U4QHgB0F6N8/n/BAjAAAAAElFTkSuQmCC" style="width:20px"></div><div class="imid"><div class="it">邊寫邊唸（寫）</div><div class="is">第 9 單元 · 應完成 4/14 · <b style="color:#5fb389">4/13 完成</b></div></div><span class="iact">🖼️</span></div>
-              <div class="pitem"><div class="ico2" style="background:#fdf0e6"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAzCAYAAAD/06q7AAAEPElEQVR42u2Yy1cadxTHvxdGgcrA4AtREQnRUx8x2qZ1kdZzenqy7Tr/Wfdddd1VG7Oomp5TtcUcXxiTKjrIm8CAgDDAr4s21DCDzEw03XCX9/e7dz5zf/f+Hpe+D/4Ao2LlLHBaeDgtDgYAUiVPUqWAq1rFsE/OKMhn7gdsYXimdYgBwG4yhGBij4yA6QYatbvxePwLNmBztZ2zMDyDMX6E/RbZpuhlQpd/k57JDguPJ/6VG2HeyYDNhSf+Feaw8HcDZCLCsmeR2TirZuc2zoplzyIzEd0+0BjvQcA1qTsnAq5JjPGe2wfqtwrMaOXosdUMNGjrN1zKemw1A3kdo4aB9Nia9Ow9H7KB3knZfwzpAnWBukBdoC5QF6gLdMvCcWTGhHOMcSYO0UKCLuWi6sTclQTB6jT0kdyV1HbM3tOHUd7Nao0azvNR4r7xPWYBl6/5rvrx8CfKVZQOLgpxw0AXhbiqXrA48XT2u+b19kyKMNM1GADAQ/es6v03U84aXoZ2tq3f8jnHlTk0M3AffK9dYZwsZcgokJot32vHzMB9bUnt5T2KKKXLb7Ede6kbZjv2EunyW03fAABTWBIVyql+PwjKgOwmQxTT8TSOXSawmwwpHBEIU/1+xfywJMIk5qOKAY/dDbXnstyoYTW8QYfp444wh+ljrIY3SG7UVJ/ZHrtboRfzUZjCUkQ1N5bc84wjs0JfkstYFzfp2eka1KIblkQ8O13DurhJJbms3GfIjCX3vOpyhaUIcUW5hN1kCK2tlYDLh0L1kv0eDaoCn+TO6SR3Ds7EwflvQ0GqFFBTich1eeR5yFor+10LpyiX/knqg/QrqtZlxaRF9xxmB6dvfAbXGjVkyllkytmOMLOD02zRPafQV+syDtKvqFllUqWAreiOqpMV7zKmXH6mluRahUCYcvnZindZdXwrugOpUni/YXWUeUPjDg+bdHoVBt9OfoVJwct24vukVsKd3vVLI/MsIPignjcijjJvmn/bBKqxOtbFTbJxVubuG1K2VQQfAoKP/RnfQyj9uu2Zd/2MmhmcYp+PPGg7J1FMYV3cpBqr/xfN1qanYHFo6pKJ+SguCnEU5RIq9SoAwGLuRV/PJxjjRzo2GDLlLFZP1ylXyb+/vGpdWHtPH772fsl8zvE7uWKcSRFsiFuqUVY9Oi7lIp6HX1Awvn/rMMH4Pp6HX7Rd8rZdWLkhYyu2Q6fSOR6NLHxwtM6kCP6I71KqlLn5gtbJUaqUwc8nv9Jw3yDuCRNsfuhTmEnbRbPOGthPHeEkd07JYhoMnTt7mvrUDAyJYgqJYoqC8T24rE64rAK7J0wokjdSiOGv7BmyVznKXknNhNd8hdUb+kq9ingxhXgxRb3mHtYKJOajCGVeG95Fu6+OLtD/ClRv1DXpPhpQopQmLbo7LfvWTfOXkzXMDU0DAA5Sx+i0E3eSvwGkLMMYKOCRdQAAAABJRU5ErkJggg==" style="width:18px"></div><div class="imid"><div class="it">吐捲舌 100 次（唸）</div><div class="is">第 4 單元 · 應完成 3/24 · <b style="color:#5fb389">3/24 完成</b></div></div><span class="iact">▶</span></div>
-              <div class="pitem"><div class="ico2" style="background:#fdf0e6"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAzCAYAAAD/06q7AAAEPElEQVR42u2Yy1cadxTHvxdGgcrA4AtREQnRUx8x2qZ1kdZzenqy7Tr/Wfdddd1VG7Oomp5TtcUcXxiTKjrIm8CAgDDAr4s21DCDzEw03XCX9/e7dz5zf/f+Hpe+D/4Ao2LlLHBaeDgtDgYAUiVPUqWAq1rFsE/OKMhn7gdsYXimdYgBwG4yhGBij4yA6QYatbvxePwLNmBztZ2zMDyDMX6E/RbZpuhlQpd/k57JDguPJ/6VG2HeyYDNhSf+Feaw8HcDZCLCsmeR2TirZuc2zoplzyIzEd0+0BjvQcA1qTsnAq5JjPGe2wfqtwrMaOXosdUMNGjrN1zKemw1A3kdo4aB9Nia9Ow9H7KB3knZfwzpAnWBukBdoC5QF6gLdMvCcWTGhHOMcSYO0UKCLuWi6sTclQTB6jT0kdyV1HbM3tOHUd7Nao0azvNR4r7xPWYBl6/5rvrx8CfKVZQOLgpxw0AXhbiqXrA48XT2u+b19kyKMNM1GADAQ/es6v03U84aXoZ2tq3f8jnHlTk0M3AffK9dYZwsZcgokJot32vHzMB9bUnt5T2KKKXLb7Ede6kbZjv2EunyW03fAABTWBIVyql+PwjKgOwmQxTT8TSOXSawmwwpHBEIU/1+xfywJMIk5qOKAY/dDbXnstyoYTW8QYfp444wh+ljrIY3SG7UVJ/ZHrtboRfzUZjCUkQ1N5bc84wjs0JfkstYFzfp2eka1KIblkQ8O13DurhJJbms3GfIjCX3vOpyhaUIcUW5hN1kCK2tlYDLh0L1kv0eDaoCn+TO6SR3Ds7EwflvQ0GqFFBTich1eeR5yFor+10LpyiX/knqg/QrqtZlxaRF9xxmB6dvfAbXGjVkyllkytmOMLOD02zRPafQV+syDtKvqFllUqWAreiOqpMV7zKmXH6mluRahUCYcvnZindZdXwrugOpUni/YXWUeUPjDg+bdHoVBt9OfoVJwct24vukVsKd3vVLI/MsIPignjcijjJvmn/bBKqxOtbFTbJxVubuG1K2VQQfAoKP/RnfQyj9uu2Zd/2MmhmcYp+PPGg7J1FMYV3cpBqr/xfN1qanYHFo6pKJ+SguCnEU5RIq9SoAwGLuRV/PJxjjRzo2GDLlLFZP1ylXyb+/vGpdWHtPH772fsl8zvE7uWKcSRFsiFuqUVY9Oi7lIp6HX1Awvn/rMMH4Pp6HX7Rd8rZdWLkhYyu2Q6fSOR6NLHxwtM6kCP6I71KqlLn5gtbJUaqUwc8nv9Jw3yDuCRNsfuhTmEnbRbPOGthPHeEkd07JYhoMnTt7mvrUDAyJYgqJYoqC8T24rE64rAK7J0wokjdSiOGv7BmyVznKXknNhNd8hdUb+kq9ingxhXgxRb3mHtYKJOajCGVeG95Fu6+OLtD/ClRv1DXpPhpQopQmLbo7LfvWTfOXkzXMDU0DAA5Sx+i0E3eSvwGkLMMYKOCRdQAAAABJRU5ErkJggg==" style="width:18px"></div><div class="imid"><div class="it">拆解合併直唸＋倒車（唸）</div><div class="is">第 3 單元 · 應完成 3/22 · <b style="color:#5fb389">3/20 完成</b></div></div><span class="iact">▶</span></div>
+              <div class="pitem"><div class="ico2" style="background:#eaf2fb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABmElEQVR42tXZX0vDMBSH4d/JnGWgYBmIF4LY7/+V7FQEZVgnOtDsT483TtyWrm2a7pwUdrMl7HmXpV0ZMTO0HdP5CpdnJwwAj7MFXV8MYYicY0lbQF5YZONkD1UykyvCxIAHAEPEpePDNjHgD0WYWPBVEeJ74OVziavzYWvEZk+IB5TMMETsOZfEv0KGCCUz+cx9el/KrMDsa410NAiyEkZiw6ajAeeFDbISRupsk42TzhHT+YrAzEd53L1+gx3H7/Nbj3VZOse65onifSP+jxfHt43YHacC3zTC9boafF3E88fC+T69XAfa/LapmE/ZOJE5jXbFV51iq46gKxACv3PFpt0rdm8rEBqfF7YWHyygD/zR9oAkvnOANL5TgAa8d4AWvFeAJnzrAG34VgEa8Y0DtOIbBWjG1wZoxx8MiAFfGRAL3hkQE34vIDb8VkCM+L+AWPEAQPdvFjfpaZT4zT1xtPig98QTAXywgElh6VYAHyRAEt85QBrfKUAD3jtAC94rQBO+dYA2PACYvLCN/lR7mC3U4QHgB0F6N8/n/BAjAAAAAElFTkSuQmCC" style="width:20px"></div><div class="imid"><div class="it">邊唸邊寫（寫）</div><div class="is">第 17 單元 · <b style="color:#5fb389">5/22 完成</b></div></div><span class="iact">🖼️</span></div>
+              <div class="pitem"><div class="ico2" style="background:#fdf0e6"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAzCAYAAAD/06q7AAAEPElEQVR42u2Yy1cadxTHvxdGgcrA4AtREQnRUx8x2qZ1kdZzenqy7Tr/Wfdddd1VG7Oomp5TtcUcXxiTKjrIm8CAgDDAr4s21DCDzEw03XCX9/e7dz5zf/f+Hpe+D/4Ao2LlLHBaeDgtDgYAUiVPUqWAq1rFsE/OKMhn7gdsYXimdYgBwG4yhGBij4yA6QYatbvxePwLNmBztZ2zMDyDMX6E/RbZpuhlQpd/k57JDguPJ/6VG2HeyYDNhSf+Feaw8HcDZCLCsmeR2TirZuc2zoplzyIzEd0+0BjvQcA1qTsnAq5JjPGe2wfqtwrMaOXosdUMNGjrN1zKemw1A3kdo4aB9Nia9Ow9H7KB3knZfwzpAnWBukBdoC5QF6gLdMvCcWTGhHOMcSYO0UKCLuWi6sTclQTB6jT0kdyV1HbM3tOHUd7Nao0azvNR4r7xPWYBl6/5rvrx8CfKVZQOLgpxw0AXhbiqXrA48XT2u+b19kyKMNM1GADAQ/es6v03U84aXoZ2tq3f8jnHlTk0M3AffK9dYZwsZcgokJot32vHzMB9bUnt5T2KKKXLb7Ede6kbZjv2EunyW03fAABTWBIVyql+PwjKgOwmQxTT8TSOXSawmwwpHBEIU/1+xfywJMIk5qOKAY/dDbXnstyoYTW8QYfp444wh+ljrIY3SG7UVJ/ZHrtboRfzUZjCUkQ1N5bc84wjs0JfkstYFzfp2eka1KIblkQ8O13DurhJJbms3GfIjCX3vOpyhaUIcUW5hN1kCK2tlYDLh0L1kv0eDaoCn+TO6SR3Ds7EwflvQ0GqFFBTich1eeR5yFor+10LpyiX/knqg/QrqtZlxaRF9xxmB6dvfAbXGjVkyllkytmOMLOD02zRPafQV+syDtKvqFllUqWAreiOqpMV7zKmXH6mluRahUCYcvnZindZdXwrugOpUni/YXWUeUPjDg+bdHoVBt9OfoVJwct24vukVsKd3vVLI/MsIPignjcijjJvmn/bBKqxOtbFTbJxVubuG1K2VQQfAoKP/RnfQyj9uu2Zd/2MmhmcYp+PPGg7J1FMYV3cpBqr/xfN1qanYHFo6pKJ+SguCnEU5RIq9SoAwGLuRV/PJxjjRzo2GDLlLFZP1ylXyb+/vGpdWHtPH772fsl8zvE7uWKcSRFsiFuqUVY9Oi7lIp6HX1Awvn/rMMH4Pp6HX7Rd8rZdWLkhYyu2Q6fSOR6NLHxwtM6kCP6I71KqlLn5gtbJUaqUwc8nv9Jw3yDuCRNsfuhTmEnbRbPOGthPHeEkd07JYhoMnTt7mvrUDAyJYgqJYoqC8T24rE64rAK7J0wokjdSiOGv7BmyVznKXknNhNd8hdUb+kq9ingxhXgxRb3mHtYKJOajCGVeG95Fu6+OLtD/ClRv1DXpPhpQopQmLbo7LfvWTfOXkzXMDU0DAA5Sx+i0E3eSvwGkLMMYKOCRdQAAAABJRU5ErkJggg==" style="width:18px"></div><div class="imid"><div class="it">直接合併正唸＋倒車（唸）</div><div class="is">第 17 單元 · <b style="color:#5fb389">5/22 完成</b></div></div><span class="iact">▶</span></div>
+              <div class="pitem"><div class="ico2" style="background:#eaf2fb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABmElEQVR42tXZX0vDMBSH4d/JnGWgYBmIF4LY7/+V7FQEZVgnOtDsT483TtyWrm2a7pwUdrMl7HmXpV0ZMTO0HdP5CpdnJwwAj7MFXV8MYYicY0lbQF5YZONkD1UykyvCxIAHAEPEpePDNjHgD0WYWPBVEeJ74OVziavzYWvEZk+IB5TMMETsOZfEv0KGCCUz+cx9el/KrMDsa410NAiyEkZiw6ajAeeFDbISRupsk42TzhHT+YrAzEd53L1+gx3H7/Nbj3VZOse65onifSP+jxfHt43YHacC3zTC9boafF3E88fC+T69XAfa/LapmE/ZOJE5jXbFV51iq46gKxACv3PFpt0rdm8rEBqfF7YWHyygD/zR9oAkvnOANL5TgAa8d4AWvFeAJnzrAG34VgEa8Y0DtOIbBWjG1wZoxx8MiAFfGRAL3hkQE34vIDb8VkCM+L+AWPEAQPdvFjfpaZT4zT1xtPig98QTAXywgElh6VYAHyRAEt85QBrfKUAD3jtAC94rQBO+dYA2PACYvLCN/lR7mC3U4QHgB0F6N8/n/BAjAAAAAElFTkSuQmCC" style="width:20px"></div><div class="imid"><div class="it">邊寫邊唸（寫）</div><div class="is">第 9 單元 · <b style="color:#5fb389">4/13 完成</b></div></div><span class="iact">🖼️</span></div>
+              <div class="pitem"><div class="ico2" style="background:#fdf0e6"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAzCAYAAAD/06q7AAAEPElEQVR42u2Yy1cadxTHvxdGgcrA4AtREQnRUx8x2qZ1kdZzenqy7Tr/Wfdddd1VG7Oomp5TtcUcXxiTKjrIm8CAgDDAr4s21DCDzEw03XCX9/e7dz5zf/f+Hpe+D/4Ao2LlLHBaeDgtDgYAUiVPUqWAq1rFsE/OKMhn7gdsYXimdYgBwG4yhGBij4yA6QYatbvxePwLNmBztZ2zMDyDMX6E/RbZpuhlQpd/k57JDguPJ/6VG2HeyYDNhSf+Feaw8HcDZCLCsmeR2TirZuc2zoplzyIzEd0+0BjvQcA1qTsnAq5JjPGe2wfqtwrMaOXosdUMNGjrN1zKemw1A3kdo4aB9Nia9Ow9H7KB3knZfwzpAnWBukBdoC5QF6gLdMvCcWTGhHOMcSYO0UKCLuWi6sTclQTB6jT0kdyV1HbM3tOHUd7Nao0azvNR4r7xPWYBl6/5rvrx8CfKVZQOLgpxw0AXhbiqXrA48XT2u+b19kyKMNM1GADAQ/es6v03U84aXoZ2tq3f8jnHlTk0M3AffK9dYZwsZcgokJot32vHzMB9bUnt5T2KKKXLb7Ede6kbZjv2EunyW03fAABTWBIVyql+PwjKgOwmQxTT8TSOXSawmwwpHBEIU/1+xfywJMIk5qOKAY/dDbXnstyoYTW8QYfp444wh+ljrIY3SG7UVJ/ZHrtboRfzUZjCUkQ1N5bc84wjs0JfkstYFzfp2eka1KIblkQ8O13DurhJJbms3GfIjCX3vOpyhaUIcUW5hN1kCK2tlYDLh0L1kv0eDaoCn+TO6SR3Ds7EwflvQ0GqFFBTich1eeR5yFor+10LpyiX/knqg/QrqtZlxaRF9xxmB6dvfAbXGjVkyllkytmOMLOD02zRPafQV+syDtKvqFllUqWAreiOqpMV7zKmXH6mluRahUCYcvnZindZdXwrugOpUni/YXWUeUPjDg+bdHoVBt9OfoVJwct24vukVsKd3vVLI/MsIPignjcijjJvmn/bBKqxOtbFTbJxVubuG1K2VQQfAoKP/RnfQyj9uu2Zd/2MmhmcYp+PPGg7J1FMYV3cpBqr/xfN1qanYHFo6pKJ+SguCnEU5RIq9SoAwGLuRV/PJxjjRzo2GDLlLFZP1ylXyb+/vGpdWHtPH772fsl8zvE7uWKcSRFsiFuqUVY9Oi7lIp6HX1Awvn/rMMH4Pp6HX7Rd8rZdWLkhYyu2Q6fSOR6NLHxwtM6kCP6I71KqlLn5gtbJUaqUwc8nv9Jw3yDuCRNsfuhTmEnbRbPOGthPHeEkd07JYhoMnTt7mvrUDAyJYgqJYoqC8T24rE64rAK7J0wokjdSiOGv7BmyVznKXknNhNd8hdUb+kq9ingxhXgxRb3mHtYKJOajCGVeG95Fu6+OLtD/ClRv1DXpPhpQopQmLbo7LfvWTfOXkzXMDU0DAA5Sx+i0E3eSvwGkLMMYKOCRdQAAAABJRU5ErkJggg==" style="width:18px"></div><div class="imid"><div class="it">吐捲舌 100 次（唸）</div><div class="is">第 4 單元 · <b style="color:#5fb389">3/24 完成</b></div></div><span class="iact">▶</span></div>
+              <div class="pitem"><div class="ico2" style="background:#fdf0e6"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAzCAYAAAD/06q7AAAEPElEQVR42u2Yy1cadxTHvxdGgcrA4AtREQnRUx8x2qZ1kdZzenqy7Tr/Wfdddd1VG7Oomp5TtcUcXxiTKjrIm8CAgDDAr4s21DCDzEw03XCX9/e7dz5zf/f+Hpe+D/4Ao2LlLHBaeDgtDgYAUiVPUqWAq1rFsE/OKMhn7gdsYXimdYgBwG4yhGBij4yA6QYatbvxePwLNmBztZ2zMDyDMX6E/RbZpuhlQpd/k57JDguPJ/6VG2HeyYDNhSf+Feaw8HcDZCLCsmeR2TirZuc2zoplzyIzEd0+0BjvQcA1qTsnAq5JjPGe2wfqtwrMaOXosdUMNGjrN1zKemw1A3kdo4aB9Nia9Ow9H7KB3knZfwzpAnWBukBdoC5QF6gLdMvCcWTGhHOMcSYO0UKCLuWi6sTclQTB6jT0kdyV1HbM3tOHUd7Nao0azvNR4r7xPWYBl6/5rvrx8CfKVZQOLgpxw0AXhbiqXrA48XT2u+b19kyKMNM1GADAQ/es6v03U84aXoZ2tq3f8jnHlTk0M3AffK9dYZwsZcgokJot32vHzMB9bUnt5T2KKKXLb7Ede6kbZjv2EunyW03fAABTWBIVyql+PwjKgOwmQxTT8TSOXSawmwwpHBEIU/1+xfywJMIk5qOKAY/dDbXnstyoYTW8QYfp444wh+ljrIY3SG7UVJ/ZHrtboRfzUZjCUkQ1N5bc84wjs0JfkstYFzfp2eka1KIblkQ8O13DurhJJbms3GfIjCX3vOpyhaUIcUW5hN1kCK2tlYDLh0L1kv0eDaoCn+TO6SR3Ds7EwflvQ0GqFFBTich1eeR5yFor+10LpyiX/knqg/QrqtZlxaRF9xxmB6dvfAbXGjVkyllkytmOMLOD02zRPafQV+syDtKvqFllUqWAreiOqpMV7zKmXH6mluRahUCYcvnZindZdXwrugOpUni/YXWUeUPjDg+bdHoVBt9OfoVJwct24vukVsKd3vVLI/MsIPignjcijjJvmn/bBKqxOtbFTbJxVubuG1K2VQQfAoKP/RnfQyj9uu2Zd/2MmhmcYp+PPGg7J1FMYV3cpBqr/xfN1qanYHFo6pKJ+SguCnEU5RIq9SoAwGLuRV/PJxjjRzo2GDLlLFZP1ylXyb+/vGpdWHtPH772fsl8zvE7uWKcSRFsiFuqUVY9Oi7lIp6HX1Awvn/rMMH4Pp6HX7Rd8rZdWLkhYyu2Q6fSOR6NLHxwtM6kCP6I71KqlLn5gtbJUaqUwc8nv9Jw3yDuCRNsfuhTmEnbRbPOGthPHeEkd07JYhoMnTt7mvrUDAyJYgqJYoqC8T24rE64rAK7J0wokjdSiOGv7BmyVznKXknNhNd8hdUb+kq9ingxhXgxRb3mHtYKJOajCGVeG95Fu6+OLtD/ClRv1DXpPhpQopQmLbo7LfvWTfOXkzXMDU0DAA5Sx+i0E3eSvwGkLMMYKOCRdQAAAABJRU5ErkJggg==" style="width:18px"></div><div class="imid"><div class="it">拆解合併直唸＋倒車（唸）</div><div class="is">第 3 單元 · <b style="color:#5fb389">3/20 完成</b></div></div><span class="iact">▶</span></div>
             </div>
           </div></div></div>
           <div class="nav" id="navPSubmit"></div>
         </section>
 
         <!-- 每日打卡紀錄 明細 -->
-        <section class="screen" id="scr-p-checkin">
+        <section class="screen hasbar" id="scr-p-checkin">
+          <div class="stagebar s2">📅 每日打卡紀錄 — 家長端已移除，保留供第二階段參考</div>
           <div class="sb"><span>下午 1:15 · 週二</span><span>🔋 60%</span></div>
           <div class="topbar"><span class="back" onclick="go('p-home')">‹</span>每日打卡紀錄 — 楊宗翰</div>
           <div class="scroll"><div class="maxw"><div class="pdwrap">
@@ -915,22 +1158,66 @@
   var state = { unitN:1, progressN:1, completed:{}, doneCount:0, steps:{video:false,read:false,write:false,game:false},
                 rhythmSet:false, firstUnitDone:false, coins:7500,
                 ledger:[{l:'寫的作業完成',a:100,t:'今天 15:23'},{l:'唸的作業完成',a:100,t:'今天 15:14'},{l:'影片觀看完成',a:300,t:'今天 15:02'},{l:'兌換公仔·小綿羊',a:-1400,t:'昨天'},{l:'唸的作業完成',a:100,t:'昨天 19:41'}],
-                toys:{s1:1}, chests:{}, loginStreak:3 };
+                toys:{s1:1}, chests:{}, loginStreak:3,
+                /* 三個「天數」定義不同，不要混用（見 自學-規格-畫面數值定義）：
+                   learnStreak  連續學習天數 ＝ 連續的「學習日」。學習日＝當天至少完成一件事
+                                （看完影片／交一份唸的／交一份寫的／通過小遊戲）。光登入不算。
+                   learnTotal   累積學習天數 ＝ 從第一次學習到現在的學習日總數（不是日曆天）。
+                   loginStreak  連續登入天數 ＝ 開 App 就算，只驅動金幣打卡階梯（跨線參照 B-1 定案）。 */
+                learnStreak:1, learnTotal:36, lastLearnDay:null };
   var recorded = false;
   var cur = 'welcome';
   function gcfg(){try{return JSON.parse(localStorage.getItem('sor_cfg'))||{};}catch(e){return{};}}
   function scfg(o){try{var c=gcfg();for(var k in o)c[k]=o[k];localStorage.setItem('sor_cfg',JSON.stringify(c));}catch(e){}}
   function gameGateOn(){var v=gcfg().gameGate;return v===undefined?true:!!v;}
-  function gameAppear(){return gcfg().gameAppear||'all';}
-  function videoThresh(){var v=gcfg().videoDone;return typeof v==='number'?v:90;}
-  function appearLabel(){var n=gameAppear();return n==='video'?'影片':n==='video_read'?'影片與唸的作業':'所有作業';}
-  function preOK(){var a=state.steps,n=gameAppear();return n==='video'?a.video:n==='video_read'?(a.video&&a.read):(a.video&&a.read&&a.write);}
+  /* 解鎖模式四選一留在第一階段（個人 › 解鎖模式）。
+     ⚠️ 但預設值要再想：
+        預設模式一的話唸／寫作業會沒有動力做。見 自學-規格-三階段功能範圍。 */
+  var STAGE1_MODE='video';   /* 'none'零 | 'video'一 | 'video_read'二 | 'all'三 */
+  function gameAppear(){return gcfg().gameAppear||STAGE1_MODE;}
+  function videoThresh(){return 95;}   /* 2026-08-20 定案：固定 95%，不開放調整；彈性由「模式零」提供 */
+  function appearLabel(){var n=gameAppear();return n==='none'?'（無條件，隨時可測驗）':n==='video'?'影片':n==='video_read'?'影片與唸的作業':'所有作業';}
+  function preOK(){var a=state.steps,n=gameAppear();
+    if(n==='none')return true;                                  /* 模式零：無條件 */
+    return n==='video'?a.video:n==='video_read'?(a.video&&a.read):(a.video&&a.read&&a.write);}
   function assignmentsDone(){return state.steps.video&&state.steps.read&&state.steps.write;}
-  function unitComplete(){return assignmentsDone()&&(!gameGateOn()||state.steps.game);}
-  function startUnitGame(){ go('game'); if(window.MG) window.MG.start((state.unitN-1)%window.MG.count, onUnitGamePass); }
-  function onUnitGamePass(){ state.steps.game=true; earn('單元小遊戲通過',200); if(unitComplete()){ go('unitdone'); afterUnit(); } else { homeTab=firstIncomplete(); go('home'); } }
+  function unitComplete(){
+    /* 小遊戲當解鎖門檻時：過關即解鎖。
+       家長模式（零／一／二／三）只決定「什麼時候可以測」，不再另外要求作業全完成——
+       家長選了模式一，就是家長說「我只要求看影片」，唸／寫變成選配。
+       關掉小遊戲總開關時，才回到「作業全完成即解鎖」。 */
+    if(gameGateOn()) return state.steps.game;
+    return assignmentsDone();}
+  /* 還差什麼才解鎖：講清楚，不要只說「尚未解鎖」 */
+  function missingHint(){
+    var a=state.steps, lack=[];
+    if(!a.video)lack.push('看的作業');
+    if(!a.read)lack.push('唸的作業');
+    if(!a.write)lack.push('寫的作業');
+    if(gameGateOn()){
+      if(state.steps.game) return '第 '+state.progressN+' 單元已通過小遊戲，馬上就會前進';
+      if(!preOK()) return '第 '+state.progressN+' 單元完成「'+appearLabel()+'」後，小遊戲才會出現';
+      return '第 '+state.progressN+' 單元的小遊戲還沒過關'+(lack.length?'（'+lack.join('、')+'尚未完成，但不影響解鎖）':'');
+    }
+    return lack.length? ('第 '+state.progressN+' 單元還有 '+lack.join('、')+' 沒完成') : '完成目前單元後解鎖';
+  }
+  function startUnitGame(){ mgPending=true; go('game'); if(window.MG){ mgPending=false; window.MG.start((state.unitN-1)%window.MG.count, onUnitGamePass); } }
+  var mgPending=false;
+  function onUnitGamePass(){
+    state.steps.game=true; earn('單元小遊戲通過',200);
+    var skipped=[];   /* ＝還沒做的，不是「跳過的」 */
+    if(!state.steps.read)skipped.push('唸的作業');
+    if(!state.steps.write)skipped.push('寫的作業');
+    if(unitComplete()){
+      afterUnit(); nextUnit();
+      /* 還沒做的作業講一聲就好，不責備、不催——自學版沒有截止日 */
+      if(skipped.length){ setTimeout(function(){ toast('已解鎖下一單元！這個單元的'+skipped.join('、')+'還沒做，隨時翻回來做，金幣一樣拿得到'); },600); }
+    } else { homeTab=firstIncomplete(); go('home'); }
+  }
   function mgExit(){ go('home'); }
-  function afterAssignmentStep(){ if(gameGateOn() && !state.steps.game && preOK()){ startUnitGame(); return; } if(unitComplete()){ go('unitdone'); afterUnit(); } else { homeTab=firstIncomplete(); go('home'); } }
+  function afterAssignmentStep(){
+    /* 模式零不自動把孩子推進遊戲——沒有條件就沒有「條件達成」這件事，讓他自己按首頁的按鈕 */
+    if(gameGateOn() && !state.steps.game && preOK() && gameAppear()!=='none'){ startUnitGame(); return; } if(unitComplete()){ go('unitdone'); afterUnit(); } else { homeTab=firstIncomplete(); go('home'); } }
 
   function setDevice(d){
     var dev=document.getElementById('device');
@@ -955,8 +1242,12 @@
     if(id==='shop') renderShop();
     if(id==='coinmap') renderCoinMap();
     if(id==='coins') renderLedger();
-    if(id==='game' && window.MG){ var _b=document.getElementById('mgBody'); if(_b && !_b.innerHTML.trim()){ window.MG.start((state.unitN-1)%window.MG.count, onUnitGamePass); } }
+    if(id==='game' && window.MG && !mgPending){ var _b=document.getElementById('mgBody'); if(_b && !_b.innerHTML.trim()){ window.MG.start((state.unitN-1)%window.MG.count, onUnitGamePass); } }
     if(id==='video'){var vn=document.getElementById('vNote'); if(vn) vn.textContent='影片看到 '+videoThresh()+'% 即算完成（後台可調）';}
+    if(id==='unlock') renderUnlock();
+    if(id==='profile') renderMyOverview();
+    if(id==='messages') renderMessages();
+    if(id==='mastery') renderMastery();
     if(id==='calendar') renderCalendar();
     if(id==='read-list') renderReadList();
     if(id==='write-list') renderWriteList();
@@ -968,7 +1259,7 @@
     // scroll top
     var sc=document.querySelector('#scr-'+id+' .scroll'); if(sc) sc.scrollTop=0;
   }
-  function restart(){ state={unitN:1,progressN:1,completed:{},doneCount:0,steps:{video:false,read:false,write:false,game:false},rhythmSet:false,firstUnitDone:false,coins:7500,ledger:[],toys:{s1:1},chests:{},loginStreak:3}; recorded=false; homeTab='video'; readItems.forEach(function(x){x.done=false;}); curReadItem=0; writeItems.forEach(function(x){x.done=false;}); curWriteItem=0; go('welcome'); }
+  function restart(){ state={unitN:1,progressN:1,completed:{},doneCount:0,learnStreak:0,learnTotal:0,lastLearnDay:null,steps:{video:false,read:false,write:false,game:false},rhythmSet:false,firstUnitDone:false,coins:7500,ledger:[],toys:{s1:1},chests:{},loginStreak:3}; recorded=false; homeTab='video'; readItems.forEach(function(x){x.done=false;}); curReadItem=0; writeItems.forEach(function(x){x.done=false;}); curWriteItem=0; go('welcome'); }
 
   var stepMeta=[['video','看的作業','看影片'],['read','唸的作業','錄音上傳'],['write','寫的作業','拍照上傳']];
   var ICON={PLAY:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADYAAAAqCAYAAAD4Uag9AAACdklEQVR42u2ZX0sUURjGf+fMzq7j7oSmthpiEZmlWFFQhoFimYRdlBdakYZYEPUZuuwrdCNd5E0fIXRjXQujJOnP0oYZQRLouprC7jK7O85MF9FF6GUt7snn8p2b8+Oc87zPe0asPbgPgKyooKyz2/M3t1KKKiTi5GIR4a6vA+ADkDV7CF276cmQSanK39yKr2G/l3nyWLipZSSahtHZXdJQvyVDJkZnt4emIbVwHXpjE6pIb2xCC9chtapqD8WkVVV7PhEMbvpgRcfJv5ouCYhAWztGV88fNREMIlFUO2D/PZjechQtXFs8Am/r2l8Hk6aJOXKXQNtZ0P3qHUWj6wKhgUG0+gb17pivYR/m0C3KOs4hDEM98yhr7yB0fRjfgYPquaIWriV0dQijpxdRhFxadLsPnDyNOTiCfrgFhFCrj8nK3QT7Bii/dAVZUaleg/a3HsccvoP/2AmQmlrJQxgG5b2XCfb1I2vC6kUq/dARdt2+R+DUGdB19bKicf4iof4baHvrd0LwluFguy3IevaU/Ns3YNtqgNmfP2FNRXFTSTV2zLMsrOg4hfh7cB01jmIh/o7ci0nc9TU17pi79gNrMoI9lwDPU8M88rOvyU0/x8uk1XBFJ7mENTnBxtcv6th9bnqK/MxLPMtSo49tLHzDikVwvi+o06Ct6AT52RmwC2okDzedJv3oIU5ySa1IZX/8UOS5Z+vazkvwDth2GVu8bHbzsNfVs+mfUynJy2aRzuqKUG23nNUVIZ3kIvb8nDJQ9vwcTnIRieNgxSLC/cehtChTQyaNFYsIHOeXebipZTJjo6KQiJcsVCERJzM2KtzUMgA/ASOUx82o62pWAAAAAElFTkSuQmCC",MIC:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAzCAYAAAD/06q7AAAEPElEQVR42u2Yy1cadxTHvxdGgcrA4AtREQnRUx8x2qZ1kdZzenqy7Tr/Wfdddd1VG7Oomp5TtcUcXxiTKjrIm8CAgDDAr4s21DCDzEw03XCX9/e7dz5zf/f+Hpe+D/4Ao2LlLHBaeDgtDgYAUiVPUqWAq1rFsE/OKMhn7gdsYXimdYgBwG4yhGBij4yA6QYatbvxePwLNmBztZ2zMDyDMX6E/RbZpuhlQpd/k57JDguPJ/6VG2HeyYDNhSf+Feaw8HcDZCLCsmeR2TirZuc2zoplzyIzEd0+0BjvQcA1qTsnAq5JjPGe2wfqtwrMaOXosdUMNGjrN1zKemw1A3kdo4aB9Nia9Ow9H7KB3knZfwzpAnWBukBdoC5QF6gLdMvCcWTGhHOMcSYO0UKCLuWi6sTclQTB6jT0kdyV1HbM3tOHUd7Nao0azvNR4r7xPWYBl6/5rvrx8CfKVZQOLgpxw0AXhbiqXrA48XT2u+b19kyKMNM1GADAQ/es6v03U84aXoZ2tq3f8jnHlTk0M3AffK9dYZwsZcgokJot32vHzMB9bUnt5T2KKKXLb7Ede6kbZjv2EunyW03fAABTWBIVyql+PwjKgOwmQxTT8TSOXSawmwwpHBEIU/1+xfywJMIk5qOKAY/dDbXnstyoYTW8QYfp444wh+ljrIY3SG7UVJ/ZHrtboRfzUZjCUkQ1N5bc84wjs0JfkstYFzfp2eka1KIblkQ8O13DurhJJbms3GfIjCX3vOpyhaUIcUW5hN1kCK2tlYDLh0L1kv0eDaoCn+TO6SR3Ds7EwflvQ0GqFFBTich1eeR5yFor+10LpyiX/knqg/QrqtZlxaRF9xxmB6dvfAbXGjVkyllkytmOMLOD02zRPafQV+syDtKvqFllUqWAreiOqpMV7zKmXH6mluRahUCYcvnZindZdXwrugOpUni/YXWUeUPjDg+bdHoVBt9OfoVJwct24vukVsKd3vVLI/MsIPignjcijjJvmn/bBKqxOtbFTbJxVubuG1K2VQQfAoKP/RnfQyj9uu2Zd/2MmhmcYp+PPGg7J1FMYV3cpBqr/xfN1qanYHFo6pKJ+SguCnEU5RIq9SoAwGLuRV/PJxjjRzo2GDLlLFZP1ylXyb+/vGpdWHtPH772fsl8zvE7uWKcSRFsiFuqUVY9Oi7lIp6HX1Awvn/rMMH4Pp6HX7Rd8rZdWLkhYyu2Q6fSOR6NLHxwtM6kCP6I71KqlLn5gtbJUaqUwc8nv9Jw3yDuCRNsfuhTmEnbRbPOGthPHeEkd07JYhoMnTt7mvrUDAyJYgqJYoqC8T24rE64rAK7J0wokjdSiOGv7BmyVznKXknNhNd8hdUb+kq9ingxhXgxRb3mHtYKJOajCGVeG95Fu6+OLtD/ClRv1DXpPhpQopQmLbo7LfvWTfOXkzXMDU0DAA5Sx+i0E3eSvwGkLMMYKOCRdQAAAABJRU5ErkJggg==",PEN:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABmElEQVR42tXZX0vDMBSH4d/JnGWgYBmIF4LY7/+V7FQEZVgnOtDsT483TtyWrm2a7pwUdrMl7HmXpV0ZMTO0HdP5CpdnJwwAj7MFXV8MYYicY0lbQF5YZONkD1UykyvCxIAHAEPEpePDNjHgD0WYWPBVEeJ74OVziavzYWvEZk+IB5TMMETsOZfEv0KGCCUz+cx9el/KrMDsa410NAiyEkZiw6ajAeeFDbISRupsk42TzhHT+YrAzEd53L1+gx3H7/Nbj3VZOse65onifSP+jxfHt43YHacC3zTC9boafF3E88fC+T69XAfa/LapmE/ZOJE5jXbFV51iq46gKxACv3PFpt0rdm8rEBqfF7YWHyygD/zR9oAkvnOANL5TgAa8d4AWvFeAJnzrAG34VgEa8Y0DtOIbBWjG1wZoxx8MiAFfGRAL3hkQE34vIDb8VkCM+L+AWPEAQPdvFjfpaZT4zT1xtPig98QTAXywgElh6VYAHyRAEt85QBrfKUAD3jtAC94rQBO+dYA2PACYvLCN/lR7mC3U4QHgB0F6N8/n/BAjAAAAAElFTkSuQmCC"};
@@ -982,6 +1273,8 @@
   function setHomeTab(t){homeTab=t;renderHome();}
   var unitInfo={1:{code:'一-1-1',page:'第一冊 · P5'},2:{code:'一-1-2',page:'第一冊 · P4'},3:{code:'一-2-1',page:'第一冊 · P5'},4:{code:'一-2-2',page:'第一冊 · P18'},5:{code:'一-3-1',page:'第一冊 · P5'},6:{code:'一-3-2',page:'第一冊 · P20'}};
   function renderHome(){
+    var _s=document.getElementById('streakDays'); if(_s)_s.textContent=state.learnStreak||0;
+    var _t=document.getElementById('learnTotal'); if(_t)_t.textContent=state.learnTotal||0;
     document.querySelectorAll('.unitN').forEach(function(e){e.textContent=state.unitN});
     document.querySelectorAll('.doneN').forEach(function(e){e.textContent=state.doneCount});
     document.getElementById('coinTop').textContent=state.coins.toLocaleString();
@@ -1024,12 +1317,21 @@
       var isDone=(status==='done');
       var ring=isDone?'100%':'🔒';
       var rc=isDone?'#5fb389':'#b8c0cc';
-      var note=isDone?'此單元已完成 ✓　（往後可開放複習）':'完成目前單元後解鎖';
+      /* 自學版沒有截止日，所以沒有「遲做／補做」這回事——只是做的順序不一樣。
+         過去的單元如果還有沒做的作業，隨時可以做，金幣全額，不減半。
+         用既有的上一單元／下一單元瀏覽當入口，不另開頁面。 */
+      var undone=isDone?(state.completed[viewN]||{}):{};
+      var canMake=(homeTab==='read'&&undone.read)||(homeTab==='write'&&undone.write);
+      var note=isDone
+        ? (canMake?'這一課的'+(homeTab==='read'?'唸':'寫')+'的作業還沒做，隨時可以做，金幣一樣拿得到':'此單元已完成 ✓　（往後可開放複習）')
+        : missingHint();
       cc.innerHTML=
         '<img class="cm" src="'+src+'">'+
         '<div class="prog"><span class="lbl">'+m.prog+'</span>'+
-        '<span class="ring2" style="border-color:'+rc+';color:'+rc+'">'+ring+'</span></div>'+
-        '<div class="homecta" style="background:'+rc+';cursor:default">'+(isDone?'已完成 ✓':'尚未解鎖')+'</div>'+
+        '<span class="ring2" style="border-color:'+(canMake?'#e79a3c':rc)+';color:'+(canMake?'#e79a3c':rc)+'">'+(canMake?'未做':ring)+'</span></div>'+
+        (canMake
+          ? '<button class="homecta" style="background:#e79a3c" onclick="startMakeup('+viewN+',\''+homeTab+'\')">做這份作業 <span class="sm">+100 金幣</span></button>'
+          : '<div class="homecta" style="background:'+rc+';cursor:default">'+(isDone?'已完成 ✓':'尚未解鎖')+'</div>')+
         '<div class="mut" style="text-align:center;margin-top:8px;color:#8a94a6;font-size:.82rem">'+note+'</div>';
     }
     // 上一單元只到第 1；下一單元只到 254
@@ -1052,7 +1354,7 @@
           if(unitComplete()) nw='<button class="nextbtn" onclick="nextUnit()">🎉 完成！前往下一單元 →</button>';
           else nw='<div class="gamecard done"><div class="gtt">🎮 本單元小遊戲：已通過 ✓</div><div class="gmut">還有作業未完成，完成後即可解鎖下一單元</div></div>';
         } else if(preOK()){
-          nw='<div class="gamecard"><div class="gtt">🎮 本單元小遊戲</div><div class="gmut">過關才能解鎖下一單元</div>'
+          nw='<div class="gamecard"><div class="gtt">🎮 本單元小遊戲</div><div class="gmut">'+(gameAppear()==='none'?'過關就直接解鎖下一單元（作業可以之後再補）':'過關才能解鎖下一單元')+'</div>'
             +'<button class="gbtn" onclick="startUnitGame()">進入遊戲 ›</button></div>';
         } else {
           nw='<div class="gamelock">🔒 完成'+appearLabel()+'後，本單元小遊戲會出現</div>';
@@ -1079,6 +1381,18 @@
     }
   }
 
+  /* 通用 toast（原型本來只有寫死在唸的作業頁的那一個） */
+  var _toastTimer=null;
+  function toast(msg){
+    var wrap=document.getElementById('wrap'); if(!wrap)return;
+    var t=document.getElementById('toast-global');
+    if(!t){ t=document.createElement('div'); t.className='toast'; t.id='toast-global'; wrap.appendChild(t); }
+    t.textContent=msg;
+    void t.offsetWidth;              /* 強制 reflow，連續呼叫才會重新播動畫 */
+    t.classList.add('show');
+    if(_toastTimer)clearTimeout(_toastTimer);
+    _toastTimer=setTimeout(function(){ t.classList.remove('show'); },3800);
+  }
   function popShow(id){ document.getElementById(id).classList.add('show'); }
   function popHide(id){ document.getElementById(id).classList.remove('show'); }
 
@@ -1099,7 +1413,7 @@
   }
 
   function afterUnit(){
-    document.getElementById('streakDays2').textContent='1';
+    var _s2=document.getElementById('streakDays2'); if(_s2)_s2.textContent=state.learnStreak||0;
     if(!state.firstUnitDone && !state.rhythmSet){
       state.firstUnitDone=true;
       setTimeout(function(){ popShow('pop-invite'); }, 500);
@@ -1107,7 +1421,9 @@
   }
   function nextUnit(){
     // 完成目前進度單元 → 記錄、進度前進、視圖跟到新單元
-    state.completed[state.progressN]=true;
+    markLearnDay();   /* 完成一個單元 ＝ 一個學習日 */
+    /* 記下這個單元還有哪些作業沒做——之後隨時可以回來做，順序不影響獎勵 */
+    state.completed[state.progressN]={read:!state.steps.read, write:!state.steps.write};
     state.doneCount=Object.keys(state.completed).length;
     state.progressN+=1;
     state.unitN=state.progressN;
@@ -1124,36 +1440,170 @@
   function backToCurrent(){ state.unitN=state.progressN; homeTab='video'; renderHome(); }
   // 登入／進入 App：從目前還沒完成的單元開始
   function enterApp(){ state.unitN=state.progressN; homeTab='video'; go('home'); }
+  /* ── 回頭做過去單元的作業（2026-08-21 定案，2026-09-01 修正用語）──
+     自學版時限是孩子自己訂的，沒有遲做／補做的概念，只是做的順序不一樣。
+     所以金幣全額、不減半，也不影響進度指標 N。 */
+  var makeup=null;   // {n:單元, which:'read'|'write'}
+  function startMakeup(n,which){
+    makeup={n:n,which:which};
+    if(which==='read'){ readItems.forEach(function(x){x.done=false;}); curReadItem=0; go('read-list'); }
+    else { writeItems.forEach(function(x){x.done=false;}); curWriteItem=0; go('write-list'); }
+  }
+  function finishMakeup(){
+    var c=state.completed[makeup.n]; if(c) c[makeup.which]=false;
+    var label=makeup.which==='read'?'唸的作業':'寫的作業';
+    var n=makeup.n; makeup=null;
+    /* 補完把狀態還原給目前單元，不要污染進行中的那一課 */
+    readItems.forEach(function(x){x.done=!!state.steps.read;}); curReadItem=0;
+    writeItems.forEach(function(x){x.done=!!state.steps.write;}); curWriteItem=0;
+    state.unitN=n; go('home');
+    toast('第 '+n+' 單元的'+label+'完成了！金幣已入帳');
+  }
   function renderDoneList(){
     var body=document.getElementById('doneListBody'); if(!body)return;
     var keys=Object.keys(state.completed).map(Number).sort(function(a,b){return a-b;});
     if(keys.length===0){ body.innerHTML='<div class="donelist-empty">還沒有完成的單元。<br>完成目前單元後，就會出現在這裡，隨時可以回來複習。</div>'; return; }
+    var pend=keys.reduce(function(a,n){var c=state.completed[n]; return a+((c&&c.read)?1:0)+((c&&c.write)?1:0);},0);
     body.innerHTML='<div class="mut" style="color:#8a94a6;font-size:.85rem;margin-bottom:10px">共完成 '+keys.length+' 個單元 · 點一下可回顧</div>'+
+      (pend? '<div class="makeuptip">還有 <b>'+pend+'</b> 份作業沒做<br><span>隨時可以做，金幣一樣拿得到</span></div>' : '')+
       keys.map(function(n){
         var u=unitInfo[n]||{code:'一-'+Math.ceil(n/2)+'-'+(((n-1)%2)+1),page:'第一冊'};
-        return '<div class="donelist-row" onclick="state.unitN='+n+';homeTab=\'video\';go(\'home\')">'+
-          '<span class="dchk">✓</span><span class="dcode">第 '+n+' 單元 · '+u.code+'</span><span class="dpage">'+u.page+'</span></div>';
+        var c=state.completed[n]||{};
+        var chips='';
+        if(c.read) chips+='<button class="mkbtn" onclick="event.stopPropagation();startMakeup('+n+',\'read\')">🎤 做唸的作業 +100</button>';
+        if(c.write)chips+='<button class="mkbtn w" onclick="event.stopPropagation();startMakeup('+n+',\'write\')">✏️ 做寫的作業 +100</button>';
+        return '<div class="donelist-row'+(chips?' hasmk':'')+'" onclick="state.unitN='+n+';homeTab=\'video\';go(\'home\')">'+
+          '<span class="dchk">✓</span><span class="dcode">第 '+n+' 單元 · '+u.code+'</span><span class="dpage">'+u.page+'</span>'+
+          (chips?'<div class="mkrow">'+chips+'</div>':'')+'</div>';
       }).join('');
   }
 
   // 設定頁：每日列
   var days=[['星期一',false],['星期二',true],['星期三',false],['星期四',true],['星期五',false],['星期六',true],['星期日',false]];
+  /* 自學版承諾書不設「練習時段」（那是舊模組為線上課設計的），
+     但提醒需要一個時間點——所有練習日共用一個就夠，不用一天一天設。 */
+  var remindAt='19:00';
+  var REMIND_OPTS=['16:00','17:00','18:00','19:00','20:00','21:00'];
+  function setRemind(t){ remindAt=t; renderRemind(); }
+  function renderRemind(){
+    var r=document.getElementById('remindRow'); if(!r)return;
+    r.innerHTML=REMIND_OPTS.map(function(t){
+      return '<button class="rcbtn'+(t===remindAt?' on':'')+'" onclick="setRemind(\''+t+'\')">'+t+'</button>';
+    }).join('');
+  }
   function renderDays(){
     var c=document.getElementById('dayCard'); c.innerHTML='';
     days.forEach(function(d,i){
       var row=document.createElement('div'); row.className='dayrow';
-      var slot = d[1] ? '<span class="slot">時段1 <span class="tbox">19:00</span>～<span class="tbox">19:40</span></span>'
-                      : '<span class="slot dim">未設定</span>';
+      /* 2026-08-26：自學版承諾書不設時段，只選哪幾天 */
       row.innerHTML='<span class="dn">'+d[0]+'</span>'+
-        '<button class="tag '+(d[1]?'on':'rest')+'" onclick="toggleDay('+i+')">'+(d[1]?'練習日':'休息')+'</button>'+slot;
+        '<button class="tag '+(d[1]?'on':'rest')+'" onclick="toggleDay('+i+')">'+(d[1]?'練習日':'休息')+'</button>';
       c.appendChild(row);
     });
     var n=days.filter(function(d){return d[1]}).length;
-    document.getElementById('rhythmDays').textContent='一週 '+n+' 天';
+    renderRemind();
+    renderSetSum(n);
+  }
+  /* 承諾書底下的摘要
+     · 第一次設定時還沒有進度，就不要顯示「第 N / 254 單元」——那時候它一定是 0，講了也沒意義
+     · 預計完課日照選的天數即時算，不要寫死；不然孩子改了天數卻看到同一個日期 */
+  function renderSetSum(n){
+    var box=document.getElementById('setSum'); if(!box)return;
+    if(n===0){
+      box.innerHTML='還沒有選練習日。<br>至少選一天，系統才知道要在哪天提醒你。';
+      return;
+    }
+    var TOTAL=254;
+    var weeks=Math.ceil(TOTAL/n);                 /* 一個練習日做一個單元估算 */
+    var d=new Date(); d.setDate(d.getDate()+weeks*7);
+    var h='目前節奏：<b>一週 '+n+' 天</b>';
+    var started=(state.progressN>1||state.doneCount>0);
+    if(started) h+='<br>進度：第 '+state.progressN+' / '+TOTAL+' 單元';
+    h+='<br>照此節奏，預計 <b>'+d.getFullYear()+' 年 '+(d.getMonth()+1)+' 月</b> 完成全部課程';
+    box.innerHTML=h;
   }
   function toggleDay(i){ days[i][1]=!days[i][1]; renderDays(); }
-  function saveRhythm(){ state.rhythmSet=true; alert('已儲存練習節奏！提醒與基準線已啟動。'); go('home'); }
+  function saveRhythm(){
+    state.rhythmSet=true; state.remindAt=remindAt;
+    var n=days.filter(function(d){return d[1]}).length;
+    alert('已儲存！一週 '+n+' 天，每個練習日 '+remindAt+' 提醒你。'); go('home');
+  }
 
+  /* 訊息：兩個分頁
+       公告＝我們主動發給使用者的訊息（人工）
+       提醒＝系統依承諾書設定的提醒時間自動發的（自動）
+     原課程模組還有「批改」分頁——自學版沒有正音師批改，所以不做。 */
+  var msgTab='notice';
+  var MSGS={
+    notice:[
+      {t:'📢 第二階段功能預告',b:'公仔商店與 96 站學習地圖正在開發中，你現在累積的金幣到時候就能拿來兌換。',d:'8 月 30 日'},
+      {t:'📢 新課上線',b:'第二階的課程已經開放，繼續加油！',d:'8 月 24 日'}
+    ],
+    remind:[
+      {t:'🔔 今天是練習日',b:'記得完成一個單元喔！',d:'今天',from:'依你的承諾書設定'},
+      {t:'🔔 今天是練習日',b:'記得完成一個單元喔！',d:'8 月 30 日',from:'依你的承諾書設定'}
+    ]
+  };
+  function setMsgTab(t){ msgTab=t; renderMessages(); }
+  /* 學生的實際數字只有這一個來源，家長端也從這裡拿——不要兩邊各算各的。 */
+  window.studentStats=function(){
+    return {
+      unitDone:   state.doneCount||0,
+      vidDone:    state.doneCount||0,                  /* 一個單元一部影片 */
+      subDone:    (state.ledger||[]).filter(function(e){return /唸的作業完成|寫的作業完成/.test(e.l);}).length,
+      learnStreak:state.learnStreak||0,
+      learnTotal: state.learnTotal||0,
+      paceA:      state.progressN||1,
+      rhythmSet:  !!state.rhythmSet
+    };
+  };
+  /* 家長端看到的「宗翰」＝ 學生端這個人。每次畫家長畫面前先同步一次。 */
+  window.syncChildFromState=function(){
+    var st=studentStats(), c=childData.y;
+    c.unitDone=st.unitDone; c.vidDone=st.vidDone; c.subDone=st.subDone;
+    c.learnStreak=st.learnStreak; c.learnTotal=st.learnTotal;
+    c.paceA=st.paceA; c.rhythmSet=st.rhythmSet;
+    c.lag=Math.max(0,c.paceP-c.paceA);
+    c.unit='第 '+c.paceA+' / 254 單元';
+  };
+
+  /* 兩端共用的一組數字。單元是主單位；影片與作業是單元的組成，所以做成次要格。 */
+  function overviewHTML(d){
+    /* 影片與作業是「單元的組成」，不是跟單元並列的另外兩件事。
+       所以縮排在單元卡裡面、加一條左邊線、標題寫「其中包含」，讓包含關係看得出來。 */
+    return '<div class="ovunit" data-tip="<b>已完成單元</b>通過小遊戲、進度往前推的單元數。||這是主單位；下面的影片與作業是它的組成。">'
+      +   '<div class="ovbig">'+d.unitDone+'<em>個</em></div><div class="ovlbl">已完成單元</div>'
+      +   '<div class="ovpartsttl">其中包含</div>'
+      +   '<div class="ovparts">'
+      +     '<div class="ovpart" data-tip="<b>看完的影片</b>播放進度達 95% 的影片數（拖曳快轉不計）。||一個單元一部影片，所以通常等於已完成單元數。"><b>'+d.vidDone+' 部</b><span>看完的影片</span></div>'
+      +     '<div class="ovpart" data-tip="<b>交出的作業</b>唸的＋寫的，已經上傳成功的份數。||全 254 課共 789 份，平均每課 3.11 份。"><b>'+d.subDone+' 份</b><span>交出的作業（唸＋寫）</span></div>'
+      +   '</div>'
+      + '</div>'
+      + '<div class="ovhabit">'
+      +   '<div class="ovh" data-tip="<b>連續學習（天）</b>連續有完成單元的天數。||跟孩子端首頁上方那個大字是同一個數字。"><b>'+d.learnStreak+'</b><span>連續學習（天）</span></div>'
+      +   '<div class="ovh" data-tip="<b>累積學習（天）</b>完成過單元的天數總和。"><b>'+(d.learnTotal||0)+'</b><span>累積學習（天）</span></div>'
+      + '</div>';
+  }
+  function renderMyOverview(){
+    var box=document.getElementById('myOverview'); if(!box)return;
+    box.innerHTML=overviewHTML(studentStats());
+  }
+  function renderMessages(){
+    var tabs=document.getElementById('msgTabs');
+    if(tabs) tabs.innerHTML=
+      '<button class="'+(msgTab==='notice'?'on':'')+'" onclick="setMsgTab(\'notice\')">公告</button>'+
+      '<button class="'+(msgTab==='remind'?'on':'')+'" onclick="setMsgTab(\'remind\')">提醒</button>';
+    var list=MSGS[msgTab]||[], b=document.getElementById('msgBody');
+    if(!b) return;
+    if(msgTab==='remind' && !state.rhythmSet){
+      b.innerHTML='<div class="msgempty">還沒有提醒。<br>去「個人 › 我的承諾書」選好練習日<br>系統就會在練習日提醒你。</div>';
+      return;
+    }
+    b.innerHTML=list.map(function(m){
+      return '<div class="msgrow"><div class="tt">'+m.t+'</div><div class="bd">'+m.b+'</div>'
+        +'<div class="msgfrom">'+m.d+' '+(state.remindAt||'19:00')+(m.from?'　·　'+m.from:'')+'</div></div>';
+    }).join('') || '<div class="msgempty">目前沒有訊息。</div>';
+  }
   function renderMap(){
     var p=document.getElementById('mapPath'); p.innerHTML='';
     for(var i=1;i<=12;i++){
@@ -1172,19 +1622,45 @@
     function opt(k,val,cur,label){return '<button class="bkopt'+(String(val)===String(cur)?' on':'')+'" onclick="setBackend(\''+k+'\',\''+val+'\')">'+label+'</button>';}
     var h='';
     h+='<div class="bksec"><div class="bktt">單元解鎖需通過小遊戲</div><div class="bkrow">'+opt('gameGate','1',gate?'1':'0','開（需過關）')+opt('gameGate','0',gate?'1':'0','關')+'</div></div>';
-    h+='<div class="bksec"><div class="bktt">小遊戲何時出現</div><div class="bkrow col">'+opt('gameAppear','video',appear,'影片看完就出現')+opt('gameAppear','video_read',appear,'影片＋唸的作業做完才出現')+opt('gameAppear','all',appear,'所有作業做完才出現')+'</div></div>';
-    h+='<div class="bksec"><div class="bktt">影片完成門檻</div><div class="bkrow">'+opt('videoDone','80',vth,'80%')+opt('videoDone','90',vth,'90%')+opt('videoDone','100',vth,'100%')+'</div></div>';
-    h+='<div class="bksec"><div class="bktt">進階遊戲每題限時</div><div class="bkrow">'+opt('advTime','2000',adv,'2 秒')+opt('advTime','2500',adv,'2.5 秒')+opt('advTime','3000',adv,'3 秒')+'</div></div>';
+    h+='<div class="bksec"><div class="bktt">小遊戲何時出現</div><div class="bkmut" style="margin:0">已改由<b>家長</b>四選一設定（個人 › 解鎖模式）。這裡只保留上面的總開關。目前家長設為：<b>'+appearLabel()+'</b></div></div>';
+    h+='<div class="bksec"><div class="bktt">影片完成門檻</div><div class="bkmut" style="margin:0">固定 <b>95%</b>，不開放調整（2026-08-20 定案）。要跳過影片請用家長端的「模式零」。</div></div>';
+    var aon=(c.advOn===undefined?false:!!c.advOn);
+    h+='<div class="bksec"><div class="bktt">進階限時挑戰</div><div class="bkrow">'+opt('advOn','1',aon?'1':'0','開')+opt('advOn','0',aon?'1':'0','關（預設）')+'</div>'
+      +'<div class="bkmut" style="margin:6px 0 0">D13（2026-08-21 定案）：<b>上線先不開</b>。2.5 秒是猜的，等累積 4 週的作答毫秒分佈再決定秒數。秒數設錯讓孩子挫折，那個印象收不回來；晚 4 週開不影響任何人。</div></div>';
+    h+='<div class="bksec"><div class="bktt">進階遊戲每題限時</div><div class="bkrow">'+opt('advTime','2000',adv,'2 秒')+opt('advTime','2500',adv,'2.5 秒')+opt('advTime','3000',adv,'3 秒')+'</div>'
+      +(aon?'':'<div class="bkmut" style="margin:6px 0 0">（進階限時目前是關的，這個秒數還沒生效）</div>')+'</div>';
     h+='<div class="bkmut">這些設定由老師／產品端統一調整，會同步套用到孩子端與發音遊戲（進階限時秒數直接餵給遊戲）。</div>';
     document.getElementById('bkBody').innerHTML=h;
   }
+  var UL_MODES=[
+    ['none','模式零','完全無限制','影片沒看完也可以直接進測驗，過關就解鎖下一單元。適合已經會、或插班進來的孩子。'],
+    ['video','模式一','看完影片','看完影片（95%）就出現小遊戲。這是預設。'],
+    ['video_read','模式二','看完影片＋唸的作業','兩步都做完才出現小遊戲。'],
+    ['all','模式三','所有作業都做完','看、唸、寫三步都完成才出現小遊戲。']
+  ];
+  function renderUnlock(){
+    var cur_=gameAppear();
+    var h='<div class="bkmut" style="margin:0 0 12px">小遊戲是解鎖下一單元的關卡。這裡決定<b>它什麼時候出現</b>。<br>不管選哪一種，小遊戲本身都要答對 4/5 題才算過關。</div>';
+    UL_MODES.forEach(function(m){
+      var on=(m[0]===cur_);
+      h+='<div onclick="setUnlock(\''+m[0]+'\')" style="cursor:pointer;background:'+(on?'#fdeeeb':'#fff')+';border:1.5px solid '+(on?'#f08c7c':'#e3e8ef')+';border-radius:13px;padding:12px 14px;margin-bottom:9px">'
+        +'<div style="display:flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:50%;border:2px solid '+(on?'#f08c7c':'#cfd5dd')+';background:'+(on?'#f08c7c':'#fff')+';flex:none"></span>'
+        +'<b style="font-size:.9rem">'+m[1]+'　'+m[2]+'</b></div>'
+        +'<div style="font-size:.76rem;color:#8a929e;margin-top:5px;padding-left:24px;line-height:1.65">'+m[3]+'</div></div>';
+    });
+    h+='<div class="bkmut" style="margin-top:12px;line-height:1.8">為什麼模式零不算放水：九宮格九選一、五題要對四題，<b>純猜的機率只有 0.07%</b>。測驗本身就是驗收。<br>另外影片金幣 +300 是「看完影片」才給的，跳過就沒有——誘因自己會發揮作用。</div>';
+    document.getElementById('ulBody').innerHTML=h;
+  }
+  function setUnlock(v){ scfg({gameAppear:v}); renderUnlock(); if(cur==='home')renderHome(); }
   function setBackend(k,v){
-    var val=v; if(k==='gameGate')val=(v==='1'); else if(k==='videoDone'||k==='advTime')val=parseInt(v,10);
+    var val=v; if(k==='gameGate'||k==='advOn')val=(v==='1'); else if(k==='videoDone'||k==='advTime')val=parseInt(v,10);
     var o={}; o[k]=val; scfg(o); renderBackend();
     if(cur==='home') renderHome();
   }
   function buildNav(containerId, activeTab){
-    var items=[['home','📖','學習'],['map','🎮','遊戲'],['coin','🪙','金幣'],['profile','👤','個人']];
+    /* 2026-09-01：對齊原課程模組的四格 —— 學習／訊息／遊戲／個人。
+       金幣不佔分頁，改由首頁頂欄常駐顯示、點一下進金幣頁。 */
+    var items=[['home','📖','學習'],['messages','✉️','訊息'],['map','🎮','遊戲'],['profile','👤','個人']];
     var el=document.getElementById(containerId); el.innerHTML='';
     items.forEach(function(it){
       var d=document.createElement('div'); d.className='item'+(it[0]===activeTab?' on':'');
@@ -1193,7 +1669,7 @@
       el.appendChild(d);
     });
   }
-  ['navHome:home','navReadList:home','navWriteList:home','navMsg:messages','navMap:map','navProfile:profile','navCoins:coin','navCoin:coin','navShop:coin','navCoinMap:coin','navSetup:profile','navBackend:profile','navGame:home','navDash:profile','navCal:home','navDoneList:home'].forEach(function(pair){
+  ['navHome:home','navReadList:home','navWriteList:home','navMsg:messages','navMap:map','navProfile:profile','navCoins:coin','navCoin:coin','navShop:coin','navCoinMap:coin','navSetup:profile','navBackend:profile','navGame:home','navDash:profile','navCal:home','navDoneList:home','navMastery:profile','navUnlock:profile'].forEach(function(pair){
     var a=pair.split(':'); buildNav(a[0],a[1]);
   });
 
@@ -1221,12 +1697,13 @@
   }
 var PIC={CHECK:'data:image/png;base64,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',VIDEO:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAABzCAYAAABTo8YRAAAFa0lEQVR42u2dW28bNxCFz/Cii2X5isZAkiZpEOQ1//8/FOgFKRoUKOwWrRs3TiPHiqNd7XL6wJVi+CG2bMmiqHMAC4KfqP10ZobkkJKP56UiAdUKFFVASGI0+cikMAgl3HwBqwJFTbjZAi6DogoEkSXgWoGqpnWzBVxWAcSbKeBxUObdXAFrE5rJN0PAAiCogqk3U8ABwJhVc8aAFaiYfDMGTLh5A64JOF/ACqDmM88XcAgKpYHzdjCVs4NJOP8ii8oUsDQOponpYIqAKQKmCJiAKQKmCJgiYGpRcuv6wUXi4kuKUmBumzJuHcHGozKKUaXJdZc4I2g7QdvKdKwEfFO4iO1Cf32scDKsMSwDysQAeyPYbAkOeg6Ptxy8lTtBXivACuDowxiHgzEqBYwANrE4XatiMFKcjUqUteLlfotF1k3dOxjVODwbIyCClUTHaSS++eNsjP8+13ca5/o4WIBBEU8xyiVHp9YEaESmBaA2X8r9DXvrbTi3Tg7+VNTxQTXFy07H4MVeK5ktTAFwOCjx/iJAGsLDMkxhE/A1umrWthUc9GwynSZGgH/O5atjJuAZi65a02klUsy/IYIrWTMCmMybZUXGTMAz6nhY4fcPJcqgsdpdSCYm4KUVQeNa8dv7Ej+fFDi9qJN3syO2201lTi9qnJcBD/sOz7Y9Ok6SbAumg+9Q8ZaV4mgwxg9vRzj5VE3/T8C5hOxmQWJQBPx0UuDNaYFhGZKCTMBzeohBgT/PKvx4MsLf5xVU08jNBDzHAkwEOC8Uv7wr8PrfUXTzkoswFlkLyM1BgeNhjUExwtNtj0f9uO23jCKMDl6Qm40AnyvFm/clXr8r8WEUluJkAl502Abwdljh++MRjs4qhHs+IE3AC1azeYXupA2HOTgfTRoLnm57fLvtseHvPw8T8CJc20Dc6xg8321hf8NOiy9W0avuWgU6TvC47/Bk26PdLGEuaxmTgOeca7/ZsHi+67HbsbElaMnr0wQ8B7DauPa7HY+HfYeWTWfjgYDvGI6tAR70HJ7vemy1TBKuJeA5FVL9tsGTLYeHfQcrghTvWCXgW4RkQPF4y+PZjkevZYCEL5ch4Bnh9rzBq4MODjYdjCD5m/sIeEYd9BysiWBX4VpGAp5Bky3BxYJVAp4bMInHNVNqfBehg28te6WX5lMZOyRTOrpyXuiVMRPwjQNfv22m7RUi8dzPr6dFWl/C5vAZAKgA/WZuTcA3ILzbMfBGMK41NswJ4CTNrmbVeBh8r+vulJbNWjm4ZfFyz8MbQZ3w3LXWmE5e7Hlst+ngmSA/2vLwzuDtsMJgVGNUaTInExRA2wl22xYHmw4PevbOX0K5rx+IFsQepXFY7gOV5iUEoFK99xaa6ytpgROBMZjLCtnaTZO0eREBWjLpmkpvjLxGKbklhTTFpjsCpgiYImCKgCkCpgiYWg5gRbPfyWdOB1METKUI2BmG6KwBizAJ5w2YOSH/HGzo4LwBe2sYpXN3sKON854mMQ9n/qytFULO2sESIVMZR0tvWFFnDdiIoO1YUWdd71gBHEN13gWtNwIyzhiwkXgFEfNxxlNSkfibuULIeQKO+VjQpZPzBTyprLuOOTlbwJNw3XEGlvE6T8ARMtD1gq438S4qcsoL8OV5ctsJvBEuiNxSyR8ftSKwDqgDUGn89U+lpW8cCVfmfLA1AgugZeKln2UdEMKX8D25r3kddfmzC+LVS0YAb8zqHQAXASyArjMIqgjNNQd1AFR1+oGzd+eVwtQILv3J6oTo66ZVk3lzywBBZS0Bf60QzeYKB8WXawDXLVTrqlbRVObTJIqAKQImYIqAKQKmCJgiYIqAKQKmCHhd9D8PAdRgu+TFSwAAAABJRU5ErkJggg==',SUBMIT:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB1CAYAAACF+iUMAAAEvUlEQVR42u2dS28iRxSFz61qMISJ48SjmUUm2UWKlP//S4wXs8luFAXMYJlH04+6N4tubJJgGzOmG8rnkywvLBu6Ps6tV3dZ7ma5gUSLYxNQMKFgQsGEggkFEwomFEzBhIIJBRMKJhRMKJhQMAUTCiYUTCiYNEkSy4UIAN24u0zfUDqdABajYFWDAghaCTV7uMy3cCehrL+LwAsgAngAzsnpClYDCjWoGsIbvx/0/vLNEDbFi6HrHbyckOCghtKAMhh4n+8z4g3ISoWcQoLNDIUCRajKsdDfixJ+1IILNeTlQ2IpN5JRtBqQB0OpLMZRCRYApRqyYKDbCAWXZliVHEQdYq7c/iiZcuMVrGbISoPRbnyC1YCsZJ8breAicEUqWsGlcioUteCcy47xCi4CB1XRCrZ6R4h+IxQs9ZyXXW+kghVAoWz4eAVbtbdLIhVMuRRMTlWw4W3c7fhmBaty7ht9gknMCabh+AdZJFLB60dLGGImmFAwoWBCwRRMKJhQMGmRhE3wCnP89WOPRzjPp+BvLH+rYLhJFTDDZd+jn8hR7ZhR8L5yBZjniutxhmlaKb3oOfzx4Qzfd93RrLuzD96zJC8Kw/U4w9dUIfUBKNOVYjjKMM/1oWxT8Okld1lUIidLxcaBNnAC3KaKq1GGRfHvn1HwichdFIrhKMfXNMBvaT3nqiRf/Z1jlrcvmYJfVJYf5D4lzgtwuwoYjivJbZZrCt65LBuuRxkmy7BTKp0A0zRgOMqwyK21JFPwLmU5V1yPMtykurUsP5Xk6UpxNVq1Vq4p+JmyvCwMw3GOSRrg9xBUlet6dJ01X64p+Am5aWG4GmeYpOGb0ufWSR5nWDTcJ1Pwo8lVDEcrTJb7Jffxct3sPJmCt5CVVs1zU30VudvKdVpYIyf3UfCW9I4W4X+LGK85aJumir/mJRPcFuvnpw6xnLz+m02dTULBW3g/8Hjfd0gOEOFEBD/2HT4OkkZOV5W7Wd7IR0kApKWhUDuJU2Oz0jDLFWX9fkWAz5O86jt3vAAz4CwR/P6+e79XnDjBu65DL2mmFbhd+Ai9juC7jsc6Zs4Bf04LLPGyD6h3wM/nHZg+FGmt5VNwi5ihPia/7o91/z45tPhUJfvgyKFgCiYUTCiYUDChYELBhIL3bixp5ncouCUu+/5+TXmXLwVw2W93sZBLlTuiBnw67yALhttVQKmPbwYZqs39i57Hrz90Wj38jbtJL7wGteq862elSbU1+NQ/b2aCjwxDtW3Y2XG/cF2qWaJPUPSpQMH/GfHKuhY39EkxHPaIRwreYJ4r5rlBGxoVOREMuoJBx1HwQQdPAtwsAz7f5JjnitCg4Hddh99+6uLjwB+k9FNwXSq/3BW4y6pnj5IGHz2YZYovswIfBp4LHYfEt7jk5A/4gWKCaz6dJ1jkittMoXb4cZbV6broO/xynkAONDrnQsfG+8uCYVVqY9MgAdBLHM68HOw1meCNRJ0lgl7iG39d4zSpocaO8MByDrIih4IpmFAwoWBCwYSCydEKNmzstxImmFAwOTbB3rFERy2Y5SJywVLfJ0wiDhX9Ri6446k4asHeyUFOkCNHNO7hYCvytuZ0KXrBLNPRV8vEM8VN8A85fiswqKmEGAAAAABJRU5ErkJggg==',CHART:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAABXCAYAAADPnoExAAABWGlDQ1BJQ0MgUHJvZmlsZQAAeJx9kLFLw1AQxr9WpaB1EB0cHDKJQ5SSCro4tBVEcQhVweqUvqapkMZHkiIFN/+Bgv+BCs5uFoc6OjgIopPo5uSk4KLleS+JpCJ6j+N+fO+74zggOW5wbvcDqDu+W1zKK5ulLSX1jAS9IAzm8Zyur0r+rj/j/T703k7LWb///43Biukxqp+UGcZdH0ioxPqezyXvE4+5tBRxS7IV8onkcsjngWe9WCC+JlZYzagQvxCr5R7d6uG63WDRDnL7tOlsrMk5lBNYxA48cNgw0IQCHdk//LOBv4BdcjfhUp+FGnzqyZEiJ5jEy3DAMAOVWEOGUpN3ju53F91PjbWDJ2ChI4S4iLWVDnA2Rydrx9rUPDAyBFy1ueEagdRHmaxWgddTYLgEjN5Qz7ZXzWrh9uk8MPAoxNskkDoEui0hPo6E6B5T8wNw6XwBA6diE8HYWhMAAAIJSURBVHja7dzBSgJBHIDx/8R0qq5CBwW3BfURPHgQ9uhLRBAYFEF1MVAy8lAE0WWhiB6rAjOog6C3zCAasJOBskJSsbO73+84qOzOh7OzKKteBx8jCdHV+a207zsSJ27ekc29dSuORYd9ALPiNi8PRWttdUhjjNR3Tn58TokMPPPAtBa9qAW/s8AUEBgEhrWXOqZgauP0aYInKqL7AQJPqW0dBY63/Ib1u3qWaK7BIDAIDAKDwCAwuA82xohM/yCqJJL3tAQOcNH0pdftTYylVlOy39xmiQaBQWAQGARGAnbRxhipVYN/zju9Pg4cT8pumW8wgUFgEBgEBrvov+Of3cjbYDgxtryyJNWDDQLHwXDwLv1uf2JMiWKJBoFBYBAYBAaBQeBkitR9sNZaWn5jrvfs1qtzvX7W50f1X5iRO+p5J/q/X88SDQKDwIjbNdgYY/3kReEYQw/s5p3AJ8MFPUEuKty8wxI9lnHSsVsWbTqn0AOv5bKxC2zTOYUe2C04UvKKsYlb8oriFliivymlxKuUYxG55BXFq5RFKXv+MaLCfl702Gg0kvZdRx4fnuS58xKZZ0i7eUcyTlrWcllxC45Vca0KjJgu0SAwCAwCExgEBoFBYBAYBAaBQWACg8AgMAgMAoPAIDCBQWAQGAQGgUFgEJjAIDAIDAKDwCAwCAwCExgEBoERpi+E82ZDii1jUAAAAABJRU5ErkJggg==',PROG:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAYCAYAAADtaU2/AAABWGlDQ1BJQ0MgUHJvZmlsZQAAeJx9kLFLw1AQxr9WpaB1EB0cHDKJQ5SSCro4tBVEcQhVweqUvqapkMZHkiIFN/+Bgv+BCs5uFoc6OjgIopPo5uSk4KLleS+JpCJ6j+N+fO+74zggOW5wbvcDqDu+W1zKK5ulLSX1jAS9IAzm8Zyur0r+rj/j/T703k7LWb///43Biukxqp+UGcZdH0ioxPqezyXvE4+5tBRxS7IV8onkcsjngWe9WCC+JlZYzagQvxCr5R7d6uG63WDRDnL7tOlsrMk5lBNYxA48cNgw0IQCHdk//LOBv4BdcjfhUp+FGnzqyZEiJ5jEy3DAMAOVWEOGUpN3ju53F91PjbWDJ2ChI4S4iLWVDnA2Rydrx9rUPDAyBFy1ueEagdRHmaxWgddTYLgEjN5Qz7ZXzWrh9uk8MPAoxNskkDoEui0hPo6E6B5T8wNw6XwBA6diE8HYWhMAAAFbSURBVHja7dQ9LENRGMbx/zmaSIREYuigIpKWRDQiFokRExJhk9hYu7MS9m7CJmymMrWrhKGLiqWt+KiIr0QU0cUxyJXbOrf33mqOxTOe5fe+eU5e8VwsYTKpw1MV304SwHBGh3oFoITpja1I/ij/sOecFe5V8fXdLJy9uFXL6wniO6ma8EyuoGQt6OrmPo9PRY6O877xTK6g1jb2/G1sR634wS305a3kHdahfnA76rnjaqgXvBL1BOvQ5qZGVmLTzE0Ou+I6tK21pfqtdkIXFyaIhkOiLxwCUFuJg3IcVGx2VJzfPGjRpflxHG+1G2q9fSjFbjJdhgP093SQv7rTopHOoNDCXlE33B47qu3YLwoghWBmbFBUdu6E/oBrQd1wHVoG/wZ1wp1Q4OtX1wOtxBukVNFIuxYFEOmTy7qhvgbMZK+NowByamTguxNTKEDA6kQKobq7gkZQgE+Rijo5fKxjIwAAAABJRU5ErkJggg==',TODO:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAjCAYAAADmOUiuAAABWGlDQ1BJQ0MgUHJvZmlsZQAAeJx9kLFLw1AQxr9WpaB1EB0cHDKJQ5SSCro4tBVEcQhVweqUvqapkMZHkiIFN/+Bgv+BCs5uFoc6OjgIopPo5uSk4KLleS+JpCJ6j+N+fO+74zggOW5wbvcDqDu+W1zKK5ulLSX1jAS9IAzm8Zyur0r+rj/j/T703k7LWb///43Biukxqp+UGcZdH0ioxPqezyXvE4+5tBRxS7IV8onkcsjngWe9WCC+JlZYzagQvxCr5R7d6uG63WDRDnL7tOlsrMk5lBNYxA48cNgw0IQCHdk//LOBv4BdcjfhUp+FGnzqyZEiJ5jEy3DAMAOVWEOGUpN3ju53F91PjbWDJ2ChI4S4iLWVDnA2Rydrx9rUPDAyBFy1ueEagdRHmaxWgddTYLgEjN5Qz7ZXzWrh9uk8MPAoxNskkDoEui0hPo6E6B5T8wNw6XwBA6diE8HYWhMAAAIHSURBVHja7ZjPaxNBFMc/M7sp29psEy8qJutJjyE1UgwEqWjFHjzrRejBiwdvXvwDRBDvFangvVVEDKVqqUoPYhFE8cdBxCbR0lo3S5JiEjcZD2vsxSJa1gzFd5yBx4fve+/7hhFL168q7/40vlcGwIzFiY2MEstmhYz00O0QL48fUr+6iB7MsePkKSHNSFcB5UYX1SfzVBYWVLcVNAF6knuIHz0GQPnBPZrFRQDcmTz1wuKGkNKysByHaCothGGEBxg/MsLA/gPBiVIs35gAwP+ySmX+4W+T1DJDatfpsVAgZQfqZ6g/r2rt2VOqL56r0BT05mbpTKw3N/tXieqFAvZgJhzARuEDSxPjm0rUrtf/7RRrEUoFCmrJ1mqxOp1X2ipYfvxIlWfy+pa4b+++9SFJnL9AbyIJwNdSkdKVS10HtBIJER89oUwAISUdkxVSH1G3Dx8WWk+x0bdNc5vR3gd1B1S+r69Rt9ZqrNycVFoCtht1StfGVeP9Oz1LLMwI+L6+PSgMAzubW98ka2/f0FxZBuCb62oB2Z9Kic9TZtCD7p1b2qkYsQfYOXZGb5ux04PCBJBRG/ljF7dbLdrVijaQJsDus+foTTrBa6ZYoHj54v9NsmUAA5t5/Yrmp4+BzXiefoDu3dtbv8TSsvQGtBxHX8D+zBDRVFqE0oN2bnhTZQ37++07HL+bwm5jf4cAAAAASUVORK5CYII=',NOVID:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAkCAYAAADsHujfAAABWGlDQ1BJQ0MgUHJvZmlsZQAAeJx9kLFLw1AQxr9WpaB1EB0cHDKJQ5SSCro4tBVEcQhVweqUvqapkMZHkiIFN/+Bgv+BCs5uFoc6OjgIopPo5uSk4KLleS+JpCJ6j+N+fO+74zggOW5wbvcDqDu+W1zKK5ulLSX1jAS9IAzm8Zyur0r+rj/j/T703k7LWb///43Biukxqp+UGcZdH0ioxPqezyXvE4+5tBRxS7IV8onkcsjngWe9WCC+JlZYzagQvxCr5R7d6uG63WDRDnL7tOlsrMk5lBNYxA48cNgw0IQCHdk//LOBv4BdcjfhUp+FGnzqyZEiJ5jEy3DAMAOVWEOGUpN3ju53F91PjbWDJ2ChI4S4iLWVDnA2Rydrx9rUPDAyBFy1ueEagdRHmaxWgddTYLgEjN5Qz7ZXzWrh9uk8MPAoxNskkDoEui0hPo6E6B5T8wNw6XwBA6diE8HYWhMAAAPrSURBVHjazVhRaxpZFP5mjKkz2kBGYgqBtFliQXywBoM47otoqSumLO3apy4UtvurtguF9m23fYmIUMWXdUQiER9EtoZNm0UwLo7BqGMjOvsQcuMkG50Z0yXnbc5cz/0833fPnHOpP//uQo9JkoRutytLUg+9Xg8AwLIsGIaF2WymGIbRFG9Oy2JRFOWDg8+oVj+iVCpNWiq7XC7Y7fexunoXHMdR02JTajIiiqKcz+eQzWZ1Zc/v98Pr9U0ENBHIYDBALpeV0+kUhsMRZjGDgUYwGILP56eMRqN6IMfHbcTj23K5XL4U8IF7A/Z1O5aX74BlWZhMJgBAv9+HJPVQr9ext1dFsbh76Q84nU5Eo1vU7dsL04E0Gg353bvfUKvVFAACgSA8nk1YLBZVWeh0OigUdpDJpBWAVlZW8PRpDDabjboSyPFxG2/fvpHHQTgcDoTDEVitVl20NJtNJJMJVCoVBZjnz38kmaEvaiIe31aA4Hkesdgz3SAAwGq1IhZ7Bp7nia9WqyEe35YHg8FlILlcVqEJnucRDkcwP38Ls9r8/C2EwxEFmHK5jFwuKyuAiKIop9MpBR2h0EPQNI3rMpqmEQo9hMPhIL50OgVRFGWySz6fI4IyGOipmdjf/wvtdlt3ZgyG062HwxHy+dxpRkRRlMeLVSAQnKqJVquF169/xadP+7o0EwgEyXM2mz0FcnDwWXFMPZ5NVQEbjX/w6tUvEIQ/MBwONYHxeDZJVohGqtWPxOF2b6iuE2eWSCTw/v3vmqiyWCxwuzfOgUiSpPiAra/bdQmxVCpppmp8L7rb7crjL5eX7+g+FVqpGt+LlqSe4iXLsjMfU7VUje9FnzU1Z6a1oZmFKpPJRAR7fdVqRpu7SIUkSTCbzTMHdrlcePToOywsLFy5pt/vkyI6xzBKIL1eb2YgkUgEXq8PBoNh4rpxWcyZzWYKADk5h4d1LC0t6QJgsy3h8ePvce/emqr1h4f1c7EyDAOXy0Uce3tV3VS8ePGTahAX96IBwG6/TxzF4i46nY5mKp48+WGiHv6reysWd5VAVlfvEsdwOEKhsKOaipcvfwbPfztVDxetUNhRtI80AHAcR/n9fuLMZNJoNpsTAy0uLmqmYrx1zGTSinGD1JFTlZ/3CMlkAicnX64Mtrb2jSYqzuzk5AuSyYSi9/F6fedAOI6jgsEQ+UGlUkEq9QGj0ejaitZoNEIq9UHRRAeDIXAcRykqq8/np5xOJ3kWBGFqZrRmQhAExYzj8/mpS7Ov0WhENLpFHR0dkU5eEAS0Wq2vMk5Eo1tk6ru5A9aNGjlv1BB+o64lZriowVe5qPk/rq7+BcF7LkHWwklzAAAAAElFTkSuQmCC'};
   var childData={
-    y:{name:'楊宗翰',full:'楊宗翰（自學）',unit:'第 17 / 254 單元',ci:'21 / 30 天',ciPct:70,paceP:20,paceA:16,vidDone:16,vidPlan:20,subDone:32,subPlan:40,lag:4,rhythmSet:true,av:'宗',avc:'#ef8f5a'},
-    m:{name:'楊小妹',full:'楊小妹（自學）',unit:'第 8 / 254 單元',ci:'15 / 30 天',ciPct:50,paceP:12,paceA:8,vidDone:8,vidPlan:12,subDone:16,subPlan:24,lag:4,rhythmSet:false,av:'妹',avc:'#7fb2e0'}
+    y:{name:'楊宗翰',full:'楊宗翰（自學）',unit:'第 17 / 254 單元',ci:'21 / 30 天',ciPct:70,paceP:20,paceA:16,vidDone:16,vidPlan:20,subDone:32,subPlan:40,unitDone:16,learnStreak:3,learnTotal:36,lag:4,rhythmSet:true,av:'宗',avc:'#ef8f5a'},
+    m:{name:'楊小妹',full:'楊小妹（自學）',unit:'第 8 / 254 單元',ci:'15 / 30 天',ciPct:50,paceP:12,paceA:8,vidDone:8,vidPlan:12,subDone:16,subPlan:24,unitDone:8,learnStreak:1,learnTotal:15,lag:4,rhythmSet:false,av:'妹',avc:'#7fb2e0'}
   };
   var activeChild='y';
   function selectChild(k){activeChild=k; renderPHome(); go('p-home');}
   function renderPParent(){
+    syncChildFromState();
     var order=['y','m'];
     var ac=childData[activeChild];
     document.getElementById('attnCard').innerHTML=
@@ -1247,6 +1724,7 @@ var PIC={CHECK:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZD
     });
   }
   function renderPHome(){
+    syncChildFromState();
     var c=childData[activeChild];
     var tabs=document.getElementById('pHomeTabs'); tabs.innerHTML='';
     ['y','m'].forEach(function(k){
@@ -1256,16 +1734,30 @@ var PIC={CHECK:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZD
       t.onclick=function(){activeChild=k; renderPHome();};
       tabs.appendChild(t);
     });
-    var vp=Math.round(c.vidDone/c.vidPlan*100), sp=Math.round(c.subDone/c.subPlan*100);
+    /* 2026-08-26 分階段調整：
+       · 拿掉「每日打卡紀錄」
+       · 觀看／作業紀錄不顯示分母，只顯示已完成幾份
+       · 新增「單元完成數」
+       · 沒設承諾書 → 基準線那張卡點不進去 */
     document.getElementById('pHomeCards').innerHTML=
-      pcard(PIC.CHECK,'每日打卡紀錄','本月已打卡 '+c.ci,c.ciPct+'%','#e0736b','#e0736b',c.ciPct,"go('p-checkin')")
-     +pcard(PIC.VIDEO,'影片觀看紀錄','已看 '+c.vidDone+' / 應看 '+c.vidPlan+' 部（依節奏）',vp+'%','#5f97cf','#7fb2e0',vp,"go('p-video')")
-     +pcard(PIC.SUBMIT,'作業提交紀錄','唸＋寫 已完成 '+c.subDone+' / 應完成 '+c.subPlan+' 份',sp+'%','#5f97cf','#7fb2e0',sp,"go('p-submit')")
-     +'<div class="pcard" onclick="go(\'dashboard\')"><div class="prow"><div class="pico"><img src="'+PIC.CHART+'"></div>'
-      +'<div class="pmid"><div class="pt">學習進度 · 基準線</div><div class="ps">'+(c.rhythmSet?('預定 '+c.paceP+' · 實際 '+c.paceA+' · 落後 '+c.lag+' 單元'):('實際 '+c.paceA+' 單元 · 尚未設定承諾書'))+'</div></div>'
-      +(c.rhythmSet?'<div class="pct" style="color:#e8617c;font-size:1.1rem">落後</div>':'<div class="pct" style="color:#c8c8c8;font-size:.95rem">未設定</div>')+'<span class="parrow">›</span></div></div>';
+      /* 跟孩子端「我的學習總覽」同一組數字，讓兩邊講得起來 */
+      /* 直接把整個 c 傳進去，不要逐欄挑——漏一欄就會少一個數字（learnTotal 就曾經漏掉） */
+      '<div class="ovbox"><div class="ovttl">'+c.name+'的學習總覽</div><div class="ovgrid">'+overviewHTML(c)+'</div><div class="ovnote">孩子在他的 App「個人」頁看到的，就是這四個數字。</div></div>'
+     +'<div class="ovhint">影片與作業點進去可以看每一筆的內容。<b>單元完成數沒有另外的明細</b>——它就是影片與作業合起來的結果。</div>'
+     +pcard(PIC.PROG,'單元完成數','已完成 '+c.unitDone+' 個單元',c.unitDone+' 個','#5fb389',null)
+     +pcard(PIC.VIDEO,'影片觀看紀錄','看完的影片明細',c.vidDone+' 部','#5f97cf',"go('p-video')")
+     +pcard(PIC.SUBMIT,'作業提交紀錄','交出的作業清單',c.subDone+' 份','#5f97cf',"go('p-submit')")
+     +(c.rhythmSet
+        ? '<div class="pcard" onclick="go(\'dashboard\')"><div class="prow"><div class="pico"><img src="'+PIC.CHART+'"></div>'
+          +'<div class="pmid"><div class="pt">學習進度 · 基準線</div><div class="ps">預定 '+c.paceP+' · 實際 '+c.paceA+' · 落後 '+c.lag+' 單元</div></div>'
+          +'<div class="pct" style="color:#e8617c;font-size:1.1rem">落後</div><span class="parrow">›</span></div></div>'
+        : '<div class="pcard locked"><div class="prow"><div class="pico"><img src="'+PIC.CHART+'"></div>'
+          +'<div class="pmid"><div class="pt">學習進度 · 基準線</div><div class="ps">'+c.name+'還沒設定承諾書，暫時看不到預定進度</div></div>'
+          +'<div class="pct" style="color:#c8c8c8;font-size:1.2rem">🔒</div></div>'
+          +'<div class="lockhint">請孩子在「個人 › 我的承諾書」選好一週練哪幾天，這裡才會出現預定進度與落後提醒。</div></div>');
   }
   function renderPChildren(){
+    syncChildFromState();
     var ov=document.getElementById('pChildList'); ov.innerHTML='';
     ['y','m'].forEach(function(k){
       var c=childData[k];
@@ -1277,11 +1769,14 @@ var PIC={CHECK:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZD
       ov.appendChild(d);
     });
   }
-  function pcard(icon,title,sub,pct,pctcol,barcol,barw,onclick){
-    return '<div class="pcard" onclick="'+onclick+'"><div class="prow"><div class="pico"><img src="'+icon+'"></div>'
+  /* 自學版沒有截止日，也就沒有「應完成」，所以沒有分母 → 不畫進度條、不顯示百分比。
+     可以點的才有箭頭；單元完成數沒有明細頁，就不要讓人以為點得進去。 */
+  function pcard(icon,title,sub,val,valcol,onclick){
+    return '<div class="pcard'+(onclick?'':' nolink')+'"'+(onclick?' onclick="'+onclick+'"':'')+'>'
+      +'<div class="prow"><div class="pico"><img src="'+icon+'"></div>'
       +'<div class="pmid"><div class="pt">'+title+'</div><div class="ps">'+sub+'</div></div>'
-      +'<div class="pct" style="color:'+pctcol+'">'+pct+'</div><span class="parrow">›</span></div>'
-      +'<div class="pbar"><i style="width:'+barw+'%;background:'+barcol+'"></i></div></div>';
+      +'<div class="pct" style="color:'+valcol+'">'+val+'</div>'
+      +(onclick?'<span class="parrow">›</span>':'')+'</div></div>';
   }
   var readItems=[{title:'作業一',sub:'直接合併正唸＋倒車',done:false},{title:'作業二',sub:'吐捲舌 100 次',done:false}];
   var curReadItem=0;
@@ -1295,12 +1790,13 @@ var PIC={CHECK:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZD
     });
   }
   function submitRead(){
-    readItems[curReadItem].done=true; earn('唸的作業完成',100);
+    readItems[curReadItem].done=true; earn(makeup?'唸的作業完成（第 '+makeup.n+' 單元）':'唸的作業完成',100);
     document.querySelectorAll('.pop').forEach(function(p){p.classList.remove('show')}); recorded=false;
     document.getElementById('readListen').className='opbtn off';
     document.getElementById('readUp').className='opbtn off';
     document.getElementById('recHint').textContent='\u63d0\u793a\uff1a\u5148\u6309\u300c\u9304\u97f3\u300d\uff0c\u518d\u6309\u300c\u4e0a\u50b3\u300d\u3002';
     if(readItems.every(function(x){return x.done;})){
+      if(makeup&&makeup.which==='read'){ finishMakeup(); return; }
       state.steps.read=true;
       afterAssignmentStep();
     } else { go('read-list'); }
@@ -1317,37 +1813,72 @@ var PIC={CHECK:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZD
     });
   }
   function submitWrite(){
-    writeItems[curWriteItem].done=true; earn('寫的作業完成',100);
+    writeItems[curWriteItem].done=true; earn(makeup?'寫的作業完成（第 '+makeup.n+' 單元）':'寫的作業完成',100);
     document.querySelectorAll('.pop').forEach(function(p){p.classList.remove('show')});
     if(writeItems.every(function(x){return x.done;})){
+      if(makeup&&makeup.which==='write'){ finishMakeup(); return; }
       state.steps.write=true;
       afterAssignmentStep();
     } else { go('write-list'); }
   }
   function renderDashboard(){
+    syncChildFromState();
     var c=childData[activeChild];
     document.getElementById('dashSub').textContent=c.name+' · '+(c.rhythmSet?'一週 3 天（二、四、六）':'尚未設定練習節奏');
     var b=document.getElementById('dashBody');
     if(c.rhythmSet){
       var lagCls=c.lag>0?'kpi lag':'kpi', lagTxt=c.lag>0?('\u2212'+c.lag):'0';
       b.innerHTML='<div class="kpis">'
-        +'<div class="kpi"><div class="v">'+c.paceP+'</div><label>預定進度</label></div>'
-        +'<div class="kpi"><div class="v" style="color:#4a4a4a">'+c.paceA+'</div><label>實際進度</label></div>'
-        +'<div class="'+lagCls+'"><div class="v">'+lagTxt+'</div><label>落後單元</label></div></div>'
-        +'<div class="card mut" style="text-align:center">距離上次練習：5 天</div>'
-        +'<button class="btn ghost" onclick="go(\'setup\')">調整節奏（改練習日）</button>'
-        +'<button class="btn danger" onclick="resetBaseline()">重設基準：從今天重新起算</button>';
+        +'<div class="kpi" data-tip="<b>預定進度</b>基準起算日到今天，經過了幾個「練習日」。||依承諾書算，純顯示、不影響解鎖。沒設承諾書就沒有這個數字。"><div class="v">'+c.paceP+'</div><label>預定進度</label></div>'
+        +'<div class="kpi" data-tip="<b>實際進度</b>目前走到第幾個單元。"><div class="v" style="color:#4a4a4a">'+c.paceA+'</div><label>實際進度</label></div>'
+        +'<div class="'+lagCls+'" data-tip="<b>落後單元</b>預定進度 − 實際進度。||純顯示，不影響解鎖，也不會扣任何東西。"><div class="v">'+lagTxt+'</div><label>落後單元</label></div></div>'
+        /* 2026-09-01：「距離上次練習：5 天」移除。重設紀錄還是要留著，但只在真的重設過才出現。 */
+        +(c.resetAt?'<div class="card mut" style="text-align:center">基準已於'+c.resetAt+'重設</div>':'')
+        +'<button class="btn ghost" onclick="askChildRhythm()">調整節奏（改練習日）</button>'
+        +'<button class="btn danger" onclick="resetBaseline()">重設基準：從今天重新起算</button>'
+        +'<div class="card" style="font-size:.78rem;color:#8a94a6;line-height:1.75;padding:12px 14px;margin-top:10px">'
+        +'<b style="color:#4a515c">重設基準會發生什麼</b><br>'
+        +'· 基準起算日改成今天，預定進度從今天重新累加<br>'
+        +'· 預定進度拉齊到實際進度，落後歸零<br>'
+        +'· <b style="color:#4a515c">練習節奏不變</b>，已完成的單元也不會消失<br>'
+        +'· 可隨時重設、沒有次數限制，但每次重設都會留紀錄</div>';
     } else {
       b.innerHTML='<div class="kpis"><div class="kpi"><div class="v" style="color:#4a4a4a">'+c.paceA+'</div><label>實際進度（單元）</label></div></div>'
         +'<div class="card" style="text-align:center;color:var(--dim);font-size:.88rem;line-height:1.8;padding:20px">尚未設定練習節奏（承諾書）<br>設定後才會顯示「預定進度」與「落後」提醒。</div>'
-        +'<button class="btn coral" onclick="go(\'setup\')">去設定練習節奏（承諾書）</button>';
+        +'<button class="btn coral" onclick="askChildRhythm()">去設定練習節奏（承諾書）</button>';
     }
   }
+  /* 重設基準：規則寫死在這裡，畫面上也照這四條顯示（2026-08-26 補完整）
+       1. 基準起算日 ← 今天。預定進度從今天開始重新累加
+       2. 預定進度 P ← 拉齊到目前的實際進度 N，落後量 D 歸零
+       3. 練習節奏（承諾書）不動；要改節奏請用「調整節奏」
+       4. 已完成的單元、金幣、精熟記錄全部不動——重設只影響「預定 vs 實際」這一層 */
+  /* 承諾書是孩子自己訂的，家長端只能看不能改 */
+  function askChildRhythm(){
+    var w=document.getElementById('wrap'); if(!w)return;
+    var p=document.getElementById('pop-rhythm');
+    if(!p){
+      p=document.createElement('div'); p.className='pop'; p.id='pop-rhythm';
+      p.innerHTML='<div class="popcard"><div class="popemo">📝</div>'
+        +'<h3>請於孩子介面更改承諾書</h3>'
+        +'<div class="sub">練習節奏是孩子自己訂的約定，<br>要調整請在孩子的帳號裡：<b>個人 › 我的承諾書</b></div>'
+        +'<button class="btn" onclick="popHide(\'pop-rhythm\')">我知道了</button></div>';
+      w.appendChild(p);
+    }
+    p.classList.add('show');   /* 直接用參考，不重新查 id——剛 append 的節點不一定馬上查得到 */
+  }
   function resetBaseline(){
-    if(!confirm('從今天重新起算？\n預定進度會拉齊到目前的實際進度，落後單元歸零。（可隨時重設，無次數限制）')) return;
     var c=childData[activeChild];
-    c.paceP=c.paceA; c.lag=0;
+    var msg='從今天重新起算？\n\n'
+      +'· 基準起算日改成今天，預定進度從今天開始重新累加\n'
+      +'· 預定進度拉齊到目前的實際進度（第 '+c.paceA+' 單元），落後 '+c.lag+' 單元歸零\n'
+      +'· 練習節奏不變（要改請用「調整節奏」）\n'
+      +'· 已完成的單元不會消失，進度不會倒退\n\n'
+      +'可隨時重設，沒有次數限制。';
+    if(!confirm(msg)) return;
+    c.paceP=c.paceA; c.lag=0; c.resetAt='今天';
     renderDashboard();
+    toast('已從今天重新起算，落後歸零');
   }
   var coinsBack='home';
   function goCoins(from){ coinsBack=from; go('coins'); }
@@ -1363,6 +1894,9 @@ const MG_BLOB={"SND":{"0001.mp3":{"stk":[53],"ph":"e","on":"","vo":"ㄝ"},"0002.
   const ac={};function aud(f){if(!ac[f])ac[f]=new Audio(AUD[f]);return ac[f];}
   function gcfg(){try{return JSON.parse(localStorage.getItem('sor_cfg'))||{};}catch(e){return{};}}
   function advTime(){var v=gcfg().advTime;return (typeof v==='number'&&v>=800)?v:2500;}
+  /* D13（2026-08-21 定案）：上線初期不開進階限時，等 4 週的 ms 分佈出來再定秒數。
+     秒數本身仍可在後台調，但總開關預設是關的。 */
+  function advOn(){var v=gcfg().advOn;return v===undefined?false:!!v;}
   var lesson=null,lang='注音',qi=0,score=0,questions=[],curr=null,answered=false,tmr=null,onDone=null,adv=false;
   var NQ=5,NEED=4;
   function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.random()*(i+1)|0;var t=a[i];a[i]=a[j];a[j]=t;}return a;}
@@ -1376,32 +1910,170 @@ const MG_BLOB={"SND":{"0001.mp3":{"stk":[53],"ph":"e","on":"","vo":"ㄝ"},"0002.
   function play(){var a=aud(curr.t);a.currentTime=0;a.play().catch(function(){});}
   function setSub(){var e=document.getElementById('mgSub');if(e)e.textContent='第 '+(qi+1)+' / '+NQ+' 題 · 得分 '+score+(adv?(' · ⚡'+(advTime()/1000)+'秒'):'');}
   function loadQ(){answered=false;curr=questions[qi];var timed=adv;setSub();
-    var cells=curr.opts.map(function(f,i){return '<button class="mgcell" onclick="MG._ans('+i+',this)">'+cellHTML(f)+'</button>';}).join('');
+    var cells=curr.opts.map(function(f,i){return '<button class="mgcell" data-i="'+i+'" onclick="MG._ans('+i+',this)">'+cellHTML(f)+'</button>';}).join('');
     document.getElementById('mgBody').innerHTML='<div class="mgplaywrap"><button class="mgplay" onclick="MG._play()">🔊</button><div class="mgreplay" onclick="MG._play()">↻ 再聽一次</div></div>'
       +(timed?'<div class="mgtbar"><i id="mgtb"></i></div>':'')
-      +'<div class="mggrid">'+cells+'</div><div class="mgfeed" id="mgfeed"></div>';
+      +'<div class="mggrid" id="mggrid">'+cells+'</div><div class="mgfeed" id="mgfeed"></div>';
     setTimeout(function(){play();if(timed)startTimer();},350);}
   function startTimer(){clearTimer();var total=advTime(),t0=Date.now();var bar=document.getElementById('mgtb');if(!bar)return;bar.style.width='100%';
     tmr=setInterval(function(){var el=Date.now()-t0;var wd=Math.max(0,100-el/total*100);if(bar)bar.style.width=wd+'%';if(el>=total){clearTimer();if(!answered)timeout();}},60);}
   function reveal(){[].forEach.call(document.querySelectorAll('.mggrid .mgcell'),function(c,j){if(curr.opts[j]===curr.t)c.classList.add('mgreveal');});}
-  function showCont(){var fd=document.getElementById('mgfeed');if(!fd||document.getElementById('mgcont'))return;fd.insertAdjacentHTML('afterend','<button class="mgcta" id="mgcont" style="background:#5fb389" onclick="MG._cont()">繼續 ›</button>');}
-  function timeout(){answered=true;var fd=document.getElementById('mgfeed');reveal();fd.textContent='時間到！正解在綠框';fd.className='mgfeed no';showCont();}
+  function showCont(){var fd=document.getElementById('mgfeed');if(!fd||document.getElementById('mgcont'))return;
+    var g=document.getElementById('mggrid'); if(g)g.classList.add('frozen');
+    fd.insertAdjacentHTML('afterend','<button class="mgcta" id="mgcont" style="background:#5fb389" onclick="MG._cont()">繼續 ›</button>');
+    /* 按鈕在九宮格下面，裝置框裡常常在摺線以下——一定要捲進畫面，不然看起來就是「按不動」 */
+    var btn=document.getElementById('mgcont');
+    if(btn&&btn.scrollIntoView){ try{ btn.scrollIntoView({block:'nearest',behavior:'smooth'}); }catch(e){ btn.scrollIntoView(false); } }
+  }
+  function timeout(){answered=true;var fd=document.getElementById('mgfeed');reveal();safeRec(curr.t,lang,false);fd.innerHTML='時間到！正解在綠框<br><span style="font-weight:400;font-size:.78rem;color:#8a929e">可以再聽一次，準備好按下面的「繼續」</span>';fd.className='mgfeed no';showCont();}
   function answer(i,btn){if(answered)return;answered=true;clearTimer();var f=curr.opts[i],correct=(f===curr.t);var fd=document.getElementById('mgfeed');
     if(correct){btn.classList.add('mgright');score++;fd.textContent='答對了！';fd.className='mgfeed ok';}
-    else{btn.classList.add('mgwrong');reveal();fd.textContent='正解在綠框';fd.className='mgfeed no';}
-    setSub();if(correct)setTimeout(cont,850);else showCont();}
+    else{btn.classList.add('mgwrong');reveal();fd.innerHTML='正解在綠框<br><span style="font-weight:400;font-size:.78rem;color:#8a929e">可以再聽一次，準備好按下面的「繼續」</span>';fd.className='mgfeed no';}
+    setSub();
+    /* 精熟記錄擺在畫面更新之後，而且包起來——附帶功能壞掉不可以害遊戲卡死 */
+    safeRec(curr.t,lang,correct);
+    if(correct)setTimeout(cont,850);else showCont();}
+  function safeRec(t,l,ok){ try{ if(window.MASTERY) MASTERY.rec(t,l,ok); }catch(e){ if(console&&console.warn)console.warn('精熟記錄寫入失敗（不影響遊戲）:',e); } }
   function cont(){qi++;if(qi>=NQ)result();else loadQ();}
   function result(){clearTimer();var ok=score>=NEED;
     var h='<div class="mgres"><div class="mgrt" style="color:'+(ok?'#5fb389':'#f08c7c')+'">'+(ok?'通過！✓':'再試一次')+'</div><div class="mgrb">'+score+' / '+NQ+'</div>';
-    if(ok){h+='<div class="mgmut">🪙 +'+(adv?20:10)+' 金幣'+(adv?'（雙倍）':'')+'</div><button class="mgcta" style="background:#5fb389" onclick="MG._pass()">解鎖下一步 →</button>';}
-    else{h+='<div class="mgmut">答對 '+NEED+' 題以上就過關</div><button class="mgcta" style="background:#f08c7c" onclick="MG.retry()">再試一次</button><button class="mgcta2" onclick="mgExit()">先離開</button>';}
+    if(ok){h+='<div class="mgmut">🪙 +'+(adv?20:10)+' 金幣'+(adv?'（雙倍）':'')+'</div><button class="mgcta" style="background:#5fb389" onclick="MG._pass()">解鎖下一步 →</button>';
+      if(advOn()&&!adv){h+='<button class="mgcta2" onclick="MG.startAdv()">⚡ 挑戰限時版（雙倍金幣）</button>';}}
+    else{h+='<div class="mgmut">答對 '+NEED+' 題以上就過關</div><button class="mgcta" style="background:#f08c7c" onclick="MG.retry()">再試一次</button><button class="mgcta2" onclick="go(\'mastery\')">看精熟地圖</button><button class="mgcta2" onclick="mgExit()">先離開</button>';}
     h+='</div>';document.getElementById('mgBody').innerHTML=h;}
+  /* 事件委派備援：inline onclick 若失效（擴充功能、CSP、行內處理器被擋…），這條路仍然接得到點擊。
+     重複觸發沒關係——answer() 第一行的 answered 旗標會擋掉第二次。 */
+  (function bindDelegate(){
+    var body=document.getElementById('mgBody');
+    if(!body||!body.addEventListener)return;
+    body.addEventListener('click',function(ev){
+      var t=ev.target; if(!t||!t.closest)return;
+      var cell=t.closest('.mgcell');
+      if(cell&&cell.hasAttribute('data-i')){ window.MG._ans(parseInt(cell.getAttribute('data-i'),10),cell); return; }
+      if(t.closest('.mgplay')||t.closest('.mgreplay')){ window.MG._play(); return; }
+      if(t.closest('#mgcont')){ window.MG._cont(); return; }
+    });
+  })();
+
   window.MG={count:LESSONS.length,
-    start:function(li,cb,opt){opt=opt||{};adv=!!opt.adv;lesson=LESSONS[li%LESSONS.length];lang=lesson.lang;onDone=cb;qi=0;score=0;NQ=5;NEED=4;clearTimer();
+    start:function(li,cb,opt){opt=opt||{};adv=(!!opt.adv)&&advOn();   /* D13：總開關關著就一律不限時 */lesson=LESSONS[li%LESSONS.length];lang=lesson.lang;onDone=cb;qi=0;score=0;NQ=5;NEED=4;clearTimer();
       var t=document.getElementById('mgTitle');if(t)t.textContent='課'+lesson.c+' 小測'+(adv?' ⚡進階':'')+'（'+lesson.lang+'）';buildQ();loadQ();},
     retry:function(){qi=0;score=0;clearTimer();buildQ();loadQ();},
-    _ans:function(i,b){answer(i,b);},_play:function(){play();},_cont:function(){cont();},_pass:function(){if(onDone)onDone();}};
+    startAdv:function(){ if(!advOn())return; adv=true;qi=0;score=0;clearTimer();
+      var t=document.getElementById('mgTitle');if(t)t.textContent='課'+lesson.c+' 小測 ⚡進階（'+lesson.lang+'）';
+      buildQ();loadQ(); },
+    _ans:function(i,b){ try{ answer(i,b); }catch(e){
+      answered=false;   /* 出錯就解鎖，不要讓九宮格卡死 */
+      var fd=document.getElementById('mgfeed');
+      if(fd){fd.textContent='⚠️ 出錯了：'+e.message;fd.className='mgfeed no';}
+      if(console&&console.error)console.error(e);
+    } },_play:function(){play();},_cont:function(){cont();},_pass:function(){if(onDone)onDone();}};
 })();
+</script>
+
+<script>
+/* ===== 精熟地圖 =====
+   規則見 05_蕭博士SoR美語/APP專案/自學系統/設計決策/自學-決策-精熟地圖.md
+   三關（小測／複習關／升階門檻）共用同一份記錄；燈號只看最近 WIN 次作答。 */
+(function(){
+  var SND=MG_BLOB.SND;
+  var WIN=8;                       // 滑動視窗：只看最近 8 次
+  var G_MIN=4, G_ACC=0.85;         // 綠燈：≥4 次且正確率 ≥85%
+  var R_MIN=3, R_ACC=0.5;          // 紅燈：≥3 次且正確率 <50%
+
+  function load(){try{return JSON.parse(localStorage.getItem('sor_mastery'))||{zhu:{},en:{}};}catch(e){return{zhu:{},en:{}};}}
+  function save(){try{localStorage.setItem('sor_mastery',JSON.stringify(MA));}catch(e){}}
+  var MA=load();
+
+  function stat(w){
+    if(!w||!w.length)return 'n';
+    var n=w.length, acc=w.reduce(function(a,b){return a+b;},0)/n;
+    if(n>=G_MIN&&acc>=G_ACC)return 'g';
+    if(n>=R_MIN&&acc<R_ACC)return 'r';
+    return 'y';
+  }
+  function key(l){return (l==='英文'||l==='en')?'en':'zhu';}
+
+  function rec(file,lang,ok){
+    var k=key(lang);
+    /* file:// 底下所有本機網頁共用同一份 localStorage，可能撿到別的檔留下的舊格式資料 */
+    if(!MA||typeof MA!=='object'){MA={zhu:{},en:{}};}
+    if(!MA[k]||typeof MA[k]!=='object'){MA[k]={};}
+    var o=MA[k][file];
+    if(!o||typeof o!=='object'||!Array.isArray(o.w)){o=MA[k][file]={w:[],hist:false};}
+    o.w.push(ok?1:0);
+    if(o.w.length>WIN)o.w.shift();
+    if(stat(o.w)==='r')o.hist=true;   // 曾卡關：永久留記號，只給老師診斷，不影響當前燈號
+    save();
+  }
+  function reset(){MA={zhu:{},en:{}};save();}
+
+  // 由音檔資料推出 頭子音 × 母音 的座標軸
+  var ONSETS=[],VOWELS=[],CELL={};
+  Object.keys(SND).forEach(function(f){
+    var o=SND[f].on, v=SND[f].vo;
+    if(ONSETS.indexOf(o)<0)ONSETS.push(o);
+    if(VOWELS.indexOf(v)<0)VOWELS.push(v);
+    CELL[o+'|'+v]=f;
+  });
+
+  window.MASTERY={rec:rec,stat:stat,reset:reset,WIN:WIN,
+    data:function(){return MA;},axes:function(){return {on:ONSETS,vo:VOWELS,cell:CELL};}};
+})();
+
+var mmLang='注音';
+function setMMLang(l){mmLang=l;renderMastery();}
+function resetMastery(){
+  if(!confirm('清空精熟記錄？\n所有音的燈號與「曾卡關」記號都會歸零。'))return;
+  MASTERY.reset();renderMastery();
+}
+function renderMastery(){
+  var ax=MASTERY.axes(), MA=MASTERY.data();
+  var k=(mmLang==='英文')?'en':'zhu';
+  var g=0,y=0,r=0,n=0, files=Object.keys(MG_BLOB.SND);
+  files.forEach(function(f){
+    var st=MASTERY.stat((MA[k][f]||{}).w);
+    if(st==='g')g++;else if(st==='y')y++;else if(st==='r')r++;else n++;
+  });
+  var h='<div class="mmwrap">';
+  h+='<div class="mmtog">'
+    +'<button class="'+(mmLang==='注音'?'on':'')+'" onclick="setMMLang(\'注音\')">注音進度</button>'
+    +'<button class="'+(mmLang==='英文'?'on en':'')+'" onclick="setMMLang(\'英文\')">英文進度</button></div>';
+  h+='<div class="mmsum">'
+    +'<div><b style="color:#5fb389">'+g+'</b><small>精熟</small></div>'
+    +'<div><b style="color:#e79a3c">'+y+'</b><small>會但不熟</small></div>'
+    +'<div><b style="color:#e8776a">'+r+'</b><small>未達</small></div>'
+    +'<div><b style="color:#9aa4b2">'+n+'</b><small>未測</small></div></div>';
+  if(g+y+r===0){
+    h+='<div class="mmempty">還沒有任何作答記錄。<br>去玩一次單元小遊戲，這張圖就會亮起來。</div>';
+  }else{
+    h+='<div class="mmgrid" style="grid-template-columns:52px repeat('+ax.vo.length+',1fr)">';
+    h+='<div></div>'+ax.vo.map(function(v){return '<div class="mmh">'+v+'</div>';}).join('');
+    ax.on.forEach(function(o){
+      h+='<div class="mmrl">'+(o===''?'母音':o)+'</div>';
+      ax.vo.forEach(function(v){
+        var f=ax.cell[o+'|'+v];
+        if(!f){h+='<div class="mmc n" style="opacity:.2"></div>';return;}
+        var oo=MA[k][f], st=MASTERY.stat((oo||{}).w);
+        h+='<div class="mmc '+st+((oo&&oo.hist)?' hist':'')+'" title="'+(o||'')+v+'"></div>';
+      });
+    });
+    h+='</div>';
+  }
+  h+='<div class="mmleg">'
+    +'<span><i class="mmdot" style="background:#5fb389"></i>精熟</span>'
+    +'<span><i class="mmdot" style="background:#e79a3c"></i>會但不熟</span>'
+    +'<span><i class="mmdot" style="background:#e8776a"></i>未達</span>'
+    +'<span><i class="mmdot" style="background:#e6eaf0"></i>未測</span>'
+    +'<span><i class="mmdot hist" style="background:#e6eaf0;position:relative"><em style="position:absolute;top:0;right:0;width:4px;height:4px;border-radius:50%;background:rgba(47,62,87,.55);display:block"></em></i>曾卡關</span></div>';
+  h+='<div class="mmhint">燈號只看每個音<b>最近 '+MASTERY.WIN+' 次</b>作答：最近穩定答對就轉綠，以前錯過的不會一直壓著。'
+    +'<br>三種關卡（單元小測／複習關／升階門檻）的作答<b>合併成同一份記錄</b>——精熟是「音」的屬性，不是「關卡」的屬性。'
+    +'<br>右上角小點＝<b>曾經卡關</b>，永久保留，只給老師診斷用，不影響目前燈號。'
+    +'<br><br><span style="color:#c04a33">原型限制：記錄存在這台裝置的瀏覽器裡（sor_mastery），不分學生、不跨裝置。正式版需接後端。</span>'
+    +'<br><br><span onclick="resetMastery()" style="color:#7fb2e0;font-weight:700;cursor:pointer">清空記錄（測試用）</span></div>';
+  h+='</div>';
+  document.getElementById('mmBody').innerHTML=h;
+}
 </script>
 
 <script>
@@ -1417,6 +2089,55 @@ const MG_BLOB={"SND":{"0001.mp3":{"stk":[53],"ph":"e","on":"","vo":"ㄝ"},"0002.
   var PRICE={n:[1400,1000,1500],r:[2800,1800,2600],l:[4500,3200,4300]};
   var RN={n:'普通',r:'稀有',l:'傳說'};
   function updTop(){var e=document.getElementById('coinTop');if(e)e.textContent=state.coins.toLocaleString();}
+  /* 學習日 ＝ 登入 ∩ 完成一個單元（2026-09-01 定案）
+     也就是「當天通過一次小遊戲」——不管家長選模式零還是一～三，
+     都必須通過小遊戲才算完成一個單元，所以這是唯一不會歧義的判準。
+     看影片、交作業都不算學習日；它們是過程，完成單元才是結果。
+     ── 定義見 自學-規格-畫面數值定義 ──
+     learnTotal  ＝ 學習日總數（＝完成單元的天數，不是日曆天、不是登入天）
+     learnStreak ＝ 連續學習天數
+     ⚠️ 斷鏈規則待拍板；原型只做累加，不模擬跨日中斷。 */
+  /* ── 數值說明浮動視窗 ──
+     每個顯示出來的數字都要說得出怎麼算的。滑到上面就看得到，不用去翻文件。 */
+  (function(){
+    var box=null;
+    function ensure(){
+      if(!box){ box=document.createElement('div'); box.id='tipbox'; document.body.appendChild(box); }
+      return box;
+    }
+    function show(el,ev){
+      var t=el.getAttribute('data-tip'); if(!t)return;
+      var b=ensure();
+      b.innerHTML=t.replace(/\|\|/g,'<i>')+(t.indexOf('||')>=0?'</i>':'');
+      b.classList.add('on');
+      var r=el.getBoundingClientRect(), bw=Math.min(290,window.innerWidth-20);
+      var x=Math.min(Math.max(8,r.left+r.width/2-bw/2), window.innerWidth-bw-8);
+      var y=r.top-b.offsetHeight-9;
+      if(y<8) y=r.bottom+9;                       /* 上面放不下就放下面 */
+      b.style.left=x+'px'; b.style.top=y+'px';
+    }
+    function hide(){ if(box) box.classList.remove('on'); }
+    document.addEventListener('mouseover',function(e){
+      var el=e.target&&e.target.closest?e.target.closest('[data-tip]'):null;
+      if(el) show(el,e); else hide();
+    });
+    document.addEventListener('mouseout',function(e){
+      var el=e.target&&e.target.closest?e.target.closest('[data-tip]'):null;
+      if(el) hide();
+    });
+    document.addEventListener('scroll',hide,true);
+  })();
+
+  window.__today=function(){ return window.__simDay || new Date().toDateString(); };
+  window.markLearnDay=function(){
+    var d=window.__today();
+    if(state.lastLearnDay===d) return;            /* 同一天只記一次 */
+    state.lastLearnDay=d;
+    state.learnTotal=(state.learnTotal||0)+1;
+    state.learnStreak=(state.learnStreak||0)+1;
+    var a=document.getElementById('learnTotal'); if(a)a.textContent=state.learnTotal;
+    var b=document.getElementById('streakDays'); if(b)b.textContent=state.learnStreak;
+  };
   window.earn=function(label,amt){state.coins+=amt;state.ledger.unshift({l:label,a:amt,t:'剛剛'});updTop();};
   window.spend=function(label,amt){state.coins-=amt;state.ledger.unshift({l:label,a:-amt,t:'剛剛'});updTop();};
   window.renderCoin=function(){
@@ -1454,6 +2175,9 @@ const MG_BLOB={"SND":{"0001.mp3":{"stk":[53],"ph":"e","on":"","vo":"ㄝ"},"0002.
   window.openChest=function(st){if(state.chests[st])return;if(state.coins<500){alert('金幣不足 500，無法開寶箱');return;}spend('開寶箱·第'+st+'站',500);state.chests[st]=true;alert('🎁 獲得公仔碎片 ×5！');renderCoinMap();};
   window.renderLedger=function(){
     var bal=document.getElementById('ledgerBal');if(bal)bal.textContent=state.coins.toLocaleString();
+    /* 2026-09-01：登入獎勵回到最單純的每天 +100（跟原課程模組一致）。
+       實際資料顯示純登入打卡沒有明顯不良影響（378 位真實學生半年，只來領錢的僅 4 人），
+       所以不動它。連續打卡階梯移到第二階段。 */
     var box=document.getElementById('ledgerList');if(!box)return;
     if(!state.ledger.length){box.innerHTML='<div style="padding:16px;text-align:center;color:#9a9a9a">還沒有金幣紀錄。</div>';return;}
     box.innerHTML=state.ledger.map(function(e){return '<div class="coinrow">'+e.l+'<span class="d">'+e.t+'</span><span class="amt'+(e.a<0?' neg':'')+'">'+(e.a<0?'':'+')+e.a.toLocaleString()+'</span></div>';}).join('');
