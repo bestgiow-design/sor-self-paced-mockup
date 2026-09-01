@@ -1,8 +1,16 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v3.0.1
+     版本：v3.1.2
      日期：2026-09-01
      變更：
+       v3.1.2  2026-09-01  承諾書的完課日預估加上前提：「若一天完成一單元，照此節奏，預計⋯」。
+                           規格上一天不限做幾個單元，這個估算是保守值，前提要講出來。
+       v3.1.1  2026-09-01  歡迎頁移除「先訂好一週練幾天，再開始第一課」那行說明。
+       v3.1.0  2026-09-01  遊戲新增二選一、三選一兩種題型，全部走 minimal pair：
+                           干擾項一律取「跟正解只差一個維度」的音（同頭子音換母音，或同母音換頭子音）。
+                           ⚠️ 題數與門檻依選項數調整——二選一 5 題對 4 的話純亂猜有 18.75% 會過關。
+                             二選一 8 題對 7（3.5%）／三選一 6 題對 5（1.8%）／九宮格 5 題對 4（0.07%）。
+                           遊戲畫面上方加題型切換列，方便討論時對照。
        v3.0.1  2026-09-01  家長端學習進度移除「距離上次練習：5 天」（原本就是寫死的假資料）。
                            重設基準的紀錄保留，但只在真的重設過才顯示。
        v3.0.0  2026-09-01  · 學習日改定義為「登入 ∩ 完成一個單元」（＝當天通過一次小遊戲）。
@@ -488,6 +496,14 @@
   .mgreplay{margin-top:6px;color:#7fb2e0;font-weight:700;font-size:.8rem;cursor:pointer}
   .mgtbar{height:6px;background:#e3e8ef;border-radius:5px;overflow:hidden;margin:2px 40px 10px}.mgtbar>i{display:block;height:100%;background:#e79a3c;width:100%}
   .mggrid{display:grid;gap:7px;grid-template-columns:repeat(3,1fr);max-width:280px;margin:0 auto}
+  /* 選項少的時候格子放大，才不會一片空白 */
+  .mggrid.m2{max-width:250px;gap:12px}
+  .mggrid.m3{max-width:290px;gap:9px}
+  .mgmodes{display:flex;gap:6px;justify-content:center;margin:0 auto 12px;max-width:290px}
+  .mgmodes button{flex:1;border:1.5px solid #e3e8ef;background:#fff;color:#8a929e;border-radius:10px;
+    padding:6px 0;font:inherit;font-size:.78rem;font-weight:700;cursor:pointer}
+  .mgmodes button.on{border-color:#f08c7c;background:#fdeeeb;color:#c9573f}
+  .mgmodesub{text-align:center;font-size:.7rem;color:#a6aeb9;margin:-6px auto 10px}
   .mgcell{aspect-ratio:1;border:1.5px solid #e3e8ef;background:#fff;border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;overflow:hidden}
   .mgcell .mgzhu{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:100%;min-height:0}
   .mgcell .mgzhu img{flex:0 1 auto;min-height:0;max-height:calc((100% - 2px)/var(--n,3));max-width:92%;width:auto;object-fit:contain}
@@ -650,7 +666,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v3.0.1 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v3.1.2 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -704,7 +720,6 @@
             <div class="su">恭喜您登入成功</div>
             <div class="brand">我們準備加入 拼讀小達人<br>PA + Phonics 的神奇世界</div>
             <button class="btn" onclick="go('setup')">設定我的承諾書（練習節奏）</button>
-            <div class="welcome-alt" style="cursor:default;color:#a6aeb9">先訂好一週練幾天，再開始第一課</div>
           </div>
         </section>
 
@@ -1519,7 +1534,8 @@
     var h='目前節奏：<b>一週 '+n+' 天</b>';
     var started=(state.progressN>1||state.doneCount>0);
     if(started) h+='<br>進度：第 '+state.progressN+' / '+TOTAL+' 單元';
-    h+='<br>照此節奏，預計 <b>'+d.getFullYear()+' 年 '+(d.getMonth()+1)+' 月</b> 完成全部課程';
+    /* 把估算基礎講出來——規格上一天不限做幾個單元，所以「一天一個」是保守值 */
+    h+='<br>若一天完成一單元，照此節奏，預計 <b>'+d.getFullYear()+' 年 '+(d.getMonth()+1)+' 月</b> 完成全部課程';
     box.innerHTML=h;
   }
   function toggleDay(i){ days[i][1]=!days[i][1]; renderDays(); }
@@ -1898,22 +1914,45 @@ const MG_BLOB={"SND":{"0001.mp3":{"stk":[53],"ph":"e","on":"","vo":"ㄝ"},"0002.
      秒數本身仍可在後台調，但總開關預設是關的。 */
   function advOn(){var v=gcfg().advOn;return v===undefined?false:!!v;}
   var lesson=null,lang='注音',qi=0,score=0,questions=[],curr=null,answered=false,tmr=null,onDone=null,adv=false;
-  var NQ=5,NEED=4;
+  /* 三種題型。選項數越少越好猜，所以題數與通過門檻要跟著調——
+     不然二選一 5 題對 4，純亂猜就有 18.75% 會過關。
+     算式：P(答對≥need) with p=1/opts。*/
+  var MODES={
+    2:{opts:2,cols:2,nq:8, need:7, label:'二選一', sub:'最小對立對，只差一個音', guess:'3.5%'},
+    3:{opts:3,cols:3,nq:6, need:5, label:'三選一', sub:'兩個最小對立對當干擾',   guess:'1.8%'},
+    9:{opts:9,cols:3,nq:5, need:4, label:'九宮格', sub:'干擾項優先取最小對立對', guess:'0.07%'}
+  };
+  var mode=9;
+  var NQ=MODES[9].nq, NEED=MODES[9].need;
   function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.random()*(i+1)|0;var t=a[i];a[i]=a[j];a[j]=t;}return a;}
   function cellHTML(f){return lang==='英文'?'<div class="mgen">'+SND[f].ph+'</div>':'<div class="mgzhu" style="--n:'+Math.max(3,SND[f].stk.length)+'">'+SND[f].stk.map(function(n){return '<img src="'+STK[n]+'">';}).join('')+'</div>';}
-  function buildQ(){questions=[];var pool=lesson.files,ts=shuffle(pool.slice());
-    for(var k=0;k<NQ;k++){var t=ts[k%ts.length];var rest=pool.filter(function(f){return f!==t;});
+  function buildQ(){
+    questions=[];
+    var pool=lesson.files, ts=shuffle(pool.slice()), need=MODES[mode].opts-1;
+    for(var k=0;k<NQ;k++){
+      var t=ts[k%ts.length], rest=pool.filter(function(f){return f!==t;});
+      /* 最小對立對 ＝ 跟正解只差一個維度（同頭子音換母音，或同母音換頭子音） */
       var near=shuffle(rest.filter(function(f){return SND[f].on===SND[t].on||SND[f].vo===SND[t].vo;}));
-      var far=shuffle(rest.filter(function(f){return SND[f].on!==SND[t].on&&SND[f].vo!==SND[t].vo;}));
-      questions.push({t:t,opts:shuffle(near.concat(far).slice(0,8).concat([t]))});}}
+      var far =shuffle(rest.filter(function(f){return SND[f].on!==SND[t].on&&SND[f].vo!==SND[t].vo;}));
+      /* 二／三選一整組都是最小對立對；九宮格不夠時才補遠的 */
+      var picked=near.slice(0,need);
+      if(picked.length<need) picked=picked.concat(far.slice(0,need-picked.length));
+      questions.push({t:t,opts:shuffle(picked.concat([t]))});
+    }
+  }
   function clearTimer(){if(tmr){clearInterval(tmr);tmr=null;}}
   function play(){var a=aud(curr.t);a.currentTime=0;a.play().catch(function(){});}
   function setSub(){var e=document.getElementById('mgSub');if(e)e.textContent='第 '+(qi+1)+' / '+NQ+' 題 · 得分 '+score+(adv?(' · ⚡'+(advTime()/1000)+'秒'):'');}
   function loadQ(){answered=false;curr=questions[qi];var timed=adv;setSub();
     var cells=curr.opts.map(function(f,i){return '<button class="mgcell" data-i="'+i+'" onclick="MG._ans('+i+',this)">'+cellHTML(f)+'</button>';}).join('');
-    document.getElementById('mgBody').innerHTML='<div class="mgplaywrap"><button class="mgplay" onclick="MG._play()">🔊</button><div class="mgreplay" onclick="MG._play()">↻ 再聽一次</div></div>'
+    document.getElementById('mgBody').innerHTML=
+      '<div class="mgmodes">'+[2,3,9].map(function(m){
+        return '<button class="'+(m===mode?'on':'')+'" onclick="MG.setMode('+m+')">'+MODES[m].label+'</button>';
+      }).join('')+'</div>'
+      +'<div class="mgmodesub">'+MODES[mode].sub+'　·　'+NQ+' 題對 '+NEED+'　·　亂猜過關率 '+MODES[mode].guess+'</div>'
+      +'<div class="mgplaywrap"><button class="mgplay" onclick="MG._play()">🔊</button><div class="mgreplay" onclick="MG._play()">↻ 再聽一次</div></div>'
       +(timed?'<div class="mgtbar"><i id="mgtb"></i></div>':'')
-      +'<div class="mggrid" id="mggrid">'+cells+'</div><div class="mgfeed" id="mgfeed"></div>';
+      +'<div class="mggrid m'+mode+'" id="mggrid" style="grid-template-columns:repeat('+MODES[mode].cols+',1fr)">'+cells+'</div><div class="mgfeed" id="mgfeed"></div>';
     setTimeout(function(){play();if(timed)startTimer();},350);}
   function startTimer(){clearTimer();var total=advTime(),t0=Date.now();var bar=document.getElementById('mgtb');if(!bar)return;bar.style.width='100%';
     tmr=setInterval(function(){var el=Date.now()-t0;var wd=Math.max(0,100-el/total*100);if(bar)bar.style.width=wd+'%';if(el>=total){clearTimer();if(!answered)timeout();}},60);}
@@ -1939,7 +1978,7 @@ const MG_BLOB={"SND":{"0001.mp3":{"stk":[53],"ph":"e","on":"","vo":"ㄝ"},"0002.
     var h='<div class="mgres"><div class="mgrt" style="color:'+(ok?'#5fb389':'#f08c7c')+'">'+(ok?'通過！✓':'再試一次')+'</div><div class="mgrb">'+score+' / '+NQ+'</div>';
     if(ok){h+='<div class="mgmut">🪙 +'+(adv?20:10)+' 金幣'+(adv?'（雙倍）':'')+'</div><button class="mgcta" style="background:#5fb389" onclick="MG._pass()">解鎖下一步 →</button>';
       if(advOn()&&!adv){h+='<button class="mgcta2" onclick="MG.startAdv()">⚡ 挑戰限時版（雙倍金幣）</button>';}}
-    else{h+='<div class="mgmut">答對 '+NEED+' 題以上就過關</div><button class="mgcta" style="background:#f08c7c" onclick="MG.retry()">再試一次</button><button class="mgcta2" onclick="go(\'mastery\')">看精熟地圖</button><button class="mgcta2" onclick="mgExit()">先離開</button>';}
+    else{h+='<div class="mgmut">'+NQ+' 題答對 '+NEED+' 題就過關</div><button class="mgcta" style="background:#f08c7c" onclick="MG.retry()">再試一次</button><button class="mgcta2" onclick="go(\'mastery\')">看精熟地圖</button><button class="mgcta2" onclick="mgExit()">先離開</button>';}
     h+='</div>';document.getElementById('mgBody').innerHTML=h;}
   /* 事件委派備援：inline onclick 若失效（擴充功能、CSP、行內處理器被擋…），這條路仍然接得到點擊。
      重複觸發沒關係——answer() 第一行的 answered 旗標會擋掉第二次。 */
@@ -1956,9 +1995,15 @@ const MG_BLOB={"SND":{"0001.mp3":{"stk":[53],"ph":"e","on":"","vo":"ㄝ"},"0002.
   })();
 
   window.MG={count:LESSONS.length,
-    start:function(li,cb,opt){opt=opt||{};adv=(!!opt.adv)&&advOn();   /* D13：總開關關著就一律不限時 */lesson=LESSONS[li%LESSONS.length];lang=lesson.lang;onDone=cb;qi=0;score=0;NQ=5;NEED=4;clearTimer();
+    start:function(li,cb,opt){opt=opt||{};adv=(!!opt.adv)&&advOn();   /* D13：總開關關著就一律不限時 */
+      if(opt.mode&&MODES[opt.mode])mode=opt.mode;
+      NQ=MODES[mode].nq; NEED=MODES[mode].need;lesson=LESSONS[li%LESSONS.length];lang=lesson.lang;onDone=cb;qi=0;score=0;NQ=5;NEED=4;clearTimer();
       var t=document.getElementById('mgTitle');if(t)t.textContent='課'+lesson.c+' 小測'+(adv?' ⚡進階':'')+'（'+lesson.lang+'）';buildQ();loadQ();},
     retry:function(){qi=0;score=0;clearTimer();buildQ();loadQ();},
+    setMode:function(m){ if(!MODES[m]||m===mode)return;
+      mode=m; NQ=MODES[m].nq; NEED=MODES[m].need;
+      qi=0;score=0;clearTimer();buildQ();loadQ(); },
+    modes:MODES,
     startAdv:function(){ if(!advOn())return; adv=true;qi=0;score=0;clearTimer();
       var t=document.getElementById('mgTitle');if(t)t.textContent='課'+lesson.c+' 小測 ⚡進階（'+lesson.lang+'）';
       buildQ();loadQ(); },
