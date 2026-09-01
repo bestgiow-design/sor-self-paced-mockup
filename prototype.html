@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v3.1.2
+     版本：v3.2.0
      日期：2026-09-01
      變更：
+       v3.2.0  2026-09-01  遊戲畫面顯示「這一關的音池」——列出後台設定的頭子音池與母音池、
+                           共幾個音，並註明題目與選項都是從這裡即時抽出的。
+                           滑上去有完整說明：後台不存題目，只存音池；干擾項取只差一個維度的音。
        v3.1.2  2026-09-01  承諾書的完課日預估加上前提：「若一天完成一單元，照此節奏，預計⋯」。
                            規格上一天不限做幾個單元，這個估算是保守值，前提要講出來。
        v3.1.1  2026-09-01  歡迎頁移除「先訂好一週練幾天，再開始第一課」那行說明。
@@ -504,6 +507,13 @@
     padding:6px 0;font:inherit;font-size:.78rem;font-weight:700;cursor:pointer}
   .mgmodes button.on{border-color:#f08c7c;background:#fdeeeb;color:#c9573f}
   .mgmodesub{text-align:center;font-size:.7rem;color:#a6aeb9;margin:-6px auto 10px}
+  .mgpool{max-width:290px;margin:0 auto 12px;background:#f8f9fb;border:1px solid #eceff3;
+    border-radius:11px;padding:9px 12px;font-size:.76rem;line-height:1.65}
+  .mgpoolt{font-weight:800;color:#5a6474;margin-bottom:4px}
+  .mgpoolt span{font-weight:400;font-size:.66rem;color:#fff;background:#a6aeb9;border-radius:20px;padding:1px 7px}
+  .mgpoolr{color:#6b7280}
+  .mgpoolr .pk{display:inline-block;width:44px;color:#a6aeb9;font-size:.7rem}
+  .mgpoolf{color:#a6aeb9;font-size:.68rem;margin-top:4px;border-top:1px dashed #e3e8ef;padding-top:4px}
   .mgcell{aspect-ratio:1;border:1.5px solid #e3e8ef;background:#fff;border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;overflow:hidden}
   .mgcell .mgzhu{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:100%;min-height:0}
   .mgcell .mgzhu img{flex:0 1 auto;min-height:0;max-height:calc((100% - 2px)/var(--n,3));max-width:92%;width:auto;object-fit:contain}
@@ -666,7 +676,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v3.1.2 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v3.2.0 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -1923,6 +1933,7 @@ const MG_BLOB={"SND":{"0001.mp3":{"stk":[53],"ph":"e","on":"","vo":"ㄝ"},"0002.
     9:{opts:9,cols:3,nq:5, need:4, label:'九宮格', sub:'干擾項優先取最小對立對', guess:'0.07%'}
   };
   var mode=9;
+  var POOLTIP='<b>題目怎麼來的</b>後台為每一課設定「頭子音池 × 母音池」，這一關的音就是這兩個池子的組合。||題目和選項都是<b>每次玩的時候即時抽出來的</b>，後台不存題目。干擾項一律從同池子裡取跟正解只差一個維度的音（同頭子音換母音，或同母音換頭子音）。';
   var NQ=MODES[9].nq, NEED=MODES[9].need;
   function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.random()*(i+1)|0;var t=a[i];a[i]=a[j];a[j]=t;}return a;}
   function cellHTML(f){return lang==='英文'?'<div class="mgen">'+SND[f].ph+'</div>':'<div class="mgzhu" style="--n:'+Math.max(3,SND[f].stk.length)+'">'+SND[f].stk.map(function(n){return '<img src="'+STK[n]+'">';}).join('')+'</div>';}
@@ -1943,6 +1954,22 @@ const MG_BLOB={"SND":{"0001.mp3":{"stk":[53],"ph":"e","on":"","vo":"ㄝ"},"0002.
   function clearTimer(){if(tmr){clearInterval(tmr);tmr=null;}}
   function play(){var a=aud(curr.t);a.currentTime=0;a.play().catch(function(){});}
   function setSub(){var e=document.getElementById('mgSub');if(e)e.textContent='第 '+(qi+1)+' / '+NQ+' 題 · 得分 '+score+(adv?(' · ⚡'+(advTime()/1000)+'秒'):'');}
+  /* 這一關的音池 ＝ 後台設定的「頭子音 × 母音」。把它顯示出來，
+     孩子知道自己在練什麼，我們也看得出後台設定對不對。 */
+  function poolHTML(){
+    var on=[],vo=[];
+    lesson.files.forEach(function(f){
+      var o=SND[f].on===''?'（純母音）':SND[f].on, v=SND[f].vo;
+      if(on.indexOf(o)<0)on.push(o);
+      if(vo.indexOf(v)<0)vo.push(v);
+    });
+    return '<div class="mgpool" data-tip="'+POOLTIP+'">'
+      +'<div class="mgpoolt">🎯 這一關的音池　<span>後台設定</span></div>'
+      +'<div class="mgpoolr"><span class="pk">頭子音</span>'+on.join('、')+'</div>'
+      +'<div class="mgpoolr"><span class="pk">母音</span>'+vo.join('、')+'</div>'
+      +'<div class="mgpoolf">共 '+lesson.files.length+' 個音　·　題目與選項都從這裡即時抽出</div>'
+      +'</div>';
+  }
   function loadQ(){answered=false;curr=questions[qi];var timed=adv;setSub();
     var cells=curr.opts.map(function(f,i){return '<button class="mgcell" data-i="'+i+'" onclick="MG._ans('+i+',this)">'+cellHTML(f)+'</button>';}).join('');
     document.getElementById('mgBody').innerHTML=
@@ -1950,6 +1977,7 @@ const MG_BLOB={"SND":{"0001.mp3":{"stk":[53],"ph":"e","on":"","vo":"ㄝ"},"0002.
         return '<button class="'+(m===mode?'on':'')+'" onclick="MG.setMode('+m+')">'+MODES[m].label+'</button>';
       }).join('')+'</div>'
       +'<div class="mgmodesub">'+MODES[mode].sub+'　·　'+NQ+' 題對 '+NEED+'　·　亂猜過關率 '+MODES[mode].guess+'</div>'
+      +poolHTML()
       +'<div class="mgplaywrap"><button class="mgplay" onclick="MG._play()">🔊</button><div class="mgreplay" onclick="MG._play()">↻ 再聽一次</div></div>'
       +(timed?'<div class="mgtbar"><i id="mgtb"></i></div>':'')
       +'<div class="mggrid m'+mode+'" id="mggrid" style="grid-template-columns:repeat('+MODES[mode].cols+',1fr)">'+cells+'</div><div class="mgfeed" id="mgfeed"></div>';
