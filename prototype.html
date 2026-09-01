@@ -1,8 +1,23 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v3.2.0
+     版本：v4.0.1
      日期：2026-09-01
      變更：
+       v4.0.1  2026-09-01  跳頁選單漏改的難度名稱補上。
+       v4.0.0  2026-09-01  跟 Hugo 討論後，小遊戲移到第二階段。連帶改動：
+                           · 難度只剩三檔，並改用中性命名：輕鬆／標準／認真
+                             （拿掉「天堂」——沒有測驗可過，就沒有「不做作業也能解鎖」這回事；
+                              也拿掉天堂／惡夢／地獄那組，價值感會把家長推向最鬆的一檔）
+                           · 第一階段解鎖條件 ＝ 該難度自己的作業條件，不是一律三步全完成
+                           · 首頁提示改成只列「還差什麼」，會隨進度更新
+                           · 遊戲分頁保留 icon，點進去是第二階段佔位頁
+       v3.4.0  2026-09-01  模式零～三改用遊戲的講法命名：😇 天堂／🙂 人間／😰 惡夢／🔥 地獄。
+                           名字是包裝，每張卡右上仍標「模式零～三」、底下仍寫實際條件。
+                           「解鎖模式」改名「挑戰難度」；個人頁入口直接顯示目前是哪一階。
+       v3.3.0  2026-09-01  提醒改成條件觸發，不再設定時間：
+                           「答應要練習的日子、當天沒上線」才提醒一次。
+                           休息日不提醒；有上線的練習日也不提醒。
+                           承諾書拿掉時間選擇；訊息的提醒改成「還沒看到你唷」這種事後語氣。
        v3.2.0  2026-09-01  遊戲畫面顯示「這一關的音池」——列出後台設定的頭子音池與母音池、
                            共幾個音，並註明題目與選項都是從這裡即時抽出的。
                            滑上去有完整說明：後台不存題目，只存音池；干擾項取只差一個維度的音。
@@ -594,10 +609,8 @@
   .ovhint{font-size:.75rem;color:#8a94a6;background:#f6f7f9;border-radius:10px;padding:9px 12px;margin-bottom:11px;line-height:1.65}
   .remindcard{margin-top:12px}
   .rcttl{font-weight:800;font-size:.95rem;color:#4a4a4a}
-  .rcsub{font-size:.76rem;color:#9aa4b2;margin:2px 0 11px}
-  .rcrow{display:flex;gap:7px;flex-wrap:wrap}
-  .rcbtn{border:1.5px solid #e3e8ef;background:#fff;color:#6b7280;border-radius:10px;padding:8px 14px;font:inherit;font-size:.86rem;font-weight:700;cursor:pointer}
-  .rcbtn.on{border-color:#f08c7c;background:#fdeeeb;color:#c9573f}
+  .rcsub{font-size:.76rem;color:#9aa4b2;margin:2px 0 0;line-height:1.75}
+  .rcsub b{color:#6b7280}
   .msgtabs{display:flex;background:#fff;border-bottom:1px solid var(--line);flex:none}
   .msgtabs button{flex:1;border:none;background:none;font:inherit;font-size:.92rem;font-weight:700;color:#9aa4b2;padding:12px 0 10px;cursor:pointer;border-bottom:2.5px solid transparent}
   .msgtabs button.on{color:#f08c7c;border-bottom-color:#f08c7c}
@@ -676,7 +689,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v3.2.0 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.0.1 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -692,7 +705,7 @@
         <option value="read-list">唸的作業目錄</option><option value="read">唸的作業（操作）</option>
         <option value="write-list">寫的作業目錄</option><option value="write">寫的作業（操作）</option>
         <option value="unitdone">單元完成</option>
-        <option value="game">單元小遊戲（內嵌）</option>
+        <option value="game">［二階］單元小遊戲</option>
       </optgroup>
       <optgroup label="家長端">
         <option value="setup">設定練習時段</option>
@@ -703,7 +716,7 @@
       <optgroup label="周邊頁">
         <option value="profile">個人 · 我的</option>
         <option value="donelist">［二階］已完成單元列表</option>
-        <option value="unlock">🔓 解鎖模式（家長四選一）</option>
+        <option value="unlock">🔓 挑戰難度（輕鬆／標準／認真）</option>
         <option value="mastery">［二階］🗺️ 精熟地圖</option>
         <option value="donelist">已完成單元</option>
         <option value="coin">［二階］金幣首頁</option><option value="coinmap">學習地圖</option><option value="shop">公仔商店</option><option value="coins">金幣明細</option>
@@ -883,7 +896,7 @@
         <!-- 單元完成 -->
         <section class="screen" id="scr-unlock">
           <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
-          <div class="topbar" style="display:flex;align-items:center;gap:8px"><span style="cursor:pointer" onclick="go('profile')">‹</span>解鎖模式</div>
+          <div class="topbar" style="display:flex;align-items:center;gap:8px"><span style="cursor:pointer" onclick="go('profile')">‹</span>挑戰難度</div>
           <div class="scroll"><div class="maxw"><div id="ulBody" style="padding:4px 2px 18px"></div></div></div>
           <div class="nav" id="navUnlock"></div>
         </section>
@@ -934,9 +947,8 @@
           <div class="scroll"><div class="maxw"><div class="setwrap">
             <div class="setcard" id="dayCard"></div>
             <div class="setcard remindcard">
-              <div class="rcttl">🔔 提醒時間</div>
-              <div class="rcsub">練習日到了會提醒你一次。休息日不提醒。</div>
-              <div class="rcrow" id="remindRow"></div>
+              <div class="rcttl">🔔 提醒</div>
+              <div class="rcsub">不用設定時間。<b>只有在你答應要練習的日子、當天卻沒上線</b>，系統才會提醒你一次。<br>休息日不會提醒；有上線的練習日也不會。</div>
             </div>
             <div class="setsum" id="setSum"></div>
             <button class="btn coral" onclick="saveRhythm()">確認設定</button>
@@ -954,7 +966,8 @@
         </section>
 
         <!-- 單元小遊戲（內嵌） -->
-        <section class="screen" id="scr-game">
+        <section class="screen hasbar" id="scr-game">
+          <div class="stagebar s2">🎮 單元小遊戲 — 第二階段（第一階段解鎖看的是作業，不是遊戲）</div>
           <div class="sb"><span>下午 3:30 · 週六</span><span>🔋 44%</span></div>
           <div class="mghead"><span class="back" onclick="mgExit()">‹</span><span id="mgTitle">本單元小遊戲</span><span id="mgSub"></span></div>
           <div class="scroll"><div class="maxw" style="padding-top:12px"><div id="mgBody"></div></div></div>
@@ -982,7 +995,7 @@
             </div>
             <div class="proflist">
               <div class="profrow" onclick="go('setup')"><span class="ic">📝</span>我的承諾書（練習節奏）<span class="ar">›</span></div>
-              <div class="profrow" onclick="go('unlock')"><span class="ic">🔓</span>解鎖模式（小遊戲何時出現）<span class="ar">›</span></div>
+              <div class="profrow" onclick="go('unlock')"><span class="ic">🔓</span>挑戰難度<span class="ar" id="modeNow">›</span></div>
                             <div class="profrow"><span class="ic">🔑</span>修改密碼<span class="ar">›</span></div>
               <div class="profrow"><span class="ic">🔔</span>通知設定<span class="ar">›</span></div>
               <div class="profrow"><span class="ic">ℹ️</span>關於（v1.1.28）<span class="ar">›</span></div>
@@ -1061,7 +1074,21 @@
         </section>
 
         <!-- 地圖 / 遊戲 -->
-        <section class="screen" id="scr-map">
+        <section class="screen" id="scr-map-soon">
+          <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
+          <div class="topbar">遊戲</div>
+          <div class="scroll"><div class="maxw"><div class="soonwrap">
+            <div class="soonemo">🎮</div>
+            <div class="soont">聽音辨字小遊戲開發中</div>
+            <div class="soons">用聽的把音挑出來，是<b>第二階段</b>的項目</div>
+            <div class="soonnote">第一階段先把「看影片 → 唸 → 寫」這條路走順。<br>遊戲上線後會變成前往下一單元的關卡。</div>
+            <button class="soonbtn" onclick="go('map')">看一下設計（給內部參考）</button>
+          </div></div></div>
+          <div class="nav" id="navMapSoon"></div>
+        </section>
+
+        <section class="screen hasbar" id="scr-map">
+          <div class="stagebar s2">🎮 遊戲中心 — 第二階段</div>
           <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
           <div class="topbar">遊戲中心</div>
           <div class="scroll"><div class="maxw">
@@ -1194,25 +1221,34 @@
   var cur = 'welcome';
   function gcfg(){try{return JSON.parse(localStorage.getItem('sor_cfg'))||{};}catch(e){return{};}}
   function scfg(o){try{var c=gcfg();for(var k in o)c[k]=o[k];localStorage.setItem('sor_cfg',JSON.stringify(c));}catch(e){}}
-  function gameGateOn(){var v=gcfg().gameGate;return v===undefined?true:!!v;}
-  /* 解鎖模式四選一留在第一階段（個人 › 解鎖模式）。
-     ⚠️ 但預設值要再想：
-        預設模式一的話唸／寫作業會沒有動力做。見 自學-規格-三階段功能範圍。 */
-  var STAGE1_MODE='video';   /* 'none'零 | 'video'一 | 'video_read'二 | 'all'三 */
+  /* 第一階段不上遊戲（與 Hugo 討論後移到第二階段），所以總開關預設關。
+     關著的時候，解鎖條件就是「挑戰難度」那三檔各自的作業條件（見 unitComplete）。 */
+  function gameGateOn(){var v=gcfg().gameGate;return v===undefined?false:!!v;}
+  /* 挑戰難度留在第一階段（個人 › 挑戰難度）。第一階段沒有遊戲，
+     所以只有三檔（輕鬆／標準／認真），解鎖條件就是各檔的作業條件。 */
+  var STAGE1_MODE='video';   /* 'video'輕鬆 | 'video_read'標準 | 'all'認真 */
   function gameAppear(){return gcfg().gameAppear||STAGE1_MODE;}
   function videoThresh(){return 95;}   /* 2026-08-20 定案：固定 95%，不開放調整；彈性由「模式零」提供 */
-  function appearLabel(){var n=gameAppear();return n==='none'?'（無條件，隨時可測驗）':n==='video'?'影片':n==='video_read'?'影片與唸的作業':'所有作業';}
+  function appearLabel(){var n=gameAppear();return n==='video'?'看的作業':n==='video_read'?'看的作業與唸的作業':'看、唸、寫三項作業';}
+  function modeName(){var n=gameAppear();var m={video:'輕鬆',video_read:'標準',all:'認真'};return m[n]||'輕鬆';}
+  /* 這個難度還「差」什麼——只列沒做的，不要每次都把全部條件念一遍 */
+  function remainLabel(){
+    var n=gameAppear(), a=state.steps;
+    var need=n==='video'?['video']:n==='video_read'?['video','read']:['video','read','write'];
+    var nm={video:'看的作業',read:'唸的作業',write:'寫的作業'};
+    return need.filter(function(k){return !a[k];}).map(function(k){return nm[k];}).join('、');
+  }
   function preOK(){var a=state.steps,n=gameAppear();
     if(n==='none')return true;                                  /* 模式零：無條件 */
     return n==='video'?a.video:n==='video_read'?(a.video&&a.read):(a.video&&a.read&&a.write);}
   function assignmentsDone(){return state.steps.video&&state.steps.read&&state.steps.write;}
   function unitComplete(){
-    /* 小遊戲當解鎖門檻時：過關即解鎖。
-       家長模式（零／一／二／三）只決定「什麼時候可以測」，不再另外要求作業全完成——
-       家長選了模式一，就是家長說「我只要求看影片」，唸／寫變成選配。
-       關掉小遊戲總開關時，才回到「作業全完成即解鎖」。 */
+    /* 有遊戲（第二階段）：過關即解鎖，難度只決定「什麼時候可以測」。
+       沒有遊戲（第一階段）：解鎖條件就是該難度自己的作業條件——
+         輕鬆＝看完影片／標準＝影片＋唸／認真＝三步全完成。
+       兩種情況共用同一組難度設定，不會出現「選了輕鬆卻還是要全做」的矛盾。 */
     if(gameGateOn()) return state.steps.game;
-    return assignmentsDone();}
+    return preOK();}
   /* 還差什麼才解鎖：講清楚，不要只說「尚未解鎖」 */
   function missingHint(){
     var a=state.steps, lack=[];
@@ -1221,10 +1257,10 @@
     if(!a.write)lack.push('寫的作業');
     if(gameGateOn()){
       if(state.steps.game) return '第 '+state.progressN+' 單元已通過小遊戲，馬上就會前進';
-      if(!preOK()) return '第 '+state.progressN+' 單元完成「'+appearLabel()+'」後，小遊戲才會出現';
+      if(!preOK()) return '第 '+state.progressN+' 單元還差 '+remainLabel()+'，小遊戲才會出現';
       return '第 '+state.progressN+' 單元的小遊戲還沒過關'+(lack.length?'（'+lack.join('、')+'尚未完成，但不影響解鎖）':'');
     }
-    return lack.length? ('第 '+state.progressN+' 單元還有 '+lack.join('、')+' 沒完成') : '完成目前單元後解鎖';
+    return remainLabel()? ('第 '+state.progressN+' 單元還差 '+remainLabel()) : '完成目前單元後解鎖';
   }
   function startUnitGame(){ mgPending=true; go('game'); if(window.MG){ mgPending=false; window.MG.start((state.unitN-1)%window.MG.count, onUnitGamePass); } }
   var mgPending=false;
@@ -1269,6 +1305,7 @@
     if(id==='coins') renderLedger();
     if(id==='game' && window.MG && !mgPending){ var _b=document.getElementById('mgBody'); if(_b && !_b.innerHTML.trim()){ window.MG.start((state.unitN-1)%window.MG.count, onUnitGamePass); } }
     if(id==='video'){var vn=document.getElementById('vNote'); if(vn) vn.textContent='影片看到 '+videoThresh()+'% 即算完成（後台可調）';}
+    if(id==='profile'){var _mn=document.getElementById('modeNow'); if(_mn)_mn.textContent=modeName()+'　›';}
     if(id==='unlock') renderUnlock();
     if(id==='profile') renderMyOverview();
     if(id==='messages') renderMessages();
@@ -1384,8 +1421,10 @@
         } else {
           nw='<div class="gamelock">🔒 完成'+appearLabel()+'後，本單元小遊戲會出現</div>';
         }
-      } else if(assignmentsDone()){
+      } else if(preOK()){
         nw='<button class="nextbtn" onclick="nextUnit()">🎉 完成！前往下一單元 →</button>';
+      } else {
+        nw='<div class="gamelock">還差 '+remainLabel()+'，完成後就能前往下一單元</div>';
       }
     }
     document.getElementById('nextWrap').innerHTML = nw;
@@ -1505,17 +1544,10 @@
 
   // 設定頁：每日列
   var days=[['星期一',false],['星期二',true],['星期三',false],['星期四',true],['星期五',false],['星期六',true],['星期日',false]];
-  /* 自學版承諾書不設「練習時段」（那是舊模組為線上課設計的），
-     但提醒需要一個時間點——所有練習日共用一個就夠，不用一天一天設。 */
-  var remindAt='19:00';
-  var REMIND_OPTS=['16:00','17:00','18:00','19:00','20:00','21:00'];
-  function setRemind(t){ remindAt=t; renderRemind(); }
-  function renderRemind(){
-    var r=document.getElementById('remindRow'); if(!r)return;
-    r.innerHTML=REMIND_OPTS.map(function(t){
-      return '<button class="rcbtn'+(t===remindAt?' on':'')+'" onclick="setRemind(\''+t+'\')">'+t+'</button>';
-    }).join('');
-  }
+  /* 2026-09-01：提醒不設時間了。
+     規則改成「承諾要上線的日子，當天沒上線才提醒」——
+     孩子不用預測自己幾點會有空，系統也不會在他已經練完之後還來吵。
+     實際發送時間由系統決定（建議傍晚，還來得及做），不開放設定。 */
   function renderDays(){
     var c=document.getElementById('dayCard'); c.innerHTML='';
     days.forEach(function(d,i){
@@ -1526,7 +1558,6 @@
       c.appendChild(row);
     });
     var n=days.filter(function(d){return d[1]}).length;
-    renderRemind();
     renderSetSum(n);
   }
   /* 承諾書底下的摘要
@@ -1550,9 +1581,9 @@
   }
   function toggleDay(i){ days[i][1]=!days[i][1]; renderDays(); }
   function saveRhythm(){
-    state.rhythmSet=true; state.remindAt=remindAt;
+    state.rhythmSet=true;
     var n=days.filter(function(d){return d[1]}).length;
-    alert('已儲存！一週 '+n+' 天，每個練習日 '+remindAt+' 提醒你。'); go('home');
+    alert('已儲存！一週 '+n+' 天。\n練習日當天如果沒上線，系統會提醒你一次。'); go('home');
   }
 
   /* 訊息：兩個分頁
@@ -1566,8 +1597,8 @@
       {t:'📢 新課上線',b:'第二階的課程已經開放，繼續加油！',d:'8 月 24 日'}
     ],
     remind:[
-      {t:'🔔 今天是練習日',b:'記得完成一個單元喔！',d:'今天',from:'依你的承諾書設定'},
-      {t:'🔔 今天是練習日',b:'記得完成一個單元喔！',d:'8 月 30 日',from:'依你的承諾書設定'}
+      {t:'🔔 今天是練習日，還沒看到你唷',b:'現在上線做一個單元還來得及！',d:'今天',from:'練習日沒上線才會發'},
+      {t:'🔔 上週四是練習日，那天沒上線',b:'沒關係，自學版沒有截止日，隨時補上就好。',d:'8 月 27 日',from:'練習日沒上線才會發'}
     ]
   };
   function setMsgTab(t){ msgTab=t; renderMessages(); }
@@ -1622,12 +1653,12 @@
     var list=MSGS[msgTab]||[], b=document.getElementById('msgBody');
     if(!b) return;
     if(msgTab==='remind' && !state.rhythmSet){
-      b.innerHTML='<div class="msgempty">還沒有提醒。<br>去「個人 › 我的承諾書」選好練習日<br>系統就會在練習日提醒你。</div>';
+      b.innerHTML='<div class="msgempty">還沒有提醒。<br>去「個人 › 我的承諾書」選好練習日，<br>之後如果答應要練的日子沒上線，這裡就會出現提醒。</div>';
       return;
     }
     b.innerHTML=list.map(function(m){
       return '<div class="msgrow"><div class="tt">'+m.t+'</div><div class="bd">'+m.b+'</div>'
-        +'<div class="msgfrom">'+m.d+' '+(state.remindAt||'19:00')+(m.from?'　·　'+m.from:'')+'</div></div>';
+        +'<div class="msgfrom">'+m.d+(m.from?'　·　'+m.from:'')+'</div></div>';
     }).join('') || '<div class="msgempty">目前沒有訊息。</div>';
   }
   function renderMap(){
@@ -1658,23 +1689,31 @@
     h+='<div class="bkmut">這些設定由老師／產品端統一調整，會同步套用到孩子端與發音遊戲（進階限時秒數直接餵給遊戲）。</div>';
     document.getElementById('bkBody').innerHTML=h;
   }
+  /* 難度命名用中性的講法（輕鬆／標準／認真），不用天堂地獄那一組——
+     那組的價值感會把家長推向最鬆的一檔，而那是最不扎實的。
+     第一階段沒有遊戲，所以拿掉原本的「模式零（什麼都不用做）」：
+     沒有測驗可以過，就沒有「不做作業也能解鎖」這回事。
+     第二階段遊戲上線時再把它加回來。 */
   var UL_MODES=[
-    ['none','模式零','完全無限制','影片沒看完也可以直接進測驗，過關就解鎖下一單元。適合已經會、或插班進來的孩子。'],
-    ['video','模式一','看完影片','看完影片（95%）就出現小遊戲。這是預設。'],
-    ['video_read','模式二','看完影片＋唸的作業','兩步都做完才出現小遊戲。'],
-    ['all','模式三','所有作業都做完','看、唸、寫三步都完成才出現小遊戲。']
+    ['video','輕鬆','看完影片','影片看滿 95% 就能前往下一單元。唸／寫的作業變成選配，之後隨時可以做。<b>這是預設。</b>'],
+    ['video_read','標準','影片 ＋ 唸的作業','兩步都完成才前往下一單元。寫的作業選配。'],
+    ['all','認真','看、唸、寫全部完成','三步都做完才前往下一單元。<b>最扎實，但也最花時間。</b>']
   ];
   function renderUnlock(){
     var cur_=gameAppear();
-    var h='<div class="bkmut" style="margin:0 0 12px">小遊戲是解鎖下一單元的關卡。這裡決定<b>它什麼時候出現</b>。<br>不管選哪一種，小遊戲本身都要答對 4/5 題才算過關。</div>';
+    var h='<div class="bkmut" style="margin:0 0 12px">決定<b>做完多少才能前往下一單元</b>。<br>'
+      +'沒選到的作業不會消失——<b>翻回過去的單元隨時可以做，金幣一樣拿得到</b>。<br>'
+      +'<span style="color:#7a5fb0">第二階段小遊戲上線後，這三檔會改成「要先做多少才能挑戰小遊戲」。</span></div>';
     UL_MODES.forEach(function(m){
       var on=(m[0]===cur_);
       h+='<div onclick="setUnlock(\''+m[0]+'\')" style="cursor:pointer;background:'+(on?'#fdeeeb':'#fff')+';border:1.5px solid '+(on?'#f08c7c':'#e3e8ef')+';border-radius:13px;padding:12px 14px;margin-bottom:9px">'
         +'<div style="display:flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:50%;border:2px solid '+(on?'#f08c7c':'#cfd5dd')+';background:'+(on?'#f08c7c':'#fff')+';flex:none"></span>'
-        +'<b style="font-size:.9rem">'+m[1]+'　'+m[2]+'</b></div>'
+        +'<b style="font-size:1rem">'+m[1]+'</b><span style="font-size:.82rem;color:#6b7280">'+m[2]+'</span>'
+        +'<span style="margin-left:auto;font-size:.66rem;color:#a6aeb9">'+['模式一','模式二','模式三'][UL_MODES.indexOf(m)]+'</span></div>'
         +'<div style="font-size:.76rem;color:#8a929e;margin-top:5px;padding-left:24px;line-height:1.65">'+m[3]+'</div></div>';
     });
-    h+='<div class="bkmut" style="margin-top:12px;line-height:1.8">為什麼模式零不算放水：九宮格九選一、五題要對四題，<b>純猜的機率只有 0.07%</b>。測驗本身就是驗收。<br>另外影片金幣 +300 是「看完影片」才給的，跳過就沒有——誘因自己會發揮作用。</div>';
+    h+='<div class="bkmut" style="margin-top:12px;line-height:1.8">選「輕鬆」不代表少學——唸／寫的作業金幣照給（每份 +100），只是不擋著你前進。<br>'
+      +'孩子想快點往前走的時候不會被卡住，想回頭補的時候也隨時可以。</div>';
     document.getElementById('ulBody').innerHTML=h;
   }
   function setUnlock(v){ scfg({gameAppear:v}); renderUnlock(); if(cur==='home')renderHome(); }
@@ -1686,7 +1725,7 @@
   function buildNav(containerId, activeTab){
     /* 2026-09-01：對齊原課程模組的四格 —— 學習／訊息／遊戲／個人。
        金幣不佔分頁，改由首頁頂欄常駐顯示、點一下進金幣頁。 */
-    var items=[['home','📖','學習'],['messages','✉️','訊息'],['map','🎮','遊戲'],['profile','👤','個人']];
+    var items=[['home','📖','學習'],['messages','✉️','訊息'],['map-soon','🎮','遊戲'],['profile','👤','個人']];
     var el=document.getElementById(containerId); el.innerHTML='';
     items.forEach(function(it){
       var d=document.createElement('div'); d.className='item'+(it[0]===activeTab?' on':'');
@@ -1695,7 +1734,7 @@
       el.appendChild(d);
     });
   }
-  ['navHome:home','navReadList:home','navWriteList:home','navMsg:messages','navMap:map','navProfile:profile','navCoins:coin','navCoin:coin','navShop:coin','navCoinMap:coin','navSetup:profile','navBackend:profile','navGame:home','navDash:profile','navCal:home','navDoneList:home','navMastery:profile','navUnlock:profile'].forEach(function(pair){
+  ['navHome:home','navReadList:home','navWriteList:home','navMsg:messages','navMap:map-soon','navProfile:profile','navCoins:coin','navCoin:coin','navShop:coin','navCoinMap:coin','navSetup:profile','navBackend:profile','navGame:home','navDash:profile','navCal:home','navDoneList:home','navMastery:profile','navUnlock:profile','navMapSoon:map-soon'].forEach(function(pair){
     var a=pair.split(':'); buildNav(a[0],a[1]);
   });
 
