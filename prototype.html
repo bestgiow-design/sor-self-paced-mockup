@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v4.7.0
+     版本：v4.8.0
      日期：2026-09-02
      變更：
+       v4.8.0  2026-09-02  承諾書改成第一次一定要設、跳不過：
+                           · 首次進入時藏起返回鍵與底部導覽，唯一出口是「我決定好了！」
+                           · 標題改成「先跟自己約定好，一週要練幾天？」
+                           · 拿掉「要不要設定練習節奏？（晚點再設）」邀請彈窗——
+                             跳不過就不需要事後再邀請一次
+                           設定過之後從「個人 › 我的承諾書」進來要改，返回與導覽正常顯示。
        v4.7.0  2026-09-02  · 修：家長端底部的「我的」原本指到孩子端的個人頁
                              （我的承諾書／挑戰難度／修改密碼），家長點下去會看到孩子的設定。
                              第一階段家長端沒有自己的設定，直接拿掉，剩 首頁／孩子 兩格。
@@ -778,7 +784,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.7.0 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.8.0 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -1017,22 +1023,12 @@
               <button class="btn ghost" onclick="go('home')">今天到這，下次見 👋</button>
             </div>
           </div>
-          <!-- 設定邀請（首次完成後） -->
-          <div class="pop" id="pop-invite">
-            <div class="invitecard">
-              <div class="av">👨‍👩‍👧</div>
-              <h3>要不要設定練習節奏？</h3>
-              <div class="sub">設定「哪幾天練、幾點提醒」後，我們會提醒你，學習更容易持續。<br>（請爸媽幫忙設定）</div>
-              <button class="btn coral" onclick="popHide('pop-invite');go('setup')">設定練習節奏</button>
-              <button class="linkbtn" onclick="popHide('pop-invite')">晚點再設</button>
-            </div>
-          </div>
         </section>
 
         <!-- 設定練習時段 -->
         <section class="screen" id="scr-setup">
           <div class="sb"><span>上午 9:12 · 週六</span><span>🔋 56%</span></div>
-          <div class="topbar setbar"><span class="back" onclick="go('profile')">‹</span>我的承諾書</div>
+          <div class="topbar setbar"><span class="back" id="setBack" onclick="go('profile')">‹</span>我的承諾書</div>
           <div class="scroll"><div class="maxw"><div class="setwrap">
             <div class="setcard" id="dayCard"></div>
             <div class="setcard remindcard">
@@ -1392,7 +1388,14 @@
     document.querySelectorAll('.pop').forEach(function(p){p.classList.remove('show')});
     if(id==='home') renderHome();
     if(id==='donelist') renderDoneList();
-    if(id==='setup') renderDays();
+    if(id==='setup'){
+      renderDays();
+      /* 第一次設定不能跳過：藏起返回鍵與底部導覽，唯一的出口是「我決定好了！」。
+         之後從「個人 › 我的承諾書」進來要改，就正常顯示。 */
+      var first=!state.rhythmSet;
+      var bk=document.getElementById('setBack'); if(bk)bk.style.display=first?'none':'';
+      var nv=document.getElementById('navSetup'); if(nv)nv.style.display=first?'none':'';
+    }
     if(id==='map') renderMap();
     if(id==='backend') renderBackend();
     if(id==='coin') renderCoin();
@@ -1573,11 +1576,10 @@
   }
 
   function afterUnit(){
+    /* 2026-09-02：拿掉「要不要設定練習節奏？」邀請。
+       承諾書改成登入後一定要設、跳不過，所以事後就不需要再邀請一次。 */
     var _s2=document.getElementById('streakDays2'); if(_s2)_s2.textContent=state.learnStreak||0;
-    if(!state.firstUnitDone && !state.rhythmSet){
-      state.firstUnitDone=true;
-      setTimeout(function(){ popShow('pop-invite'); }, 500);
-    }
+    state.firstUnitDone=true;
   }
   function nextUnit(){
     // 完成目前進度單元 → 記錄、進度前進、視圖跟到新單元
@@ -1651,7 +1653,8 @@
     /* 對象是小孩子：字要大、要有圖，不能只靠文字 */
     /* 兩欄大卡，對齊實機「設定練習時段」的排版（IMG_2932）：
        星期幾用超大粗體，右邊掛一顆狀態膠囊。 */
-    c.innerHTML='<div class="wptitle">👇 點一下，選出你要練習的日子</div>'
+    var firstTime=!state.rhythmSet;
+    c.innerHTML='<div class="wptitle">'+(firstTime?'先跟自己約定好，一週要練幾天？':'👇 點一下，選出你要練習的日子')+'</div>'
       +'<div class="weekpick">'
       + days.map(function(d,i){
           return '<button class="wp'+(d[1]?' on':'')+(i===6?' last':'')+'" onclick="toggleDay('+i+')">'
