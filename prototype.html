@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v4.9.3
+     版本：v4.9.4
      日期：2026-09-02
      變更：
+       v4.9.4  2026-09-02  底部「遊戲」分頁改指開發中那一頁（原本指第二階段的遊戲中心），
+                           該頁精簡成只顯示「🎮 開發中」。
+                           遊戲中心與遊戲原型改從右上角跳頁下拉選單進入。
        v4.9.3  2026-09-02  金幣紀錄頁拿掉「每日登入獎勵」說明卡。
                            每天 +100 這件事在上方「目前金幣」的浮動說明裡已經講過，
                            而「連續打卡階梯是第二階段」是講給我們自己聽的，不該出現在孩子畫面。
@@ -819,7 +822,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.9.3 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.9.4 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -848,12 +851,12 @@
         <option value="donelist">［二階］已完成單元列表</option>
         <option value="unlock">🔓 挑戰難度（輕鬆／標準／認真）</option>
         <option value="mastery">［二階］🗺️ 精熟地圖</option>
-        <option value="donelist">已完成單元</option>
         <option value="coin">［二階］金幣首頁</option><option value="coinmap">學習地圖</option><option value="shop">公仔商店</option><option value="coins">金幣明細</option>
         <option value="messages">訊息</option>
-        <option value="map">地圖 · 遊戲</option>
+        <option value="map-soon">🎮 遊戲（開發中）</option>
+        <option value="map">［二階］🎮 遊戲中心</option>
       </optgroup>
-      <optgroup label="家長介面"><option value="p-parent">家長首頁（多孩子）</option><option value="p-home">孩子總覽</option><option value="p-video">影片觀看紀錄</option><option value="p-submit">作業提交紀錄</option><option value="p-checkin">每日打卡紀錄</option></optgroup>
+      <optgroup label="家長介面"><option value="p-parent">家長首頁（多孩子）</option><option value="p-home">孩子總覽</option><option value="p-video">影片觀看紀錄</option><option value="p-submit">作業提交紀錄</option><option value="p-checkin">每日打卡紀錄</option><option value="p-profile">我的（家長）</option></optgroup>
     </select>
     <button class="jump" onclick="restart()">↺ 重來 onboarding</button>
     <div class="hint">可直接點畫面操作；或用右上下拉選單跳到任一頁。切換平板／手機看版型如何自適應。</div>
@@ -1229,10 +1232,10 @@
           <div class="topbar">遊戲</div>
           <div class="scroll"><div class="maxw"><div class="soonwrap">
             <div class="soonemo">🎮</div>
-            <div class="soont">聽音辨字小遊戲開發中</div>
-            <div class="soons">用聽的把音挑出來，是<b>第二階段</b>的項目</div>
-            <div class="soonnote">第一階段先把「看影片 → 唸 → 寫」這條路走順。<br>遊戲上線後會變成前往下一單元的關卡。</div>
-            <button class="soonbtn" onclick="go('map')">看一下設計（給內部參考）</button>
+            <div class="soont">開發中</div>
+            <!-- 2026-09-02：孩子畫面只留「開發中」三個字。原本的第二階段說明與
+                 「看一下設計（給內部參考）」按鈕是講給我們自己聽的，不該出現在這裡。
+                 遊戲中心（scr-map）與遊戲原型仍可從右上角的跳頁下拉選單進入。 -->
           </div></div></div>
           <div class="nav" id="navMapSoon"></div>
         </section>
@@ -1939,7 +1942,9 @@
   function buildNav(containerId, activeTab){
     /* 2026-09-01：對齊原課程模組的四格 —— 學習／訊息／遊戲／個人。
        金幣不佔分頁，改由首頁頂欄常駐顯示、點一下進金幣頁。 */
-    var items=[['home','📖','學習'],['messages','✉️','訊息'],['map','🎮','遊戲'],['profile','👤','個人']];
+    /* 2026-09-02：遊戲分頁改指 map-soon（只顯示開發中）。
+       原本指 map ——那是第二階段的遊戲中心，孩子第一階段不該看到。 */
+    var items=[['home','📖','學習'],['messages','✉️','訊息'],['map-soon','🎮','遊戲'],['profile','👤','個人']];
     var el=document.getElementById(containerId); el.innerHTML='';
     items.forEach(function(it){
       var d=document.createElement('div'); d.className='item'+(it[0]===activeTab?' on':'');
@@ -1948,7 +1953,7 @@
       el.appendChild(d);
     });
   }
-  ['navHome:home','navReadList:home','navWriteList:home','navMsg:messages','navMap:map','navProfile:profile','navCoins:coin','navCoin:coin','navShop:coin','navCoinMap:coin','navSetup:profile','navBackend:profile','navGame:home','navDash:profile','navCal:home','navDoneList:home','navMastery:profile','navUnlock:profile','navMapSoon:map-soon'].forEach(function(pair){
+  ['navHome:home','navReadList:home','navWriteList:home','navMsg:messages','navMap:map-soon','navProfile:profile','navCoins:coin','navCoin:coin','navShop:coin','navCoinMap:coin','navSetup:profile','navBackend:profile','navGame:home','navDash:profile','navCal:home','navDoneList:home','navMastery:profile','navUnlock:profile','navMapSoon:map-soon'].forEach(function(pair){
     var a=pair.split(':'); buildNav(a[0],a[1]);
   });
 
