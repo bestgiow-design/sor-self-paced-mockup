@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v4.2.0
+     版本：v4.3.0
      日期：2026-09-02
      變更：
+       v4.3.0  2026-09-02  承諾書改成給小孩看的版本：拿掉「接下來要練的日子」預覽（訊息太多），
+                           改以放大字級與圖示填版面——
+                           · 七格加 📖／😴 圖示，星期字 1.02→1.3rem、狀態字 .66→.8rem，格子加高
+                           · 提醒卡從一段文字改成三行圖示條列（📖 沒上線／✅ 有上線／😴 休息日）
+                           · 節奏摘要每行配一個圖示（📅 節奏／📘 進度／🏁 完課），話講白一點
+                           未選任何日子時是 👆 先選一天吧！
        v4.2.0  2026-09-02  承諾書下半空曠：加一張「接下來你答應要練的日子」，
                            把「一週 3 天」換算成真正的日期（最多列 8 天，今天會標紅）。
                            那幾天也正是提醒會發的日子，兩件事在同一頁對得起來。
@@ -340,7 +346,7 @@
 
   /* 設定頁 */
   .setwrap{background:var(--paper);flex:1;padding:16px;display:flex;flex-direction:column;gap:12px}
-  .setcard{background:#fff;border-radius:16px;padding:12px 16px}
+  .setcard{background:#fff;border-radius:16px;padding:15px 16px}
   /* 「確認設定」推到最底，中間的空白就不會全落在下方 */
   .setgo{margin-top:auto}
   .nxttl{font-size:.88rem;font-weight:800;color:#4a4a4a;margin-bottom:2px}
@@ -352,17 +358,20 @@
   .nxd.soon{background:#fdeeeb;border-color:#f6cfc7}
   .nxd.soon b{color:#c9573f}.nxd.soon span{color:#e0836f}
   .nxempty{font-size:.8rem;color:#a6aeb9;text-align:center;padding:14px 6px;line-height:1.8}
-  .wptitle{font-size:.76rem;color:#a6aeb9;margin-bottom:9px;text-align:center}
+  .wptitle{font-size:.98rem;font-weight:700;color:#6b7280;margin-bottom:13px;text-align:center}
   .weekpick{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
-  .wp{border:1.5px solid #e3e8ef;background:#fff;border-radius:12px;padding:11px 0 9px;
-      font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;
-      transition:background .12s,border-color .12s}
-  .wp .wd{font-size:1.02rem;font-weight:800;color:#8a929e;line-height:1.1}
-  .wp .ws{font-size:.66rem;color:#b8c0cc;line-height:1.1}
+  .wp{border:2px solid #e3e8ef;background:#fff;border-radius:14px;padding:14px 0 12px;
+      font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;
+      transition:background .12s,border-color .12s,transform .1s}
+  .wp:active{transform:scale(.95)}
+  .wp .wd{font-size:1.3rem;font-weight:800;color:#8a929e;line-height:1}
+  .wp .wi{font-size:1.5rem;line-height:1;filter:grayscale(.6);opacity:.55}
+  .wp .ws{font-size:.8rem;color:#b8c0cc;line-height:1;font-weight:700}
   .wp:hover{border-color:#cfd5dd}
   .wp.on{border-color:#5fb389;background:#eef8f2}
   .wp.on .wd{color:#2f7a58}
-  .wp.on .ws{color:#5fb389;font-weight:700}
+  .wp.on .wi{filter:none;opacity:1}
+  .wp.on .ws{color:#5fb389}
   .dayrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f2efe8}
   .dayrow:last-child{border-bottom:none}
   .dayrow .dn{font-size:.95rem;font-weight:800;width:56px;white-space:nowrap;flex:none}
@@ -371,7 +380,9 @@
   .slot{display:flex;align-items:center;gap:5px;font-size:.74rem;color:var(--dim);margin-left:auto}
   .tbox{border:1px solid var(--line);border-radius:8px;padding:4px 9px;font-size:.8rem;font-weight:700;color:var(--ink)}
   .slot.dim{opacity:.4}
-  .setsum{background:#fff6ec;border-radius:14px;padding:13px 16px;font-size:.84rem;line-height:1.85;color:#7a5a3e}
+  .setsum{background:#fff6ec;border-radius:14px;padding:14px 16px;font-size:.96rem;color:#7a5a3e}
+  .ssline{display:flex;align-items:center;gap:10px;padding:5px 0;line-height:1.5}
+  .ssic{font-size:1.25rem;line-height:1;flex:none;width:26px;text-align:center}
   .setsum b{color:var(--coral)}
 
   /* 儀表板 */
@@ -637,9 +648,11 @@
   .ovnote{font-size:.73rem;color:#a6aeb9;margin-top:10px;line-height:1.6}
   .ovhint{font-size:.75rem;color:#8a94a6;background:#f6f7f9;border-radius:10px;padding:9px 12px;margin-bottom:11px;line-height:1.65}
   .remindcard{margin-top:12px}
-  .rcttl{font-weight:800;font-size:.95rem;color:#4a4a4a}
-  .rcsub{font-size:.76rem;color:#9aa4b2;margin:2px 0 0;line-height:1.75}
-  .rcsub b{color:#6b7280}
+  .rcttl{font-weight:800;font-size:1.05rem;color:#4a4a4a;margin-bottom:10px}
+  .rclist{display:flex;flex-direction:column;gap:9px}
+  .rcline{display:flex;align-items:center;gap:10px;font-size:.92rem;color:#6b7280}
+  .rcic{font-size:1.3rem;line-height:1;flex:none;width:28px;text-align:center}
+  .rcline b{color:#4a4a4a}
   .msgtabs{display:flex;background:#fff;border-bottom:1px solid var(--line);flex:none}
   .msgtabs button{flex:1;border:none;background:none;font:inherit;font-size:.92rem;font-weight:700;color:#9aa4b2;padding:12px 0 10px;cursor:pointer;border-bottom:2.5px solid transparent}
   .msgtabs button.on{color:#f08c7c;border-bottom-color:#f08c7c}
@@ -718,7 +731,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.2.0 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.3.0 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -975,10 +988,13 @@
           <div class="topbar"><span class="back" onclick="go('profile')">‹</span>我的承諾書</div>
           <div class="scroll"><div class="maxw"><div class="setwrap">
             <div class="setcard" id="dayCard"></div>
-            <div class="setcard" id="nextCard"></div>
             <div class="setcard remindcard">
-              <div class="rcttl">🔔 提醒</div>
-              <div class="rcsub">不用設定時間。<b>只有在你答應要練習的日子、當天卻沒上線</b>，系統才會提醒你一次。<br>休息日不會提醒；有上線的練習日也不會。</div>
+              <div class="rcttl">🔔 什麼時候會提醒你</div>
+              <div class="rclist">
+                <div class="rcline"><span class="rcic">📖</span><span>練習日<b>沒上線</b> → 提醒你一次</span></div>
+                <div class="rcline"><span class="rcic">✅</span><span>練習日<b>有上線</b> → 不打擾你</span></div>
+                <div class="rcline"><span class="rcic">😴</span><span>休息日 → 不會提醒</span></div>
+              </div>
             </div>
             <div class="setsum" id="setSum"></div>
             <button class="btn coral setgo" onclick="saveRhythm()">確認設定</button>
@@ -1582,59 +1598,37 @@
     /* 2026-09-02：改成一週七格並排。原本一列一天，時段欄位拿掉後只剩兩個元素擠在左邊，
        版面失衡；七格平均分佈也讓「我的一週長怎樣」一眼看得完。 */
     var c=document.getElementById('dayCard');
-    c.innerHTML='<div class="wptitle">點一下切換，選出你要練習的日子</div>'
+    /* 對象是小孩子：字要大、要有圖，不能只靠文字 */
+    c.innerHTML='<div class="wptitle">👇 點一下，選出你要練習的日子</div>'
       +'<div class="weekpick">'
       + days.map(function(d,i){
           return '<button class="wp'+(d[1]?' on':'')+'" onclick="toggleDay('+i+')">'
                +   '<span class="wd">'+d[0].replace('星期','')+'</span>'
+               +   '<span class="wi">'+(d[1]?'📖':'😴')+'</span>'
                +   '<span class="ws">'+(d[1]?'練習':'休息')+'</span>'
                + '</button>';
         }).join('')
       +'</div>';
     var n=days.filter(function(d){return d[1]}).length;
-    renderNext();
     renderSetSum(n);
   }
   /* 承諾書底下的摘要
      · 第一次設定時還沒有進度，就不要顯示「第 N / 254 單元」——那時候它一定是 0，講了也沒意義
      · 預計完課日照選的天數即時算，不要寫死；不然孩子改了天數卻看到同一個日期 */
-  /* 接下來兩週真正會落在哪幾天——把「一週 3 天」變成看得到的日期。
-     這也正好是提醒會發的日子（那幾天沒上線才提醒）。 */
-  function renderNext(){
-    var box=document.getElementById('nextCard'); if(!box)return;
-    var picked=days.map(function(d,i){return d[1]?i:-1;}).filter(function(i){return i>=0;});
-    if(!picked.length){
-      box.innerHTML='<div class="nxempty">上面還沒選練習日。<br>選好之後，這裡會列出接下來兩週你答應要練的日子。</div>';
-      return;
-    }
-    var W=['日','一','二','三','四','五','六'], out=[], t=new Date();
-    for(var k=0;k<14&&out.length<8;k++){
-      var d=new Date(t.getTime()+k*86400000);
-      var idx=(d.getDay()+6)%7;                 /* 週一＝0，對上 days 的順序 */
-      if(picked.indexOf(idx)<0) continue;
-      out.push({m:d.getMonth()+1,d:d.getDate(),w:W[d.getDay()],today:k===0});
-    }
-    box.innerHTML='<div class="nxttl">📅 接下來你答應要練的日子</div>'
-      +'<div class="nxsub">這幾天沒上線的話，系統才會提醒你一次</div>'
-      +'<div class="nxgrid">'+out.map(function(o){
-          return '<div class="nxd'+(o.today?' soon':'')+'"><b>'+o.m+'/'+o.d+'</b><span>'
-               +(o.today?'今天':'週'+o.w)+'</span></div>';
-        }).join('')+'</div>';
-  }
   function renderSetSum(n){
     var box=document.getElementById('setSum'); if(!box)return;
     if(n===0){
-      box.innerHTML='還沒有選練習日。<br>至少選一天，系統才知道要在哪天提醒你。';
+      box.innerHTML='<div class="ssline"><span class="ssic">👆</span>先選一天吧！選好才知道哪天要提醒你</div>';
       return;
     }
     var TOTAL=254;
     var weeks=Math.ceil(TOTAL/n);                 /* 一個練習日做一個單元估算 */
     var d=new Date(); d.setDate(d.getDate()+weeks*7);
-    var h='目前節奏：<b>一週 '+n+' 天</b>';
+    /* 對象是小孩子：每一行配一個圖示，話也講白一點 */
+    var h='<div class="ssline"><span class="ssic">📅</span>你的節奏是 <b>一週 '+n+' 天</b></div>';
     var started=(state.progressN>1||state.doneCount>0);
-    if(started) h+='<br>進度：第 '+state.progressN+' / '+TOTAL+' 單元';
-    /* 把估算基礎講出來——規格上一天不限做幾個單元，所以「一天一個」是保守值 */
-    h+='<br>若一天完成一單元，照此節奏，預計 <b>'+d.getFullYear()+' 年 '+(d.getMonth()+1)+' 月</b> 完成全部課程';
+    if(started) h+='<div class="ssline"><span class="ssic">📘</span>已經走到 <b>第 '+state.progressN+' 課</b>（全部 '+TOTAL+' 課）</div>';
+    h+='<div class="ssline"><span class="ssic">🏁</span>一天一課的話，<b>'+d.getFullYear()+' 年 '+(d.getMonth()+1)+' 月</b> 就能全部學完</div>';
     box.innerHTML=h;
   }
   function toggleDay(i){ days[i][1]=!days[i][1]; renderDays(); }
