@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v4.1.0
+     版本：v4.2.0
      日期：2026-09-02
      變更：
+       v4.2.0  2026-09-02  承諾書下半空曠：加一張「接下來你答應要練的日子」，
+                           把「一週 3 天」換算成真正的日期（最多列 8 天，今天會標紅）。
+                           那幾天也正是提醒會發的日子，兩件事在同一頁對得起來。
+                           「確認設定」用 margin-top:auto 推到最底。
        v4.1.0  2026-09-02  承諾書的星期選擇改成一週七格並排。
                            原本一列一天，時段欄位拿掉後只剩「星期幾」與切換鈕兩個元素擠在左邊，
                            版面失衡；七格平均分佈也讓「我的一週長怎樣」一眼看得完。
@@ -337,6 +341,17 @@
   /* 設定頁 */
   .setwrap{background:var(--paper);flex:1;padding:16px;display:flex;flex-direction:column;gap:12px}
   .setcard{background:#fff;border-radius:16px;padding:12px 16px}
+  /* 「確認設定」推到最底，中間的空白就不會全落在下方 */
+  .setgo{margin-top:auto}
+  .nxttl{font-size:.88rem;font-weight:800;color:#4a4a4a;margin-bottom:2px}
+  .nxsub{font-size:.72rem;color:#a6aeb9;margin-bottom:10px}
+  .nxgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .nxd{background:#eef8f2;border:1px solid #cfe8db;border-radius:10px;padding:7px 0;text-align:center}
+  .nxd b{display:block;font-size:.92rem;font-weight:800;color:#2f7a58;line-height:1.2}
+  .nxd span{font-size:.64rem;color:#5fb389}
+  .nxd.soon{background:#fdeeeb;border-color:#f6cfc7}
+  .nxd.soon b{color:#c9573f}.nxd.soon span{color:#e0836f}
+  .nxempty{font-size:.8rem;color:#a6aeb9;text-align:center;padding:14px 6px;line-height:1.8}
   .wptitle{font-size:.76rem;color:#a6aeb9;margin-bottom:9px;text-align:center}
   .weekpick{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
   .wp{border:1.5px solid #e3e8ef;background:#fff;border-radius:12px;padding:11px 0 9px;
@@ -703,7 +718,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.1.0 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.2.0 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -960,12 +975,13 @@
           <div class="topbar"><span class="back" onclick="go('profile')">‹</span>我的承諾書</div>
           <div class="scroll"><div class="maxw"><div class="setwrap">
             <div class="setcard" id="dayCard"></div>
+            <div class="setcard" id="nextCard"></div>
             <div class="setcard remindcard">
               <div class="rcttl">🔔 提醒</div>
               <div class="rcsub">不用設定時間。<b>只有在你答應要練習的日子、當天卻沒上線</b>，系統才會提醒你一次。<br>休息日不會提醒；有上線的練習日也不會。</div>
             </div>
             <div class="setsum" id="setSum"></div>
-            <button class="btn coral" onclick="saveRhythm()">確認設定</button>
+            <button class="btn coral setgo" onclick="saveRhythm()">確認設定</button>
           </div></div></div>
           <div class="nav" id="navSetup"></div>
         </section>
@@ -1576,11 +1592,35 @@
         }).join('')
       +'</div>';
     var n=days.filter(function(d){return d[1]}).length;
+    renderNext();
     renderSetSum(n);
   }
   /* 承諾書底下的摘要
      · 第一次設定時還沒有進度，就不要顯示「第 N / 254 單元」——那時候它一定是 0，講了也沒意義
      · 預計完課日照選的天數即時算，不要寫死；不然孩子改了天數卻看到同一個日期 */
+  /* 接下來兩週真正會落在哪幾天——把「一週 3 天」變成看得到的日期。
+     這也正好是提醒會發的日子（那幾天沒上線才提醒）。 */
+  function renderNext(){
+    var box=document.getElementById('nextCard'); if(!box)return;
+    var picked=days.map(function(d,i){return d[1]?i:-1;}).filter(function(i){return i>=0;});
+    if(!picked.length){
+      box.innerHTML='<div class="nxempty">上面還沒選練習日。<br>選好之後，這裡會列出接下來兩週你答應要練的日子。</div>';
+      return;
+    }
+    var W=['日','一','二','三','四','五','六'], out=[], t=new Date();
+    for(var k=0;k<14&&out.length<8;k++){
+      var d=new Date(t.getTime()+k*86400000);
+      var idx=(d.getDay()+6)%7;                 /* 週一＝0，對上 days 的順序 */
+      if(picked.indexOf(idx)<0) continue;
+      out.push({m:d.getMonth()+1,d:d.getDate(),w:W[d.getDay()],today:k===0});
+    }
+    box.innerHTML='<div class="nxttl">📅 接下來你答應要練的日子</div>'
+      +'<div class="nxsub">這幾天沒上線的話，系統才會提醒你一次</div>'
+      +'<div class="nxgrid">'+out.map(function(o){
+          return '<div class="nxd'+(o.today?' soon':'')+'"><b>'+o.m+'/'+o.d+'</b><span>'
+               +(o.today?'今天':'週'+o.w)+'</span></div>';
+        }).join('')+'</div>';
+  }
   function renderSetSum(n){
     var box=document.getElementById('setSum'); if(!box)return;
     if(n===0){
