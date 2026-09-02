@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v4.9.0
+     版本：v4.9.1
      日期：2026-09-02
      變更：
+       v4.9.1  2026-09-02  補家長端自己的「我的」頁（scr-p-profile）：切換身分（家長 ✅）＋
+                           修改密碼／通知設定／網路診斷／更新歷史／關於＋登出＋版本號。
+                           底部導覽第三格從 profile（孩子端個人頁）改指 p-profile，
+                           修掉「家長點我的會看到孩子的承諾書與挑戰難度」這個錯。
        v4.9.0  2026-09-02  個人頁改成跟正式 App 一樣的分組卡片：頭像下加「學生」身分標籤，
                            「切換身分」（學生／教師／家長）放在「設定」上方，
                            設定新增網路診斷、更新歷史，最下面獨立一張「登出」。
@@ -485,6 +489,7 @@
   .profrow .okmark{margin-left:auto;color:#3fae6a;font-size:1.15rem}
   .profrow.danger{justify-content:center;color:#d9534f;font-weight:800}
   .profrow.danger .ic{width:auto}
+  .profver{text-align:center;font-size:.82rem;color:#a6aeb9;font-weight:700;margin:2px 0 10px}
 
   /* 金幣紀錄 */
   .coinwrap{flex:1;background:var(--paper);padding:16px;display:flex;flex-direction:column;gap:14px}
@@ -808,7 +813,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.9.0 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.9.1 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -1342,6 +1347,48 @@
             <div class="callegend"><span class="dotchk">✓</span> 綠色＝當天有打卡（登入）</div>
           </div></div></div>
           <div class="nav" id="navPCheck"></div>
+        </section>
+
+        <!-- 家長端 · 我的（2026-09-02 新增，取代原本誤指到孩子端 profile 的那一格） -->
+        <section class="screen" id="scr-p-profile">
+          <div class="sb"><span>下午 1:40 · 週二</span><span>🔋 68%</span></div>
+          <div class="topbar">我的</div>
+          <div class="scroll"><div class="maxw"><div class="profwrap">
+            <div class="profhd"><div class="ava" style="background:#f0a97a">爸</div><div class="nm">宗翰爸</div>
+              <div class="profbadge">家長</div></div>
+
+            <div class="profgttl" data-tip="<b>切換身分</b>同一組帳號可以有多種身分，不用登出再登入。||後台帳號是統一的，所以家長跟孩子的身分掛在同一個帳號下面。這個帳號沒有教師身分。">切換身分</div>
+            <div class="proflist">
+              <div class="profrow" onclick="go('home')">
+                <span class="cic" style="background:#e4efff">🎓</span>
+                <span class="tx"><b>學生</b><span>切到孩子的學習畫面</span></span><span class="ar">›</span></div>
+              <div class="profrow" onclick="toast('這個帳號沒有教師身分。教師端不在自學模組的範圍內。')">
+                <span class="cic" style="background:#e7f4ea">🧑‍🏫</span>
+                <span class="tx"><b>教師</b><span>這個帳號沒有教師身分</span></span><span class="ar">›</span></div>
+              <div class="profrow cur"><span class="cic" style="background:#fdeadd">👨‍👩‍👧</span>
+                <span class="tx"><b>家長</b><span>目前使用中</span></span><span class="okmark">✅</span></div>
+            </div>
+
+            <div class="profgttl">設定</div>
+            <div class="proflist">
+              <div class="profrow" onclick="toast('原型不做真的改密碼，正式版走後台的帳號流程。')"><span class="ic">🔑</span>
+                <span class="tx"><b>修改密碼</b></span><span class="ar">›</span></div>
+              <div class="profrow" onclick="toast('家長端的通知有兩種：孩子承諾要練習卻沒上線、孩子交了作業。第一階段先做前者。')"><span class="ic">🔔</span>
+                <span class="tx"><b>通知設定</b><span>提前通知時間、通知類型</span></span><span class="ar">›</span></div>
+              <div class="profrow" onclick="toast('會依序檢查：連得上主機嗎？影片 CDN 通嗎？作業上傳得出去嗎？測完給一份可以截圖給客服的結果。')"><span class="ic">📶</span>
+                <span class="tx"><b>網路診斷</b><span>檢測影片或作業載入問題</span></span><span class="ar">›</span></div>
+              <div class="profrow" onclick="toast('列出每次改版做了什麼，最新的在最上面。跟原課程模組同一份。')"><span class="ic">🕘</span>
+                <span class="tx"><b>更新歷史</b></span><span class="ar">›</span></div>
+              <div class="profrow" onclick="toast('自學模組家長端 v1.1.98。原型版本見左上角標籤。')"><span class="ic">ℹ️</span>
+                <span class="tx"><b>關於</b></span><span class="ar">›</span></div>
+            </div>
+
+            <div class="proflist">
+              <div class="profrow danger" onclick="go('welcome')"><span class="ic">🚪</span>登出</div>
+            </div>
+            <div class="profver">v1.1.98</div>
+          </div></div></div>
+          <div class="nav" id="navPProf"></div>
         </section>
 
       </div>
@@ -1914,14 +1961,13 @@
     go(r==='child'?'home':'p-parent');
   }
   function buildPNav(id,active){
-    /* 家長端三格。⚠️「我的」目前指到 profile ——那是「孩子端」的個人頁
-       （我的承諾書／挑戰難度／修改密碼），家長點下去會看到孩子的設定。
-       第一階段家長端還沒有自己的設定頁，之後要補一個家長專屬的。 */
-    var items=[['p-parent','\uD83C\uDFE0','首頁'],['p-home','\uD83E\uDDD2','孩子'],['profile','\uD83D\uDC64','我的']];
+    /* 家長端三格。「我的」指到 p-profile ——家長自己的頁（2026-09-02 補）。
+       在那之前它誤指到 profile，那是孩子端的個人頁（承諾書／挑戰難度），家長不該看到。 */
+    var items=[['p-parent','\uD83C\uDFE0','首頁'],['p-home','\uD83E\uDDD2','孩子'],['p-profile','\uD83D\uDC64','我的']];
     var el=document.getElementById(id); if(!el)return; el.innerHTML='';
     items.forEach(function(it){var d=document.createElement('div');d.className='item'+(it[0]===active?' on':'');d.innerHTML='<span class="ic">'+it[1]+'</span>'+it[2];d.onclick=function(){go(it[0])};el.appendChild(d);});
   }
-  ['navPParent:p-parent','navPHome:p-home','navPVideo:p-home','navPSubmit:p-home','navPCheck:p-home','navDash:p-home'].forEach(function(p){var a=p.split(':');buildPNav(a[0],a[1]);});
+  ['navPParent:p-parent','navPHome:p-home','navPVideo:p-home','navPSubmit:p-home','navPCheck:p-home','navDash:p-home','navPProf:p-profile'].forEach(function(p){var a=p.split(':');buildPNav(a[0],a[1]);});
   function renderPCheckin(){
     var grid=document.getElementById('pCalGrid'); if(!grid)return; grid.innerHTML='';
     ['日','一','二','三','四','五','六'].forEach(function(d){var e=document.createElement('div');e.className='caldow';e.textContent=d;grid.appendChild(e);});
