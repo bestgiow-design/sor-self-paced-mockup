@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v4.3.0
+     版本：v4.4.0
      日期：2026-09-02
      變更：
+       v4.4.0  2026-09-02  承諾書字級向實機版面看齊（參考 IMG_2931 平板截圖）：
+                           標題 1.22rem、星期字 1.72rem、圖示 1.95rem、狀態 .95rem、
+                           提醒卡 1.08rem、摘要 1.12rem；卡片圓角 16→22、留白加大。
+                           「確認設定」改成實機那種雙行膠囊：小字說明（接下來就一週練 N 天）
+                           ＋大字動作（我決定好了！）。
+                           文案：一天一「課」改成一天一「單元」，進度也統一用單元。
        v4.3.0  2026-09-02  承諾書改成給小孩看的版本：拿掉「接下來要練的日子」預覽（訊息太多），
                            改以放大字級與圖示填版面——
                            · 七格加 📖／😴 圖示，星期字 1.02→1.3rem、狀態字 .66→.8rem，格子加高
@@ -346,9 +352,16 @@
 
   /* 設定頁 */
   .setwrap{background:var(--paper);flex:1;padding:16px;display:flex;flex-direction:column;gap:12px}
-  .setcard{background:#fff;border-radius:16px;padding:15px 16px}
+  .setcard{background:#fff;border-radius:22px;padding:20px 18px}
   /* 「確認設定」推到最底，中間的空白就不會全落在下方 */
   .setgo{margin-top:auto}
+  /* 對齊實機的膠囊大按鈕：小字說明在上、大字動作在下 */
+  .bigcta{width:100%;border:none;background:var(--coral);color:#fff;font-family:inherit;
+    border-radius:999px;padding:15px 20px 18px;cursor:pointer;display:flex;flex-direction:column;
+    align-items:center;gap:3px;box-shadow:0 6px 18px rgba(240,140,124,.35);transition:transform .1s}
+  .bigcta:active{transform:scale(.98)}
+  .bigcta .bcs{font-size:.92rem;opacity:.9}
+  .bigcta .bcb{font-size:1.5rem;font-weight:800;letter-spacing:.02em}
   .nxttl{font-size:.88rem;font-weight:800;color:#4a4a4a;margin-bottom:2px}
   .nxsub{font-size:.72rem;color:#a6aeb9;margin-bottom:10px}
   .nxgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
@@ -358,15 +371,16 @@
   .nxd.soon{background:#fdeeeb;border-color:#f6cfc7}
   .nxd.soon b{color:#c9573f}.nxd.soon span{color:#e0836f}
   .nxempty{font-size:.8rem;color:#a6aeb9;text-align:center;padding:14px 6px;line-height:1.8}
-  .wptitle{font-size:.98rem;font-weight:700;color:#6b7280;margin-bottom:13px;text-align:center}
+  .setbar{font-size:1.2rem;font-weight:800;padding:16px 0}
+  .wptitle{font-size:1.22rem;font-weight:800;color:#5a6474;margin-bottom:16px;text-align:center}
   .weekpick{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
-  .wp{border:2px solid #e3e8ef;background:#fff;border-radius:14px;padding:14px 0 12px;
-      font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;
+  .wp{border:2px solid #e3e8ef;background:#fff;border-radius:16px;padding:18px 0 15px;
+      font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;
       transition:background .12s,border-color .12s,transform .1s}
   .wp:active{transform:scale(.95)}
-  .wp .wd{font-size:1.3rem;font-weight:800;color:#8a929e;line-height:1}
-  .wp .wi{font-size:1.5rem;line-height:1;filter:grayscale(.6);opacity:.55}
-  .wp .ws{font-size:.8rem;color:#b8c0cc;line-height:1;font-weight:700}
+  .wp .wd{font-size:1.72rem;font-weight:800;color:#8a929e;line-height:1}
+  .wp .wi{font-size:1.95rem;line-height:1;filter:grayscale(.6);opacity:.5}
+  .wp .ws{font-size:.95rem;color:#b8c0cc;line-height:1;font-weight:800}
   .wp:hover{border-color:#cfd5dd}
   .wp.on{border-color:#5fb389;background:#eef8f2}
   .wp.on .wd{color:#2f7a58}
@@ -380,9 +394,9 @@
   .slot{display:flex;align-items:center;gap:5px;font-size:.74rem;color:var(--dim);margin-left:auto}
   .tbox{border:1px solid var(--line);border-radius:8px;padding:4px 9px;font-size:.8rem;font-weight:700;color:var(--ink)}
   .slot.dim{opacity:.4}
-  .setsum{background:#fff6ec;border-radius:14px;padding:14px 16px;font-size:.96rem;color:#7a5a3e}
-  .ssline{display:flex;align-items:center;gap:10px;padding:5px 0;line-height:1.5}
-  .ssic{font-size:1.25rem;line-height:1;flex:none;width:26px;text-align:center}
+  .setsum{background:#fff6ec;border-radius:20px;padding:18px 18px;font-size:1.12rem;color:#7a5a3e}
+  .ssline{display:flex;align-items:center;gap:13px;padding:7px 0;line-height:1.5}
+  .ssic{font-size:1.6rem;line-height:1;flex:none;width:34px;text-align:center}
   .setsum b{color:var(--coral)}
 
   /* 儀表板 */
@@ -648,10 +662,10 @@
   .ovnote{font-size:.73rem;color:#a6aeb9;margin-top:10px;line-height:1.6}
   .ovhint{font-size:.75rem;color:#8a94a6;background:#f6f7f9;border-radius:10px;padding:9px 12px;margin-bottom:11px;line-height:1.65}
   .remindcard{margin-top:12px}
-  .rcttl{font-weight:800;font-size:1.05rem;color:#4a4a4a;margin-bottom:10px}
-  .rclist{display:flex;flex-direction:column;gap:9px}
-  .rcline{display:flex;align-items:center;gap:10px;font-size:.92rem;color:#6b7280}
-  .rcic{font-size:1.3rem;line-height:1;flex:none;width:28px;text-align:center}
+  .rcttl{font-weight:800;font-size:1.28rem;color:#4a4a4a;margin-bottom:14px}
+  .rclist{display:flex;flex-direction:column;gap:13px}
+  .rcline{display:flex;align-items:center;gap:13px;font-size:1.08rem;color:#6b7280}
+  .rcic{font-size:1.65rem;line-height:1;flex:none;width:34px;text-align:center}
   .rcline b{color:#4a4a4a}
   .msgtabs{display:flex;background:#fff;border-bottom:1px solid var(--line);flex:none}
   .msgtabs button{flex:1;border:none;background:none;font:inherit;font-size:.92rem;font-weight:700;color:#9aa4b2;padding:12px 0 10px;cursor:pointer;border-bottom:2.5px solid transparent}
@@ -731,7 +745,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.3.0 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.4.0 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -985,7 +999,7 @@
         <!-- 設定練習時段 -->
         <section class="screen" id="scr-setup">
           <div class="sb"><span>上午 9:12 · 週六</span><span>🔋 56%</span></div>
-          <div class="topbar"><span class="back" onclick="go('profile')">‹</span>我的承諾書</div>
+          <div class="topbar setbar"><span class="back" onclick="go('profile')">‹</span>我的承諾書</div>
           <div class="scroll"><div class="maxw"><div class="setwrap">
             <div class="setcard" id="dayCard"></div>
             <div class="setcard remindcard">
@@ -997,7 +1011,10 @@
               </div>
             </div>
             <div class="setsum" id="setSum"></div>
-            <button class="btn coral setgo" onclick="saveRhythm()">確認設定</button>
+            <button class="bigcta setgo" onclick="saveRhythm()">
+              <span class="bcs" id="ctaSub">一週 3 天</span>
+              <span class="bcb">我決定好了！</span>
+            </button>
           </div></div></div>
           <div class="nav" id="navSetup"></div>
         </section>
@@ -1611,6 +1628,8 @@
       +'</div>';
     var n=days.filter(function(d){return d[1]}).length;
     renderSetSum(n);
+    var cs=document.getElementById('ctaSub');
+    if(cs) cs.textContent = n?('接下來就一週練 '+n+' 天'):('還沒選日子唷');
   }
   /* 承諾書底下的摘要
      · 第一次設定時還沒有進度，就不要顯示「第 N / 254 單元」——那時候它一定是 0，講了也沒意義
@@ -1627,8 +1646,8 @@
     /* 對象是小孩子：每一行配一個圖示，話也講白一點 */
     var h='<div class="ssline"><span class="ssic">📅</span>你的節奏是 <b>一週 '+n+' 天</b></div>';
     var started=(state.progressN>1||state.doneCount>0);
-    if(started) h+='<div class="ssline"><span class="ssic">📘</span>已經走到 <b>第 '+state.progressN+' 課</b>（全部 '+TOTAL+' 課）</div>';
-    h+='<div class="ssline"><span class="ssic">🏁</span>一天一課的話，<b>'+d.getFullYear()+' 年 '+(d.getMonth()+1)+' 月</b> 就能全部學完</div>';
+    if(started) h+='<div class="ssline"><span class="ssic">📘</span>已經走到 <b>第 '+state.progressN+' 單元</b>（全部 '+TOTAL+' 單元）</div>';
+    h+='<div class="ssline"><span class="ssic">🏁</span>一天一單元的話，<b>'+d.getFullYear()+' 年 '+(d.getMonth()+1)+' 月</b> 就能全部學完</div>';
     box.innerHTML=h;
   }
   function toggleDay(i){ days[i][1]=!days[i][1]; renderDays(); }
