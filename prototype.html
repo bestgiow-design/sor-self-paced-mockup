@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v4.10.1
+     版本：v4.10.2
      日期：2026-09-02
      變更：
+       v4.10.2 2026-09-02  修：家長端「孩子」頁最下面的「學習進度 · 基準線」點進去會變成平板、
+                           上方身分跳回孩子端。原因是 v4.10.0 用「id 以 p- 開頭」判斷家長端，
+                           而 scr-dashboard 沒有這個前綴。改成看該頁掛的是哪一組底部導覽。
+                           順便補 p-children 的導覽，並修正跳頁選單的分組
+                           （承諾書歸孩子端、儀表板歸家長介面）。
        v4.10.1 2026-09-02  首頁拿掉「⚠️ 這一頁部長說要調整，找時間讓部長確認」橫幅
                            （版面已依圈選調整完，同時拿掉 hasbar 讓畫面往上補齊）。
        v4.10.0 2026-09-02  第一階段裝置定案：孩子端＝平板、家長端＝手機，切身分自動換機型
@@ -830,7 +835,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.10.1 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.10.2 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -847,10 +852,9 @@
         <option value="write-list">寫的作業目錄</option><option value="write">寫的作業（操作）</option>
         <option value="unitdone">單元完成</option>
         <option value="game">［二階］單元小遊戲</option>
+        <option value="setup">我的承諾書（練習節奏）</option>
       </optgroup>
-      <optgroup label="家長端">
-        <option value="setup">設定練習時段</option>
-        <option value="dashboard">家長儀表板</option>
+      <optgroup label="工具頁">
         <option value="calendar">月曆（打卡）</option>
         <option value="backend">［二階］⚙️ 後台設定</option>
       </optgroup>
@@ -864,7 +868,7 @@
         <option value="map-soon">🎮 遊戲（開發中）</option>
         <option value="map">［二階］🎮 遊戲中心</option>
       </optgroup>
-      <optgroup label="家長介面"><option value="p-home">孩子總覽</option><option value="p-parent">家長首頁（已移除，保留參考）</option><option value="p-video">影片觀看紀錄</option><option value="p-submit">作業提交紀錄</option><option value="p-checkin">每日打卡紀錄</option><option value="p-profile">我的（家長）</option></optgroup>
+      <optgroup label="家長介面"><option value="p-home">孩子總覽</option><option value="dashboard">學習進度 · 基準線</option><option value="p-children">孩子清單</option><option value="p-parent">家長首頁（已移除，保留參考）</option><option value="p-video">影片觀看紀錄</option><option value="p-submit">作業提交紀錄</option><option value="p-checkin">每日打卡紀錄</option><option value="p-profile">我的（家長）</option></optgroup>
     </select>
     <button class="jump" onclick="restart()">↺ 重來 onboarding</button>
     <div class="hint">可直接點畫面操作；或用右上下拉選單跳到任一頁。切換平板／手機看版型如何自適應。</div>
@@ -1986,9 +1990,28 @@
   /* 第一階段定案：孩子端只做平板、家長端只做手機。
      所以裝置不再是獨立的選擇，而是跟著身分走——切到哪一端就換成那一端的機型。
      上面的「平板／手機」鈕留著，是給我們自己看版型自適應用的，不是產品選項。 */
-  var PARENT_RE=/^p-/;
+  /* 2026-09-02 修：原本用「id 以 p- 開頭」判斷是不是家長端，
+     結果 scr-dashboard（學習進度·基準線）名字沒有 p- 前綴，
+     從家長端點進去就被當成孩子端 → 切成平板、上面的身分鈕也跳回孩子端。
+     改成看那一頁掛的是哪一組底部導覽——那才是「這頁屬於誰」的真實依據。 */
+  var PARENT_NAVS={navPParent:1,navPChildren:1,navPHome:1,navPVideo:1,navPSubmit:1,navPCheck:1,navPProf:1,navDash:1};
+  /* 明列一份，避免只靠掃描；掃描只是為了以後新增家長端頁面時自動補上。 */
+  var PARENT_SCREENS={'p-parent':1,'p-children':1,'p-home':1,'p-video':1,'p-submit':1,'p-checkin':1,'p-profile':1,'dashboard':1};
+  var _pScanned=false;
+  function parentScreens(){
+    if(!_pScanned){
+      _pScanned=true;
+      try{
+        document.querySelectorAll('.screen').forEach(function(sec){
+          var n=sec.querySelector && sec.querySelector('.nav');
+          if(n && PARENT_NAVS[n.id]) PARENT_SCREENS[sec.id.replace(/^scr-/,'')]=1;
+        });
+      }catch(e){ /* 掃不到就用上面那份明列的 */ }
+    }
+    return PARENT_SCREENS;
+  }
   function syncFrame(id){
-    var isP=PARENT_RE.test(id);
+    var isP=!!parentScreens()[id];
     setDevice(isP?'phone':'tablet');
     role=isP?'parent':'child';
     var b=document.querySelectorAll('#roleSeg button');
@@ -2001,7 +2024,7 @@
     var el=document.getElementById(id); if(!el)return; el.innerHTML='';
     items.forEach(function(it){var d=document.createElement('div');d.className='item'+(it[0]===active?' on':'');d.innerHTML='<span class="ic">'+it[1]+'</span>'+it[2];d.onclick=function(){go(it[0])};el.appendChild(d);});
   }
-  ['navPParent:p-home','navPHome:p-home','navPVideo:p-home','navPSubmit:p-home','navPCheck:p-home','navDash:p-home','navPProf:p-profile'].forEach(function(p){var a=p.split(':');buildPNav(a[0],a[1]);});
+  ['navPParent:p-home','navPChildren:p-home','navPHome:p-home','navPVideo:p-home','navPSubmit:p-home','navPCheck:p-home','navDash:p-home','navPProf:p-profile'].forEach(function(p){var a=p.split(':');buildPNav(a[0],a[1]);});
   function renderPCheckin(){
     var grid=document.getElementById('pCalGrid'); if(!grid)return; grid.innerHTML='';
     ['日','一','二','三','四','五','六'].forEach(function(d){var e=document.createElement('div');e.className='caldow';e.textContent=d;grid.appendChild(e);});
