@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v4.9.4
+     版本：v4.10.0
      日期：2026-09-02
      變更：
+       v4.10.0 2026-09-02  第一階段裝置定案：孩子端＝平板、家長端＝手機，切身分自動換機型
+                           （上面的平板／手機鈕留著只是給我們看自適應，不是產品選項）。
+                           家長端底部拿掉「首頁」，剩 孩子／我的 兩格；
+                           首頁（今天這個最重要）保留在跳頁選單供內部參考。
+                           家長端「學習總覽」拿掉已完成單元／看完的影片／交出的作業——
+                           下面三張卡已經各講一次，同一組數字不要講兩遍。改名「學習習慣」。
        v4.9.4  2026-09-02  底部「遊戲」分頁改指開發中那一頁（原本指第二階段的遊戲中心），
                            該頁精簡成只顯示「🎮 開發中」。
                            遊戲中心與遊戲原型改從右上角跳頁下拉選單進入。
@@ -822,7 +828,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.9.4 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.10.0 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -856,7 +862,7 @@
         <option value="map-soon">🎮 遊戲（開發中）</option>
         <option value="map">［二階］🎮 遊戲中心</option>
       </optgroup>
-      <optgroup label="家長介面"><option value="p-parent">家長首頁（多孩子）</option><option value="p-home">孩子總覽</option><option value="p-video">影片觀看紀錄</option><option value="p-submit">作業提交紀錄</option><option value="p-checkin">每日打卡紀錄</option><option value="p-profile">我的（家長）</option></optgroup>
+      <optgroup label="家長介面"><option value="p-home">孩子總覽</option><option value="p-parent">家長首頁（已移除，保留參考）</option><option value="p-video">影片觀看紀錄</option><option value="p-submit">作業提交紀錄</option><option value="p-checkin">每日打卡紀錄</option><option value="p-profile">我的（家長）</option></optgroup>
     </select>
     <button class="jump" onclick="restart()">↺ 重來 onboarding</button>
     <div class="hint">可直接點畫面操作；或用右上下拉選單跳到任一頁。切換平板／手機看版型如何自適應。</div>
@@ -1132,7 +1138,7 @@
               <div class="profrow" onclick="toast('這個帳號沒有教師身分。教師端不在自學模組的範圍內。')">
                 <span class="cic" style="background:#e7f4ea">🧑‍🏫</span>
                 <span class="tx"><b>教師</b><span>這個帳號沒有教師身分</span></span><span class="ar">›</span></div>
-              <div class="profrow" onclick="go('p-parent')">
+              <div class="profrow" onclick="go('p-home')">
                 <span class="cic" style="background:#fdeadd">👨‍👩‍👧</span>
                 <span class="tx"><b>家長</b><span>切到家長 App，看孩子的學習狀況</span></span><span class="ar">›</span></div>
             </div>
@@ -1482,6 +1488,7 @@
 
   function go(id){
     cur=id;
+    syncFrame(id);
     document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
     document.getElementById('scr-'+id).classList.add('active');
     document.getElementById('jump').value=id;
@@ -1835,7 +1842,16 @@
   };
 
   /* 兩端共用的一組數字。單元是主單位；影片與作業是單元的組成，所以做成次要格。 */
-  function overviewHTML(d){
+  /* side='parent' 時只留連續／累積兩個習慣數字。
+     單元完成數、影片觀看紀錄、作業提交紀錄在下面已經各有一張卡，
+     在總覽再列一次是同一組數字講兩遍。孩子端沒有那三張卡，所以照舊全列。 */
+  function overviewHTML(d,side){
+    if(side==='parent'){
+      return '<div class="ovhabit">'
+        +   '<div class="ovh" data-tip="<b>連續學習（天）</b>連續有完成單元的天數。||跟孩子端首頁上方那個大字是同一個數字。"><b>'+d.learnStreak+'</b><span>連續學習（天）</span></div>'
+        +   '<div class="ovh" data-tip="<b>累積學習（天）</b>完成過單元的天數總和。"><b>'+(d.learnTotal||0)+'</b><span>累積學習（天）</span></div>'
+        + '</div>';
+    }
     /* 影片與作業是「單元的組成」，不是跟單元並列的另外兩件事。
        所以縮排在單元卡裡面、加一條左邊線、標題寫「其中包含」，讓包含關係看得出來。 */
     return '<div class="ovunit" data-tip="<b>已完成單元</b>通過小遊戲、進度往前推的單元數。||這是主單位；下面的影片與作業是它的組成。">'
@@ -1964,16 +1980,27 @@
     var b=document.querySelectorAll('#roleSeg button');
     b.forEach(function(x){x.classList.remove('on')});
     b[r==='child'?0:1].classList.add('on');
-    go(r==='child'?'home':'p-parent');
+    go(r==='child'?'home':'p-home');
+  }
+  /* 第一階段定案：孩子端只做平板、家長端只做手機。
+     所以裝置不再是獨立的選擇，而是跟著身分走——切到哪一端就換成那一端的機型。
+     上面的「平板／手機」鈕留著，是給我們自己看版型自適應用的，不是產品選項。 */
+  var PARENT_RE=/^p-/;
+  function syncFrame(id){
+    var isP=PARENT_RE.test(id);
+    setDevice(isP?'phone':'tablet');
+    role=isP?'parent':'child';
+    var b=document.querySelectorAll('#roleSeg button');
+    if(b.length){ b.forEach(function(x){x.classList.remove('on')}); b[isP?1:0].classList.add('on'); }
   }
   function buildPNav(id,active){
-    /* 家長端三格。「我的」指到 p-profile ——家長自己的頁（2026-09-02 補）。
-       在那之前它誤指到 profile，那是孩子端的個人頁（承諾書／挑戰難度），家長不該看到。 */
-    var items=[['p-parent','\uD83C\uDFE0','首頁'],['p-home','\uD83E\uDDD2','孩子'],['p-profile','\uD83D\uDC64','我的']];
+    /* 2026-09-02：家長端拿掉「首頁」，剩 孩子／我的 兩格。
+       首頁（scr-p-parent，今天這個最重要＋孩子概覽）保留在跳頁選單裡，供內部參考。 */
+    var items=[['p-home','\uD83E\uDDD2','孩子'],['p-profile','\uD83D\uDC64','我的']];
     var el=document.getElementById(id); if(!el)return; el.innerHTML='';
     items.forEach(function(it){var d=document.createElement('div');d.className='item'+(it[0]===active?' on':'');d.innerHTML='<span class="ic">'+it[1]+'</span>'+it[2];d.onclick=function(){go(it[0])};el.appendChild(d);});
   }
-  ['navPParent:p-parent','navPHome:p-home','navPVideo:p-home','navPSubmit:p-home','navPCheck:p-home','navDash:p-home','navPProf:p-profile'].forEach(function(p){var a=p.split(':');buildPNav(a[0],a[1]);});
+  ['navPParent:p-home','navPHome:p-home','navPVideo:p-home','navPSubmit:p-home','navPCheck:p-home','navDash:p-home','navPProf:p-profile'].forEach(function(p){var a=p.split(':');buildPNav(a[0],a[1]);});
   function renderPCheckin(){
     var grid=document.getElementById('pCalGrid'); if(!grid)return; grid.innerHTML='';
     ['日','一','二','三','四','五','六'].forEach(function(d){var e=document.createElement('div');e.className='caldow';e.textContent=d;grid.appendChild(e);});
@@ -2028,7 +2055,7 @@ var PIC={CHECK:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZD
     document.getElementById('pHomeCards').innerHTML=
       /* 跟孩子端「我的學習總覽」同一組數字，讓兩邊講得起來 */
       /* 直接把整個 c 傳進去，不要逐欄挑——漏一欄就會少一個數字（learnTotal 就曾經漏掉） */
-      '<div class="ovbox"><div class="ovttl">'+c.name+'的學習總覽</div><div class="ovgrid">'+overviewHTML(c)+'</div><div class="ovnote">孩子在他的 App「個人」頁看到的，就是這四個數字。</div></div>'
+      '<div class="ovbox"><div class="ovttl">'+c.name+'的學習習慣</div><div class="ovgrid">'+overviewHTML(c,'parent')+'</div><div class="ovnote">跟孩子在他的 App「個人」頁看到的是同一組數字。</div></div>'
      +'<div class="ovhint">影片與作業點進去可以看每一筆的內容。<b>單元完成數沒有另外的明細</b>——它就是影片與作業合起來的結果。</div>'
      +pcard(PIC.PROG,'單元完成數','已完成 '+c.unitDone+' 個單元',c.unitDone+' 個','#5fb389',null)
      +pcard(PIC.VIDEO,'影片觀看紀錄','看完的影片明細',c.vidDone+' 部','#5f97cf',"go('p-video')")
