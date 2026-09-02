@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v4.8.1
+     版本：v4.9.0
      日期：2026-09-02
      變更：
+       v4.9.0  2026-09-02  個人頁改成跟正式 App 一樣的分組卡片：頭像下加「學生」身分標籤，
+                           「切換身分」（學生／教師／家長）放在「設定」上方，
+                           設定新增網路診斷、更新歷史，最下面獨立一張「登出」。
+                           每列改成標題＋副標兩行。家長列點下去會真的切到家長端。
        v4.8.1  2026-09-02  修：裝置框右邊會多出一塊白色面板（裡面是家長導覽）。
                            原因是 2026-09-01 移除家長端影片明細的兩筆「0% 未看影片」時，
                            非貪婪比對停太早，留下兩行 </div> 殘骸 → scr-p-video 多兩個收合，
@@ -467,6 +471,20 @@
   .profrow:last-child{border-bottom:none}
   .profrow .ic{font-size:1.05rem;width:22px;text-align:center}
   .profrow .ar{margin-left:auto;color:#c8c8c8}
+  /* 2026-09-02：個人頁改成跟正式 App 一樣的「分組卡片」——切換身分在設定上方 */
+  .profbadge{display:inline-block;margin-top:9px;padding:5px 20px;border-radius:999px;
+             background:var(--coral);color:#fff;font-size:.82rem;font-weight:800}
+  .profgttl{font-size:.95rem;font-weight:800;color:#6f6f6f;text-align:center;margin:4px 0 -4px}
+  /* 切換身分的圓形圖示 */
+  .profrow .cic{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
+                justify-content:center;font-size:1.05rem;flex:0 0 auto}
+  .profrow .tx{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .profrow .tx b{font-size:.98rem;font-weight:800;color:#4a4a4a}
+  .profrow .tx span{font-size:.76rem;color:#a6aeb9;line-height:1.45}
+  .profrow.cur{cursor:default}
+  .profrow .okmark{margin-left:auto;color:#3fae6a;font-size:1.15rem}
+  .profrow.danger{justify-content:center;color:#d9534f;font-weight:800}
+  .profrow.danger .ic{width:auto}
 
   /* 金幣紀錄 */
   .coinwrap{flex:1;background:var(--paper);padding:16px;display:flex;flex-direction:column;gap:14px}
@@ -790,7 +808,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.8.1 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.9.0 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -1085,18 +1103,46 @@
           <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
           <div class="topbar">我的</div>
           <div class="scroll"><div class="maxw"><div class="profwrap">
-            <div class="profhd"><div class="ava">宗</div><div class="nm">宗翰</div></div>
+            <div class="profhd"><div class="ava">宗</div><div class="nm">宗翰</div>
+              <div class="profbadge">學生</div></div>
             <div class="ovbox">
               <div class="ovttl">我的學習總覽</div>
               <div class="ovgrid" id="myOverview"></div>
               <div class="ovnote">爸爸媽媽在家長 App 看到的，就是這幾個數字。</div>
             </div>
+
+            <div class="profgttl" data-tip="<b>切換身分</b>同一組帳號可以有多種身分，不用登出再登入。||後台的帳號是統一的（自學模組的學生日後可以轉去班級模組），所以身分是掛在同一個帳號下面的。這個孩子只有「學生」與「家長」兩種身分，沒有教師。">切換身分</div>
             <div class="proflist">
-              <div class="profrow" onclick="go('setup')"><span class="ic">📝</span>我的承諾書（練習節奏）<span class="ar">›</span></div>
-              <div class="profrow" onclick="go('unlock')"><span class="ic">🔓</span>挑戰難度<span class="ar" id="modeNow">›</span></div>
-                            <div class="profrow"><span class="ic">🔑</span>修改密碼<span class="ar">›</span></div>
-              <div class="profrow"><span class="ic">🔔</span>通知設定<span class="ar">›</span></div>
-              <div class="profrow"><span class="ic">ℹ️</span>關於（v1.1.28）<span class="ar">›</span></div>
+              <div class="profrow cur"><span class="cic" style="background:#e4efff">🎓</span>
+                <span class="tx"><b>學生</b><span>目前使用中</span></span><span class="okmark">✅</span></div>
+              <div class="profrow" onclick="toast('這個帳號沒有教師身分。教師端不在自學模組的範圍內。')">
+                <span class="cic" style="background:#e7f4ea">🧑‍🏫</span>
+                <span class="tx"><b>教師</b><span>這個帳號沒有教師身分</span></span><span class="ar">›</span></div>
+              <div class="profrow" onclick="go('p-parent')">
+                <span class="cic" style="background:#fdeadd">👨‍👩‍👧</span>
+                <span class="tx"><b>家長</b><span>切到家長 App，看孩子的學習狀況</span></span><span class="ar">›</span></div>
+            </div>
+
+            <div class="profgttl">設定</div>
+            <div class="proflist">
+              <div class="profrow" onclick="go('setup')"><span class="ic">📝</span>
+                <span class="tx"><b>我的承諾書</b><span>查看或修改練習節奏</span></span><span class="ar">›</span></div>
+              <div class="profrow" onclick="go('unlock')"><span class="ic">🔓</span>
+                <span class="tx"><b>挑戰難度</b><span id="modeNow">—</span></span><span class="ar">›</span></div>
+              <div class="profrow" onclick="toast('原型不做真的改密碼，正式版走後台的帳號流程。')"><span class="ic">🔑</span>
+                <span class="tx"><b>修改密碼</b></span><span class="ar">›</span></div>
+              <div class="profrow" onclick="toast('自學模組只有一種提醒：承諾要練習卻沒上線。所以這裡不用設時間，只有開／關。')"><span class="ic">🔔</span>
+                <span class="tx"><b>通知設定</b><span>承諾要練習卻沒上線時提醒</span></span><span class="ar">›</span></div>
+              <div class="profrow" onclick="toast('會依序檢查：連得上主機嗎？影片 CDN 通嗎？作業上傳得出去嗎？測完給一份可以截圖給客服的結果。')"><span class="ic">📶</span>
+                <span class="tx"><b>網路診斷</b><span>檢測影片或作業載入問題</span></span><span class="ar">›</span></div>
+              <div class="profrow" onclick="toast('列出每次改版做了什麼，最新的在最上面。跟原課程模組同一份。')"><span class="ic">🕘</span>
+                <span class="tx"><b>更新歷史</b><span>看看每次改版新增了什麼</span></span><span class="ar">›</span></div>
+              <div class="profrow" onclick="toast('自學模組 v1.1.28。原型版本見左上角標籤。')"><span class="ic">ℹ️</span>
+                <span class="tx"><b>關於</b><span>版本 v1.1.28</span></span><span class="ar">›</span></div>
+            </div>
+
+            <div class="proflist">
+              <div class="profrow danger" onclick="go('welcome')"><span class="ic">🚪</span>登出</div>
             </div>
           </div></div></div>
           <div class="nav" id="navProfile"></div>
@@ -1408,7 +1454,7 @@
     if(id==='coins') renderLedger();
     if(id==='game' && window.MG && !mgPending){ var _b=document.getElementById('mgBody'); if(_b && !_b.innerHTML.trim()){ window.MG.start((state.unitN-1)%window.MG.count, onUnitGamePass); } }
     if(id==='video'){var vn=document.getElementById('vNote'); if(vn) vn.textContent='影片看到 '+videoThresh()+'% 即算完成（後台可調）';}
-    if(id==='profile'){var _mn=document.getElementById('modeNow'); if(_mn)_mn.textContent=modeName()+'　›';}
+    if(id==='profile'){var _mn=document.getElementById('modeNow'); if(_mn)_mn.textContent='目前：'+modeName();}
     if(id==='unlock') renderUnlock();
     if(id==='profile') renderMyOverview();
     if(id==='messages') renderMessages();
