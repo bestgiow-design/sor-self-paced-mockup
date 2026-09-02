@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v4.8.0
+     版本：v4.8.1
      日期：2026-09-02
      變更：
+       v4.8.1  2026-09-02  修：裝置框右邊會多出一塊白色面板（裡面是家長導覽）。
+                           原因是 2026-09-01 移除家長端影片明細的兩筆「0% 未看影片」時，
+                           非貪婪比對停太早，留下兩行 </div> 殘骸 → scr-p-video 多兩個收合，
+                           把 .screenwrap／.device／.stage 一路提早關掉，
+                           navPVideo 就掉到裝置外面變成 .stage 的兄弟元素。
+                           家長端底部三個 icon（首頁／孩子／我的）依指示還原。
        v4.8.0  2026-09-02  承諾書改成第一次一定要設、跳不過：
                            · 首次進入時藏起返回鍵與底部導覽，唯一出口是「我決定好了！」
                            · 標題改成「先跟自己約定好，一週要練幾天？」
@@ -784,7 +790,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.8.0 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.8.1 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -1253,8 +1259,6 @@
               <div class="pitem"><div class="badge" style="border-color:#7cc39a;color:#5fb389">✓</div><div class="imid"><div class="it">第 17 單元影片 · SoR 發音課</div><div class="is">▶ 1 次 · ⏱ 3:20</div></div><div class="idate">5/23</div></div>
               <div class="pitem"><div class="badge" style="border-color:#7cc39a;color:#5fb389">✓</div><div class="imid"><div class="it">第 16 單元影片 · SoR 發音課</div><div class="is">▶ 1 次 · ⏱ 2:58</div></div><div class="idate">5/20</div></div>
               <div class="pitem"><div class="badge" style="border-color:#7cc39a;color:#5fb389">✓</div><div class="imid"><div class="it">第 15 單元影片 · SoR 發音課</div><div class="is">▶ 2 次 · ⏱ 3:05</div></div><div class="idate">5/16</div></div>
-              <div class="idate">—</div></div>
-              <div class="idate">—</div></div>
             </div>
           </div></div></div>
           <div class="nav" id="navPVideo"></div>
@@ -1864,10 +1868,10 @@
     go(r==='child'?'home':'p-parent');
   }
   function buildPNav(id,active){
-    /* 2026-09-02：拿掉「我的」。它原本指到 profile ——那是「孩子端」的個人頁
-       （我的承諾書／挑戰難度／修改密碼），家長點下去會看到孩子的設定，是錯的。
-       第一階段家長端沒有自己的設定，就不要放一個空殼分頁。 */
-    var items=[['p-parent','\uD83C\uDFE0','首頁'],['p-home','\uD83E\uDDD2','孩子']];
+    /* 家長端三格。⚠️「我的」目前指到 profile ——那是「孩子端」的個人頁
+       （我的承諾書／挑戰難度／修改密碼），家長點下去會看到孩子的設定。
+       第一階段家長端還沒有自己的設定頁，之後要補一個家長專屬的。 */
+    var items=[['p-parent','\uD83C\uDFE0','首頁'],['p-home','\uD83E\uDDD2','孩子'],['profile','\uD83D\uDC64','我的']];
     var el=document.getElementById(id); if(!el)return; el.innerHTML='';
     items.forEach(function(it){var d=document.createElement('div');d.className='item'+(it[0]===active?' on':'');d.innerHTML='<span class="ic">'+it[1]+'</span>'+it[2];d.onclick=function(){go(it[0])};el.appendChild(d);});
   }
