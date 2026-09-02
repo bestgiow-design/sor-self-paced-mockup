@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v4.9.2
+     版本：v4.9.3
      日期：2026-09-02
      變更：
+       v4.9.3  2026-09-02  金幣紀錄頁拿掉「每日登入獎勵」說明卡。
+                           每天 +100 這件事在上方「目前金幣」的浮動說明裡已經講過，
+                           而「連續打卡階梯是第二階段」是講給我們自己聽的，不該出現在孩子畫面。
        v4.9.2  2026-09-02  金幣紀錄頁「目前金幣」的浮動說明拿掉「上傳」與「單元小遊戲 +200」。
                            上傳跟唸／寫是同一件事（交作業就是上傳），列兩次會讓人以為能領兩次；
                            小遊戲是第二階段，第一階段還沒有這筆收入。
@@ -816,7 +819,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.9.2 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.9.3 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -1170,11 +1173,6 @@
           <div class="sb"><span>下午 9:40 · 週六</span><span>🔋 60%</span></div>
           <div class="topbar"><span class="back" onclick="go(coinsBack)">‹</span>金幣紀錄</div>
           <div class="scroll"><div class="maxw"><div class="coinwrap"><div class="coinbal" data-tip="<b>目前金幣</b>所有入帳減去支出。||影片 +300、唸／寫每份 +100、每天登入 +100。"><div class="n" id="ledgerBal">0</div><div class="l">目前金幣</div></div>
-            <div class="streakcard" data-tip="<b>每日登入獎勵</b>打開 App 就給 100 金，不看有沒有學習。||實際資料顯示純登入打卡沒有明顯不良影響（378 位真實學生半年，只來領錢的僅 4 人），所以維持原課程模組的做法。連續階梯是第二階段。"><h4>🔥 每日登入獎勵</h4>
-              <div class="loginsimple">每天打開 App <b>+100 金</b></div>
-              <div class="loginnote">跟原課程模組一樣，不看有沒有學習、也沒有階梯。<br>
-                <span class="s2inline">連續打卡階梯（1–6 天各 +50、第 7 天 +100）是第二階段的項目。</span></div>
-            </div>
             <div class="coinlist" id="ledgerList"></div></div></div></div>
           <div class="nav" id="navCoins"></div>
         </section>
