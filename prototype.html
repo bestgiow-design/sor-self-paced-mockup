@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v4.6.0
+     版本：v4.7.0
      日期：2026-09-02
      變更：
+       v4.7.0  2026-09-02  · 修：家長端底部的「我的」原本指到孩子端的個人頁
+                             （我的承諾書／挑戰難度／修改密碼），家長點下去會看到孩子的設定。
+                             第一階段家長端沒有自己的設定，直接拿掉，剩 首頁／孩子 兩格。
+                           · 模式零（改名「自由」）與小遊戲放回原型，但標示第二階段並加浮動說明：
+                             沒有小遊戲就沒有這一檔——它靠測驗本身當驗收，沒有測驗可挑戰時
+                             等於「什麼都不用做也能前進」，不成立。
        v4.6.0  2026-09-02  承諾書與學習首頁改成一頁看完、不用捲動（手機 800／平板 960 都成立）。
                            · 首頁：打卡鈕／月份／週曆從 visibility:hidden 改成 display:none
                              （原本空佔約 146px，是逼出捲動的主因），橘色區塊改用 min-height:118px
@@ -772,7 +778,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.6.0 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.7.0 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -1319,12 +1325,12 @@
   var STAGE1_MODE='video';   /* 'video'輕鬆 | 'video_read'標準 | 'all'認真 */
   function gameAppear(){return gcfg().gameAppear||STAGE1_MODE;}
   function videoThresh(){return 95;}   /* 2026-08-20 定案：固定 95%，不開放調整；彈性由「模式零」提供 */
-  function appearLabel(){var n=gameAppear();return n==='video'?'看的作業':n==='video_read'?'看的作業與唸的作業':'看、唸、寫三項作業';}
-  function modeName(){var n=gameAppear();var m={video:'輕鬆',video_read:'標準',all:'認真'};return m[n]||'輕鬆';}
+  function appearLabel(){var n=gameAppear();return n==='none'?'（不用先做任何事）':n==='video'?'看的作業':n==='video_read'?'看的作業與唸的作業':'看、唸、寫三項作業';}
+  function modeName(){var n=gameAppear();var m={none:'自由',video:'輕鬆',video_read:'標準',all:'認真'};return m[n]||'輕鬆';}
   /* 這個難度還「差」什麼——只列沒做的，不要每次都把全部條件念一遍 */
   function remainLabel(){
     var n=gameAppear(), a=state.steps;
-    var need=n==='video'?['video']:n==='video_read'?['video','read']:['video','read','write'];
+    var need=n==='none'?[]:n==='video'?['video']:n==='video_read'?['video','read']:['video','read','write'];
     var nm={video:'看的作業',read:'唸的作業',write:'寫的作業'};
     return need.filter(function(k){return !a[k];}).map(function(k){return nm[k];}).join('、');
   }
@@ -1795,10 +1801,15 @@
      沒有測驗可以過，就沒有「不做作業也能解鎖」這回事。
      第二階段遊戲上線時再把它加回來。 */
   var UL_MODES=[
+    ['none','自由','什麼都不用先做','直接挑戰小遊戲，過關就前往下一單元。適合已經會、或插班進來的孩子。'],
     ['video','輕鬆','看完影片','影片看滿 95% 就能前往下一單元。唸／寫的作業變成選配，之後隨時可以做。<b>這是預設。</b>'],
     ['video_read','標準','影片 ＋ 唸的作業','兩步都完成才前往下一單元。寫的作業選配。'],
     ['all','認真','看、唸、寫全部完成','三步都做完才前往下一單元。<b>最扎實，但也最花時間。</b>']
   ];
+  var TIP_NONE='<b>沒有小遊戲，就沒有這一檔</b>「自由」的意思是「不用先做任何事，直接挑戰小遊戲」——'
+    +'它靠的是測驗本身當驗收（九宮格猜中率只有 0.07%）。||'
+    +'第一階段小遊戲移到第二階段了，沒有測驗可以挑戰，這一檔就等於「什麼都不用做也能前進」，'
+    +'不成立。<b>要等小遊戲上線才會開放。</b>';
   function renderUnlock(){
     var cur_=gameAppear();
     var h='<div class="bkmut" style="margin:0 0 12px">決定<b>做完多少才能前往下一單元</b>。<br>'
@@ -1806,10 +1817,12 @@
       +'<span style="color:#7a5fb0">第二階段小遊戲上線後，這三檔會改成「要先做多少才能挑戰小遊戲」。</span></div>';
     UL_MODES.forEach(function(m){
       var on=(m[0]===cur_);
-      h+='<div onclick="setUnlock(\''+m[0]+'\')" style="cursor:pointer;background:'+(on?'#fdeeeb':'#fff')+';border:1.5px solid '+(on?'#f08c7c':'#e3e8ef')+';border-radius:13px;padding:12px 14px;margin-bottom:9px">'
+      var s2=(m[0]==='none'&&!gameGateOn());   /* 沒有小遊戲時，模式零不成立 */
+      h+='<div'+(s2?' data-tip="'+TIP_NONE+'"':'')+' onclick="setUnlock(\''+m[0]+'\')" style="cursor:pointer;opacity:'+(s2?'.55':'1')+';background:'+(on?'#fdeeeb':'#fff')+';border:1.5px solid '+(on?'#f08c7c':'#e3e8ef')+';border-radius:13px;padding:12px 14px;margin-bottom:9px">'
         +'<div style="display:flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:50%;border:2px solid '+(on?'#f08c7c':'#cfd5dd')+';background:'+(on?'#f08c7c':'#fff')+';flex:none"></span>'
         +'<b style="font-size:1rem">'+m[1]+'</b><span style="font-size:.82rem;color:#6b7280">'+m[2]+'</span>'
-        +'<span style="margin-left:auto;font-size:.66rem;color:#a6aeb9">'+['模式一','模式二','模式三'][UL_MODES.indexOf(m)]+'</span></div>'
+        +(s2?'<span style="font-size:.64rem;font-weight:800;color:#5b3fa0;background:#efe8fb;border-radius:20px;padding:2px 8px;margin-left:6px">第二階段</span>':'')
+        +'<span style="margin-left:auto;font-size:.66rem;color:#a6aeb9">'+['模式零','模式一','模式二','模式三'][UL_MODES.indexOf(m)]+'</span></div>'
         +'<div style="font-size:.76rem;color:#8a929e;margin-top:5px;padding-left:24px;line-height:1.65">'+m[3]+'</div></div>';
     });
     h+='<div class="bkmut" style="margin-top:12px;line-height:1.8">選「輕鬆」不代表少學——唸／寫的作業金幣照給（每份 +100），只是不擋著你前進。<br>'
@@ -1825,7 +1838,7 @@
   function buildNav(containerId, activeTab){
     /* 2026-09-01：對齊原課程模組的四格 —— 學習／訊息／遊戲／個人。
        金幣不佔分頁，改由首頁頂欄常駐顯示、點一下進金幣頁。 */
-    var items=[['home','📖','學習'],['messages','✉️','訊息'],['map-soon','🎮','遊戲'],['profile','👤','個人']];
+    var items=[['home','📖','學習'],['messages','✉️','訊息'],['map','🎮','遊戲'],['profile','👤','個人']];
     var el=document.getElementById(containerId); el.innerHTML='';
     items.forEach(function(it){
       var d=document.createElement('div'); d.className='item'+(it[0]===activeTab?' on':'');
@@ -1834,7 +1847,7 @@
       el.appendChild(d);
     });
   }
-  ['navHome:home','navReadList:home','navWriteList:home','navMsg:messages','navMap:map-soon','navProfile:profile','navCoins:coin','navCoin:coin','navShop:coin','navCoinMap:coin','navSetup:profile','navBackend:profile','navGame:home','navDash:profile','navCal:home','navDoneList:home','navMastery:profile','navUnlock:profile','navMapSoon:map-soon'].forEach(function(pair){
+  ['navHome:home','navReadList:home','navWriteList:home','navMsg:messages','navMap:map','navProfile:profile','navCoins:coin','navCoin:coin','navShop:coin','navCoinMap:coin','navSetup:profile','navBackend:profile','navGame:home','navDash:profile','navCal:home','navDoneList:home','navMastery:profile','navUnlock:profile','navMapSoon:map-soon'].forEach(function(pair){
     var a=pair.split(':'); buildNav(a[0],a[1]);
   });
 
@@ -1848,7 +1861,10 @@
     go(r==='child'?'home':'p-parent');
   }
   function buildPNav(id,active){
-    var items=[['p-parent','\uD83C\uDFE0','首頁'],['p-home','\uD83E\uDDD2','孩子'],['profile','\uD83D\uDC64','我的']];
+    /* 2026-09-02：拿掉「我的」。它原本指到 profile ——那是「孩子端」的個人頁
+       （我的承諾書／挑戰難度／修改密碼），家長點下去會看到孩子的設定，是錯的。
+       第一階段家長端沒有自己的設定，就不要放一個空殼分頁。 */
+    var items=[['p-parent','\uD83C\uDFE0','首頁'],['p-home','\uD83E\uDDD2','孩子']];
     var el=document.getElementById(id); if(!el)return; el.innerHTML='';
     items.forEach(function(it){var d=document.createElement('div');d.className='item'+(it[0]===active?' on':'');d.innerHTML='<span class="ic">'+it[1]+'</span>'+it[2];d.onclick=function(){go(it[0])};el.appendChild(d);});
   }
