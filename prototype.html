@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v4.10.0
+     版本：v4.10.1
      日期：2026-09-02
      變更：
+       v4.10.1 2026-09-02  首頁拿掉「⚠️ 這一頁部長說要調整，找時間讓部長確認」橫幅
+                           （版面已依圈選調整完，同時拿掉 hasbar 讓畫面往上補齊）。
        v4.10.0 2026-09-02  第一階段裝置定案：孩子端＝平板、家長端＝手機，切身分自動換機型
                            （上面的平板／手機鈕留著只是給我們看自適應，不是產品選項）。
                            家長端底部拿掉「首頁」，剩 孩子／我的 兩格；
@@ -828,7 +830,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.10.0 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.10.1 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -886,8 +888,7 @@
         </section>
 
         <!-- 首頁 -->
-        <section class="screen hasbar" id="scr-home">
-          <div class="stagebar ask">⚠️ 這一頁部長說要調整，找時間讓部長確認</div>
+        <section class="screen" id="scr-home">
           <div class="sb"><span>上午 9:38 · 週六</span><span>🔋 43%</span></div>
           <div class="scroll"><div class="maxw">
             <div class="home-hd">
