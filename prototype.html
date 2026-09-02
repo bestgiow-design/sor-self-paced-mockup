@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v4.0.1
-     日期：2026-09-01
+     版本：v4.1.0
+     日期：2026-09-02
      變更：
+       v4.1.0  2026-09-02  承諾書的星期選擇改成一週七格並排。
+                           原本一列一天，時段欄位拿掉後只剩「星期幾」與切換鈕兩個元素擠在左邊，
+                           版面失衡；七格平均分佈也讓「我的一週長怎樣」一眼看得完。
        v4.0.1  2026-09-01  跳頁選單漏改的難度名稱補上。
        v4.0.0  2026-09-01  跟 Hugo 討論後，小遊戲移到第二階段。連帶改動：
                            · 難度只剩三檔，並改用中性命名：輕鬆／標準／認真
@@ -334,6 +337,17 @@
   /* 設定頁 */
   .setwrap{background:var(--paper);flex:1;padding:16px;display:flex;flex-direction:column;gap:12px}
   .setcard{background:#fff;border-radius:16px;padding:12px 16px}
+  .wptitle{font-size:.76rem;color:#a6aeb9;margin-bottom:9px;text-align:center}
+  .weekpick{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+  .wp{border:1.5px solid #e3e8ef;background:#fff;border-radius:12px;padding:11px 0 9px;
+      font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;
+      transition:background .12s,border-color .12s}
+  .wp .wd{font-size:1.02rem;font-weight:800;color:#8a929e;line-height:1.1}
+  .wp .ws{font-size:.66rem;color:#b8c0cc;line-height:1.1}
+  .wp:hover{border-color:#cfd5dd}
+  .wp.on{border-color:#5fb389;background:#eef8f2}
+  .wp.on .wd{color:#2f7a58}
+  .wp.on .ws{color:#5fb389;font-weight:700}
   .dayrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f2efe8}
   .dayrow:last-child{border-bottom:none}
   .dayrow .dn{font-size:.95rem;font-weight:800;width:56px;white-space:nowrap;flex:none}
@@ -689,7 +703,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.0.1 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.1.0 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -1549,14 +1563,18 @@
      孩子不用預測自己幾點會有空，系統也不會在他已經練完之後還來吵。
      實際發送時間由系統決定（建議傍晚，還來得及做），不開放設定。 */
   function renderDays(){
-    var c=document.getElementById('dayCard'); c.innerHTML='';
-    days.forEach(function(d,i){
-      var row=document.createElement('div'); row.className='dayrow';
-      /* 2026-08-26：自學版承諾書不設時段，只選哪幾天 */
-      row.innerHTML='<span class="dn">'+d[0]+'</span>'+
-        '<button class="tag '+(d[1]?'on':'rest')+'" onclick="toggleDay('+i+')">'+(d[1]?'練習日':'休息')+'</button>';
-      c.appendChild(row);
-    });
+    /* 2026-09-02：改成一週七格並排。原本一列一天，時段欄位拿掉後只剩兩個元素擠在左邊，
+       版面失衡；七格平均分佈也讓「我的一週長怎樣」一眼看得完。 */
+    var c=document.getElementById('dayCard');
+    c.innerHTML='<div class="wptitle">點一下切換，選出你要練習的日子</div>'
+      +'<div class="weekpick">'
+      + days.map(function(d,i){
+          return '<button class="wp'+(d[1]?' on':'')+'" onclick="toggleDay('+i+')">'
+               +   '<span class="wd">'+d[0].replace('星期','')+'</span>'
+               +   '<span class="ws">'+(d[1]?'練習':'休息')+'</span>'
+               + '</button>';
+        }).join('')
+      +'</div>';
     var n=days.filter(function(d){return d[1]}).length;
     renderSetSum(n);
   }
