@@ -1,8 +1,16 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v4.5.0
+     版本：v4.6.0
      日期：2026-09-02
      變更：
+       v4.6.0  2026-09-02  承諾書與學習首頁改成一頁看完、不用捲動（手機 800／平板 960 都成立）。
+                           · 首頁：打卡鈕／月份／週曆從 visibility:hidden 改成 display:none
+                             （原本空佔約 146px，是逼出捲動的主因），橘色區塊改用 min-height:118px
+                             維持份量；內容卡 min-height 0、插畫可依剩餘高度縮放
+                           · 承諾書：📖／😴 圖示收進星期那一行（四排卡片省下約 150px），
+                             各處留白與字級微調
+                           ⚠️ 橘色區塊會比 v4.2 略矮——那 146px 是隱藏元素撐出來的空白，
+                              要不捲動就得讓出來。
        v4.5.0  2026-09-02  向實機平板版面看齊：
                            · 承諾書改成兩欄大卡（參考 IMG_2932「設定練習時段」）：
                              星期幾用 1.62rem 粗體、右邊掛狀態膠囊、星期日單獨置中
@@ -223,7 +231,9 @@
   .welcome-alt{background:none;border:1.5px solid rgba(255,255,255,.85);color:#fff;font-family:inherit;font-size:.92rem;font-weight:700;border-radius:24px;padding:12px 22px;margin-top:14px;max-width:300px;width:100%;cursor:pointer}
 
   /* ===== 首頁 ===== */
-  .home-hd{background:var(--header);padding:16px 18px 18px;border-radius:0 0 22px 22px;color:#fff;text-align:center}
+  /* 2026-09-02：打卡鈕／月份／週曆改成 display:none（原本 visibility:hidden 會空佔 ~146px，
+     讓整頁必須捲動）。改用 min-height 維持橘色區塊的份量，但不再留那麼多死空間。 */
+  .home-hd{background:var(--header);padding:18px 18px 22px;border-radius:0 0 22px 22px;color:#fff;text-align:center;min-height:118px;display:flex;flex-direction:column;justify-content:center;flex:none}
   /* 字級對齊實機首頁（IMG_2944）：標題更大更重，副標也放大 */
   .home-hd .streak{font-size:1.85rem;font-weight:800;letter-spacing:.01em}
   .home-hd .accum{font-size:1.02rem;opacity:.95;margin-top:5px;cursor:pointer}
@@ -252,12 +262,13 @@
   .rtab.active{width:60px;border-top-left-radius:0;border-bottom-left-radius:0;box-shadow:-4px 4px 12px rgba(0,0,0,.18)}
   .calic{width:20px;height:20px;object-fit:contain;vertical-align:-4px;margin-right:5px}
   .coinic{width:19px;height:19px;object-fit:contain;vertical-align:-4px}
-  .contentcard{background:#fff;border-radius:22px;box-shadow:0 8px 24px rgba(34,49,79,.1);padding:22px 20px 26px;text-align:center;flex:1;min-height:300px;margin-right:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:1}
-  .contentcard .cm{width:210px;max-width:74%;height:auto;margin-bottom:6px}
-  .prog{display:flex;align-items:center;justify-content:center;gap:16px;margin:14px 0 18px}
+  .contentcard{background:#fff;border-radius:22px;box-shadow:0 8px 24px rgba(34,49,79,.1);padding:16px 18px 20px;text-align:center;flex:1;min-height:0;margin-right:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:1}
+  /* 插畫可以被壓縮，整頁才不會為了它而捲動 */
+  .contentcard .cm{width:210px;max-width:74%;height:auto;max-height:38%;object-fit:contain;margin-bottom:4px;flex:0 1 auto;min-height:0}
+  .prog{display:flex;align-items:center;justify-content:center;gap:16px;margin:10px 0 13px;flex:none}
   .prog .lbl{font-size:1.32rem;font-weight:800;color:var(--ink)}
-  .ring2{width:88px;height:88px;border-radius:50%;border:7px solid var(--coral);display:flex;align-items:center;justify-content:center;font-size:1.22rem;font-weight:800;color:var(--coral)}
-  .homecta{border:none;font-family:inherit;color:#fff;border-radius:999px;padding:16px 38px;font-size:1.24rem;font-weight:800;cursor:pointer}
+  .ring2{width:78px;height:78px;border-radius:50%;border:6px solid var(--coral);flex:none;display:flex;align-items:center;justify-content:center;font-size:1.22rem;font-weight:800;color:var(--coral)}
+  .homecta{border:none;font-family:inherit;color:#fff;border-radius:999px;padding:13px 34px;font-size:1.18rem;font-weight:800;cursor:pointer;flex:none}
   .homecta .sm{font-size:.95rem;font-weight:600;opacity:.95;margin-left:4px}
   .unithint{text-align:center;font-size:.74rem;color:var(--dim);margin:7px 16px 6px}
   .unitinfo{margin:14px 16px 0;background:#fff;border-radius:16px;padding:12px 10px;display:flex;align-items:center;box-shadow:0 2px 10px rgba(34,49,79,.05)}
@@ -360,17 +371,17 @@
   .celebrate .acts{width:100%;max-width:300px;display:flex;flex-direction:column;gap:10px;margin-top:14px}
 
   /* 設定頁 */
-  .setwrap{background:var(--paper);flex:1;padding:16px;display:flex;flex-direction:column;gap:12px}
-  .setcard{background:#fff;border-radius:22px;padding:20px 18px}
+  .setwrap{background:var(--paper);flex:1;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:0}
+  .setcard{background:#fff;border-radius:22px;padding:15px 16px}
   /* 「確認設定」推到最底，中間的空白就不會全落在下方 */
   .setgo{margin-top:auto}
   /* 對齊實機的膠囊大按鈕：小字說明在上、大字動作在下 */
-  .bigcta{width:100%;border:none;background:var(--coral);color:#fff;font-family:inherit;
-    border-radius:999px;padding:15px 20px 18px;cursor:pointer;display:flex;flex-direction:column;
-    align-items:center;gap:3px;box-shadow:0 6px 18px rgba(240,140,124,.35);transition:transform .1s}
+  .bigcta{width:100%;border:none;background:var(--coral);color:#fff;font-family:inherit;flex:none;
+    border-radius:999px;padding:11px 20px 13px;cursor:pointer;display:flex;flex-direction:column;
+    align-items:center;gap:2px;box-shadow:0 6px 18px rgba(240,140,124,.35);transition:transform .1s}
   .bigcta:active{transform:scale(.98)}
-  .bigcta .bcs{font-size:.92rem;opacity:.9}
-  .bigcta .bcb{font-size:1.5rem;font-weight:800;letter-spacing:.02em}
+  .bigcta .bcs{font-size:.85rem;opacity:.9}
+  .bigcta .bcb{font-size:1.32rem;font-weight:800;letter-spacing:.02em}
   .nxttl{font-size:.88rem;font-weight:800;color:#4a4a4a;margin-bottom:2px}
   .nxsub{font-size:.72rem;color:#a6aeb9;margin-bottom:10px}
   .nxgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
@@ -380,18 +391,18 @@
   .nxd.soon{background:#fdeeeb;border-color:#f6cfc7}
   .nxd.soon b{color:#c9573f}.nxd.soon span{color:#e0836f}
   .nxempty{font-size:.8rem;color:#a6aeb9;text-align:center;padding:14px 6px;line-height:1.8}
-  .setbar{font-size:1.2rem;font-weight:800;padding:16px 0}
-  .wptitle{font-size:1.22rem;font-weight:800;color:#5a6474;margin-bottom:16px;text-align:center}
-  .weekpick{display:grid;grid-template-columns:1fr 1fr;gap:11px}
-  .wp{border:2px solid #eceff3;background:#fff;border-radius:20px;padding:16px 16px 14px;
-      font:inherit;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:8px;
+  .setbar{font-size:1.14rem;font-weight:800;padding:13px 0}
+  .wptitle{font-size:1.05rem;font-weight:800;color:#5a6474;margin-bottom:9px;text-align:center}
+  .weekpick{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .wp{border:2px solid #eceff3;background:#fff;border-radius:18px;padding:11px 13px;
+      font:inherit;cursor:pointer;text-align:left;display:flex;flex-direction:column;
       transition:background .12s,border-color .12s,transform .1s}
   .wp:active{transform:scale(.97)}
   .wp.last{grid-column:1 / -1;max-width:calc(50% - 6px);margin:0 auto}
-  .wprow{display:flex;align-items:center;gap:10px}
-  .wp .wd{font-size:1.62rem;font-weight:800;color:#5a6474;line-height:1.1}
-  .wpill{font-size:.8rem;font-weight:800;color:#fff;background:#c9d0d9;border-radius:999px;padding:3px 12px;white-space:nowrap}
-  .wpic{font-size:1.9rem;line-height:1;filter:grayscale(.65);opacity:.45}
+  .wprow{display:flex;align-items:center;gap:9px}
+  .wp .wd{font-size:1.42rem;font-weight:800;color:#5a6474;line-height:1.1;flex:1}
+  .wpill{font-size:.76rem;font-weight:800;color:#fff;background:#c9d0d9;border-radius:999px;padding:3px 10px;white-space:nowrap;flex:none}
+  .wpic{font-size:1.6rem;line-height:1;filter:grayscale(.65);opacity:.45;flex:none}
   .wp:hover{border-color:#dfe4ea}
   .wp.on{border-color:#a8dcc2;background:#f3fbf7}
   .wp.on .wd{color:#2f7a58}
@@ -410,9 +421,9 @@
   .slot{display:flex;align-items:center;gap:5px;font-size:.74rem;color:var(--dim);margin-left:auto}
   .tbox{border:1px solid var(--line);border-radius:8px;padding:4px 9px;font-size:.8rem;font-weight:700;color:var(--ink)}
   .slot.dim{opacity:.4}
-  .setsum{background:#fff6ec;border-radius:20px;padding:18px 18px;font-size:1.12rem;color:#7a5a3e}
-  .ssline{display:flex;align-items:center;gap:13px;padding:7px 0;line-height:1.5}
-  .ssic{font-size:1.6rem;line-height:1;flex:none;width:34px;text-align:center}
+  .setsum{background:#fff6ec;border-radius:18px;padding:11px 15px;font-size:.99rem;color:#7a5a3e}
+  .ssline{display:flex;align-items:center;gap:11px;padding:4px 0;line-height:1.45}
+  .ssic{font-size:1.4rem;line-height:1;flex:none;width:30px;text-align:center}
   .setsum b{color:var(--coral)}
 
   /* 儀表板 */
@@ -678,10 +689,10 @@
   .ovnote{font-size:.73rem;color:#a6aeb9;margin-top:10px;line-height:1.6}
   .ovhint{font-size:.75rem;color:#8a94a6;background:#f6f7f9;border-radius:10px;padding:9px 12px;margin-bottom:11px;line-height:1.65}
   .remindcard{margin-top:12px}
-  .rcttl{font-weight:800;font-size:1.28rem;color:#4a4a4a;margin-bottom:14px}
-  .rclist{display:flex;flex-direction:column;gap:13px}
-  .rcline{display:flex;align-items:center;gap:13px;font-size:1.08rem;color:#6b7280}
-  .rcic{font-size:1.65rem;line-height:1;flex:none;width:34px;text-align:center}
+  .rcttl{font-weight:800;font-size:1.14rem;color:#4a4a4a;margin-bottom:9px}
+  .rclist{display:flex;flex-direction:column;gap:7px}
+  .rcline{display:flex;align-items:center;gap:11px;font-size:.96rem;color:#6b7280}
+  .rcic{font-size:1.4rem;line-height:1;flex:none;width:30px;text-align:center}
   .rcline b{color:#4a4a4a}
   .msgtabs{display:flex;background:#fff;border-bottom:1px solid var(--line);flex:none}
   .msgtabs button{flex:1;border:none;background:none;font:inherit;font-size:.92rem;font-weight:700;color:#9aa4b2;padding:12px 0 10px;cursor:pointer;border-bottom:2.5px solid transparent}
@@ -761,7 +772,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.5.0 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.6.0 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -828,9 +839,9 @@
               <div class="accum coinpillhd" data-tip="<b>累積 N 天</b>從開始到現在，完成過單元的天數總和。||不是日曆天，也不是登入天數。" onclick="goCoins('home')">累積 <span id="learnTotal">36</span> 天 · <img class="coinic" src="data:image/png;base64,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"> <span id="coinTop">7,500</span></div>
               <!-- 2026-08-27：打卡紀錄鈕、月份標題、週曆整組移除（部長圈選範圍）。
                    用 visibility 而不是 display，橘色區塊的高度維持原樣、不縮小。 -->
-              <div class="schbtn" style="visibility:hidden" onclick="go('calendar')"><img class="calic" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAAAiCAYAAADGUiAIAAABxElEQVR42u2XS0vDQBDH/5s0bazah0q9qFUREQ+CD1AEwYPeBU9+Cj+Ln8KT4N1DBaFV8AEepEhQURGUoqHWtGnSjIeKuo2hwfpoYecUhs3sb5P/zOwwIoKX2TenVD7a4nzq8jqT2rvQqDkvjyjtbHCbB6dXEeifYF7vSGghE7C/ZYH3JyI4T7dw8vdEhl7V1XPOrWMtTUxRG96YrJLLV7k7Az0/EACwcAxSpJdJ8T6AVWXMiAhkm7Cyu2Rr6eb7miPzUMYWGQuEqjKwtUxTgr79SdhahgBAIkOHlU01tVatbApk6JCcQo5aIbmcQo4kMo2WqARkGqLOClgBK2AF7J/duj5ZaHYNrC3yfw2gmId5sOkPlkUS+InR5dut1eMKKjQrYL006zE244uxmfOVj7dhX598BB+YRHBqpXa8xxfjva8cETIQsH41y+QglNEF3heOuk8e74OidnysaYu5Y4Wj7lhy8Adh1Q4o40v1gw3N1F0jdychdyeFZgXsryYYlQqwL/b5UyZGIPcM8gX/8hBU1LkEq9VxJXcF50HjIYbnwD4lZmOwlTKs8z2+g3Um3J3u6dbVwVADS8W8K5acnALzwfEKnNmfHZSw3K0AAAAASUVORK5CYII=">打卡紀錄</div>
-              <div class="wklabel" style="visibility:hidden">2026 年 5 月 · 本週</div>
-              <div class="weekstrip" id="weekstrip" style="visibility:hidden"></div>
+              <div class="schbtn" style="display:none" onclick="go('calendar')"><img class="calic" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAAAiCAYAAADGUiAIAAABxElEQVR42u2XS0vDQBDH/5s0bazah0q9qFUREQ+CD1AEwYPeBU9+Cj+Ln8KT4N1DBaFV8AEepEhQURGUoqHWtGnSjIeKuo2hwfpoYecUhs3sb5P/zOwwIoKX2TenVD7a4nzq8jqT2rvQqDkvjyjtbHCbB6dXEeifYF7vSGghE7C/ZYH3JyI4T7dw8vdEhl7V1XPOrWMtTUxRG96YrJLLV7k7Az0/EACwcAxSpJdJ8T6AVWXMiAhkm7Cyu2Rr6eb7miPzUMYWGQuEqjKwtUxTgr79SdhahgBAIkOHlU01tVatbApk6JCcQo5aIbmcQo4kMo2WqARkGqLOClgBK2AF7J/duj5ZaHYNrC3yfw2gmId5sOkPlkUS+InR5dut1eMKKjQrYL006zE244uxmfOVj7dhX598BB+YRHBqpXa8xxfjva8cETIQsH41y+QglNEF3heOuk8e74OidnysaYu5Y4Wj7lhy8Adh1Q4o40v1gw3N1F0jdychdyeFZgXsryYYlQqwL/b5UyZGIPcM8gX/8hBU1LkEq9VxJXcF50HjIYbnwD4lZmOwlTKs8z2+g3Um3J3u6dbVwVADS8W8K5acnALzwfEKnNmfHZSw3K0AAAAASUVORK5CYII=">打卡紀錄</div>
+              <div class="wklabel" style="display:none">2026 年 5 月 · 本週</div>
+              <div class="weekstrip" id="weekstrip" style="display:none"></div>
             </div>
             <div class="unitnav">
               <button class="unitnavbtn" id="uPrev" onclick="browseUnit(-1)">‹ 上一單元</button>
@@ -1638,9 +1649,9 @@
       +'<div class="weekpick">'
       + days.map(function(d,i){
           return '<button class="wp'+(d[1]?' on':'')+(i===6?' last':'')+'" onclick="toggleDay('+i+')">'
-               +   '<div class="wprow"><span class="wd">'+d[0]+'</span>'
+               +   '<div class="wprow"><span class="wpic">'+(d[1]?'📖':'😴')+'</span>'
+               +   '<span class="wd">'+d[0]+'</span>'
                +   '<span class="wpill">'+(d[1]?'練習日':'休息')+'</span></div>'
-               +   '<div class="wpic">'+(d[1]?'📖':'😴')+'</div>'
                + '</button>';
         }).join('')
       +'</div>';
