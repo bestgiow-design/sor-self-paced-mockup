@@ -1,8 +1,16 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v4.4.0
+     版本：v4.5.0
      日期：2026-09-02
      變更：
+       v4.5.0  2026-09-02  向實機平板版面看齊：
+                           · 承諾書改成兩欄大卡（參考 IMG_2932「設定練習時段」）：
+                             星期幾用 1.62rem 粗體、右邊掛狀態膠囊、星期日單獨置中
+                           · 學習首頁字級全面放大（參考 IMG_2944）：
+                             連續學習 1.3→1.85rem、累積 .82→1.02rem、影片完成進度 1.1→1.32rem、
+                             進度圈 1.05→1.22rem、看的作業鈕 1.05→1.24rem（改全膠囊）、
+                             影片代號 1.2→1.45rem、進度說明 1.05→1.28rem、
+                             底部導覽 .66→.82rem、導覽圖示 1.2→1.45rem
        v4.4.0  2026-09-02  承諾書字級向實機版面看齊（參考 IMG_2931 平板截圖）：
                            標題 1.22rem、星期字 1.72rem、圖示 1.95rem、狀態 .95rem、
                            提醒卡 1.08rem、摘要 1.12rem；卡片圓角 16→22、留白加大。
@@ -193,8 +201,8 @@
 
   /* 底部導覽 */
   .nav{display:flex;justify-content:space-around;padding:8px 0 12px;border-top:1px solid var(--line);background:#fff;flex:none}
-  .nav .item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.66rem;color:#8b8b8b;cursor:pointer;flex:1}
-  .nav .item .ic{font-size:1.2rem}
+  .nav .item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.82rem;font-weight:700;color:#8b8b8b;cursor:pointer;flex:1}
+  .nav .item .ic{font-size:1.45rem}
   .nav .item.on{color:var(--header)}
   .nav .item.on .ic{background:var(--header);color:#fff;border-radius:14px;padding:3px 16px}
 
@@ -216,8 +224,9 @@
 
   /* ===== 首頁 ===== */
   .home-hd{background:var(--header);padding:16px 18px 18px;border-radius:0 0 22px 22px;color:#fff;text-align:center}
-  .home-hd .streak{font-size:1.3rem;font-weight:800}
-  .home-hd .accum{font-size:.82rem;opacity:.95;margin-top:2px;cursor:pointer}
+  /* 字級對齊實機首頁（IMG_2944）：標題更大更重，副標也放大 */
+  .home-hd .streak{font-size:1.85rem;font-weight:800;letter-spacing:.01em}
+  .home-hd .accum{font-size:1.02rem;opacity:.95;margin-top:5px;cursor:pointer}
   .schbtn{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--header);font-weight:800;font-size:.86rem;border-radius:18px;padding:8px 20px;margin:12px 0 6px;cursor:pointer}
   .wknav{display:flex;justify-content:center;gap:18px;font-size:.8rem;margin:6px 0 12px;opacity:.9}
   .wknav b{opacity:1;font-size:.92rem}
@@ -246,24 +255,24 @@
   .contentcard{background:#fff;border-radius:22px;box-shadow:0 8px 24px rgba(34,49,79,.1);padding:22px 20px 26px;text-align:center;flex:1;min-height:300px;margin-right:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:1}
   .contentcard .cm{width:210px;max-width:74%;height:auto;margin-bottom:6px}
   .prog{display:flex;align-items:center;justify-content:center;gap:16px;margin:14px 0 18px}
-  .prog .lbl{font-size:1.1rem;font-weight:800;color:var(--ink)}
-  .ring2{width:78px;height:78px;border-radius:50%;border:6px solid var(--coral);display:flex;align-items:center;justify-content:center;font-size:1.05rem;font-weight:800;color:var(--coral)}
-  .homecta{border:none;font-family:inherit;color:#fff;border-radius:26px;padding:14px 32px;font-size:1.05rem;font-weight:800;cursor:pointer}
-  .homecta .sm{font-size:.8rem;font-weight:600;opacity:.95;margin-left:2px}
+  .prog .lbl{font-size:1.32rem;font-weight:800;color:var(--ink)}
+  .ring2{width:88px;height:88px;border-radius:50%;border:7px solid var(--coral);display:flex;align-items:center;justify-content:center;font-size:1.22rem;font-weight:800;color:var(--coral)}
+  .homecta{border:none;font-family:inherit;color:#fff;border-radius:999px;padding:16px 38px;font-size:1.24rem;font-weight:800;cursor:pointer}
+  .homecta .sm{font-size:.95rem;font-weight:600;opacity:.95;margin-left:4px}
   .unithint{text-align:center;font-size:.74rem;color:var(--dim);margin:7px 16px 6px}
   .unitinfo{margin:14px 16px 0;background:#fff;border-radius:16px;padding:12px 10px;display:flex;align-items:center;box-shadow:0 2px 10px rgba(34,49,79,.05)}
   .unitinfo .uiblock{flex:1;text-align:center}
   .unitinfo .uidiv{width:1px;align-self:stretch;background:var(--line);margin:4px 0}
-  .unitinfo .uilbl{font-size:.68rem;color:var(--dim);letter-spacing:.06em;margin-bottom:3px}
-  .unitinfo .ucode{font-size:1.2rem;font-weight:800;color:var(--coral)}
-  .unitinfo .upage{font-size:1.05rem;font-weight:800;color:var(--blue)}
+  .unitinfo .uilbl{font-size:.82rem;color:var(--dim);letter-spacing:.06em;margin-bottom:4px}
+  .unitinfo .ucode{font-size:1.45rem;font-weight:800;color:var(--coral)}
+  .unitinfo .upage{font-size:1.28rem;font-weight:800;color:var(--blue)}
   .nextwrap{text-align:center;margin:0 16px}
   .nextbtn{border:none;font-family:inherit;color:#fff;background:var(--green-d);border-radius:26px;padding:14px 30px;font-size:1.05rem;font-weight:800;cursor:pointer}
   .unitnav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px}
   .unitnavbtn{border:1.5px solid #d8dee8;background:#fff;border-radius:20px;padding:8px 14px;font-family:inherit;font-size:.9rem;font-weight:700;color:#4a4a4a;cursor:pointer}
   .unitnavbtn:active{background:#f0f0f0}
   .unitnavbtn:disabled{opacity:.35;cursor:default}
-  .unitnavc{font-size:.95rem;font-weight:800;color:#2f3e57;white-space:nowrap}
+  .unitnavc{font-size:1.1rem;font-weight:800;color:#2f3e57;white-space:nowrap}
   .backcurwrap{margin-top:8px;text-align:center;min-height:0}
   .backcur{display:inline-flex;align-items:center;gap:6px;border:none;background:#f08c7c;color:#fff;border-radius:18px;padding:7px 16px;font-family:inherit;font-size:.85rem;font-weight:700;cursor:pointer}
   .donelist-row{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #eef0f4;border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer}
@@ -373,14 +382,21 @@
   .nxempty{font-size:.8rem;color:#a6aeb9;text-align:center;padding:14px 6px;line-height:1.8}
   .setbar{font-size:1.2rem;font-weight:800;padding:16px 0}
   .wptitle{font-size:1.22rem;font-weight:800;color:#5a6474;margin-bottom:16px;text-align:center}
-  .weekpick{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
-  .wp{border:2px solid #e3e8ef;background:#fff;border-radius:16px;padding:18px 0 15px;
-      font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;
+  .weekpick{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .wp{border:2px solid #eceff3;background:#fff;border-radius:20px;padding:16px 16px 14px;
+      font:inherit;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:8px;
       transition:background .12s,border-color .12s,transform .1s}
-  .wp:active{transform:scale(.95)}
-  .wp .wd{font-size:1.72rem;font-weight:800;color:#8a929e;line-height:1}
-  .wp .wi{font-size:1.95rem;line-height:1;filter:grayscale(.6);opacity:.5}
-  .wp .ws{font-size:.95rem;color:#b8c0cc;line-height:1;font-weight:800}
+  .wp:active{transform:scale(.97)}
+  .wp.last{grid-column:1 / -1;max-width:calc(50% - 6px);margin:0 auto}
+  .wprow{display:flex;align-items:center;gap:10px}
+  .wp .wd{font-size:1.62rem;font-weight:800;color:#5a6474;line-height:1.1}
+  .wpill{font-size:.8rem;font-weight:800;color:#fff;background:#c9d0d9;border-radius:999px;padding:3px 12px;white-space:nowrap}
+  .wpic{font-size:1.9rem;line-height:1;filter:grayscale(.65);opacity:.45}
+  .wp:hover{border-color:#dfe4ea}
+  .wp.on{border-color:#a8dcc2;background:#f3fbf7}
+  .wp.on .wd{color:#2f7a58}
+  .wp.on .wpill{background:#5fb389}
+  .wp.on .wpic{filter:none;opacity:1}
   .wp:hover{border-color:#cfd5dd}
   .wp.on{border-color:#5fb389;background:#eef8f2}
   .wp.on .wd{color:#2f7a58}
@@ -745,7 +761,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.4.0 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v4.5.0 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -1616,13 +1632,15 @@
        版面失衡；七格平均分佈也讓「我的一週長怎樣」一眼看得完。 */
     var c=document.getElementById('dayCard');
     /* 對象是小孩子：字要大、要有圖，不能只靠文字 */
+    /* 兩欄大卡，對齊實機「設定練習時段」的排版（IMG_2932）：
+       星期幾用超大粗體，右邊掛一顆狀態膠囊。 */
     c.innerHTML='<div class="wptitle">👇 點一下，選出你要練習的日子</div>'
       +'<div class="weekpick">'
       + days.map(function(d,i){
-          return '<button class="wp'+(d[1]?' on':'')+'" onclick="toggleDay('+i+')">'
-               +   '<span class="wd">'+d[0].replace('星期','')+'</span>'
-               +   '<span class="wi">'+(d[1]?'📖':'😴')+'</span>'
-               +   '<span class="ws">'+(d[1]?'練習':'休息')+'</span>'
+          return '<button class="wp'+(d[1]?' on':'')+(i===6?' last':'')+'" onclick="toggleDay('+i+')">'
+               +   '<div class="wprow"><span class="wd">'+d[0]+'</span>'
+               +   '<span class="wpill">'+(d[1]?'練習日':'休息')+'</span></div>'
+               +   '<div class="wpic">'+(d[1]?'📖':'😴')+'</div>'
                + '</button>';
         }).join('')
       +'</div>';
