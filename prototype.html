@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <!-- 版本資訊
-     版本：v5.4.0
-     日期：2026-11-14
+     版本：v5.4.1
+     日期：2026-11-16
      變更：
+       v5.4.1  2026-11-16  全部完成畫面標題改「恭喜你完成任務，成為拼讀小達人！」。
        v5.4.0  2026-11-14  新增「254 單元全部完成」畫面（草稿，待部長確認）；「下一單元」最遠只到目前單元，還沒解鎖的不能翻。
        v5.3.0  2026-11-13  連續學習改成只有練習日算，沒完成就歸零、不能補（跟部長討論後定案）。
        v5.2.0  2026-11-12  第一階段不做商店：「商店」分頁點進去只顯示「開發中」，金幣先賺先記。
@@ -850,7 +851,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v5.4.0 · 一階</span>
+    <h1>自學模組 · 互動原型</h1><style>.verbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.22);color:inherit;vertical-align:middle;margin-left:8px;letter-spacing:.02em}</style><span class="verbadge">v5.4.1 · 一階</span>
     <div class="seg" id="roleSeg"><button class="on" onclick="setRole('child')">孩子端</button><button onclick="setRole('parent')">家長端</button></div>
     <div class="seg" id="devSeg">
       <button class="on" onclick="setDevice('tablet')">平板</button>
@@ -1067,7 +1068,7 @@
           <div class="sb"><span>下午 4:05 · 週六</span><span>🔋 61%</span></div>
           <div class="celebrate" style="gap:4px">
             <div class="big" style="font-size:3.4rem">🏆</div>
-            <h3 style="font-size:1.7rem">254 個單元，全部完成！</h3>
+            <h3 style="font-size:1.7rem">恭喜你完成任務，成為拼讀小達人！</h3>
             <div style="color:var(--dim);font-size:.95rem;margin-bottom:12px">宗翰，你從 2026 年 1 月 5 日開始，一個單元一個單元做到最後一個。</div>
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%;max-width:560px">
               <div style="background:#fff;border-radius:16px;padding:14px 6px"><div style="font-size:1.6rem;font-weight:800;color:var(--header)">312</div><div style="font-size:.78rem;color:var(--dim)">累積學習（天）</div></div>
